@@ -1,6 +1,5 @@
-plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting web-search)
+plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting web-search archlinux)
 # ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=240'  # Change the color to a shade of gray
-
 export TERM=xterm-256color
 export TERMINAL=/usr/bin/alacritty
 
@@ -9,11 +8,17 @@ alias ni='nvim ~/.config/i3/config'
 alias na='nvim ~/.config/alacritty/alacritty.toml'
 alias top='bpytop'
 
+alias trn='translate'
+translate() {
+    trans -s en -t ru '$1'
+}
+
+
+
 alias matrix="tmatrix -c default -s 50 -f 0.3,0.7 -g 0,45 -G 10,20 --no-fade -t 'OUR LIFE IS THE CREATION OF OUR MIND' -C blue"
 alias n="nvim"
 alias cl='clear'
 alias nz="nvim ~/.zshrc"
-alias nw="nvim /mnt/c/users/Сергей/.wezterm.lua"
 alias ns="nvim -S"
 alias sz="source ~/.zshrc"
 alias e="exit"
@@ -25,7 +30,7 @@ alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
 alias tree0='exa --tree --header --icons -a'
 alias ffg='find_preview'
-alias nt='nvim ~/.config/tmux/tmux.conf'
+alias nt='nvim ~/.tmux.conf'
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -140,3 +145,5 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 # neofetch
+echo -ne '\e[5 q'
+
