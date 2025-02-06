@@ -1,9 +1,9 @@
 return {
-  'stevearc/oil.nvim',
+  "stevearc/oil.nvim",
   config = function()
-    local actions = require('oil.actions')
+    local actions = require("oil.actions")
 
-    require('oil').setup({
+    require("oil").setup({
       skip_confirm_for_simple_edits = true,
       prompt_save_on_select_new_entry = false,
       view_options = {
@@ -20,13 +20,13 @@ return {
         padding = 7,
       },
       preview = {
-        always_show = true
+        always_show = true,
       },
       keymaps = {
-        ['h'] = actions.parent,
-        ['l'] = actions.select,
-        ['-'] = false,
-        ['gt'] = 'actions.toggle_trash',
+        ["h"] = actions.parent,
+        ["l"] = actions.select,
+        ["-"] = false,
+        ["gt"] = "actions.toggle_trash",
       },
       actions = {
         delete = { confirm = false },
@@ -34,6 +34,6 @@ return {
       },
     })
 
-    vim.keymap.set('n', '-', require('oil').toggle_float, {})
+    vim.keymap.set("n", "-", require("oil").toggle_float, {})
   end,
 }
