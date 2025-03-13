@@ -15,6 +15,9 @@ translate() {
 
 
 
+alias wayon="systemctl --user enable --now waybar.service"
+alias wayoff="systemctl --user disable --now waybar.service"
+alias nh="nvim ~/.config/hypr/hyprland.conf"
 alias matrix="tmatrix -c default -s 50 -f 0.3,0.7 -g 0,45 -G 10,20 --no-fade -t 'OUR LIFE IS THE CREATION OF OUR MIND' -C blue"
 alias n="nvim"
 alias cl='clear'

@@ -17,8 +17,8 @@ return {
       workspaces = {
         {
           name = "obsidian",
-          -- path = '~/git/obsidian',
-          path = "/mnt/c/users/Сергей/obsidian",
+          path = "~/git/obsidian",
+          -- path = "/mnt/c/users/Сергей/obsidian",
         },
       },
       daily_notes = {
