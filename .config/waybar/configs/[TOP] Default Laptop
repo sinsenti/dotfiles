@@ -1,0 +1,57 @@
+/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
+
+// ### DEFAULT Laptop  - Top ### //
+{
+"include": [
+  "$HOME/.config/waybar/Modules",
+  "$HOME/.config/waybar/ModulesWorkspaces",
+  "$HOME/.config/waybar/ModulesCustom",
+  "$HOME/.config/waybar/ModulesGroups",
+  "$HOME/.config/waybar/UserModules",
+  ],
+"layer": "top",
+//"mode": "dock",
+"exclusive": true,
+"passthrough": false,
+"position": "top",
+"spacing": 3,
+"fixed-center": true,
+"ipc": true,
+"margin-top": 3,
+"margin-left": 8,
+"margin-right": 8,
+
+"modules-left": [
+  "custom/arch",
+	"hyprland/workspaces#rw",
+	"custom/separator#blank",
+	"custom/separator#blank",
+	"custom/separator#blank",
+	"hyprland/window",
+	],
+
+"modules-center": [
+  "hyprland/language",
+	"clock",
+	"group/notify",
+	"custom/separator#blank",
+	],
+
+"modules-right": [
+	"idle_inhibitor",	
+	"custom/separator#blank",
+	//"group/laptop",
+  "cpu",
+	"group/mobo_drawer",
+	"custom/separator#dot-line",  
+	"group/audio",
+	"battery",
+	"group/status",
+	],
+// Additional / Edited Waybar Modules //
+"custom/arch": {
+      "format":" ",
+      "tooltip": false,
+      "on-click": "rofi -show drun"
+},
+}

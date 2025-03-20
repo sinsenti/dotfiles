@@ -4,6 +4,7 @@ export TERM=xterm-256color
 export TERMINAL=/usr/bin/alacritty
 
 bindkey '^p' autosuggest-accept
+# bindkey '^M' autosuggest-accept
 alias ni='nvim ~/.config/i3/config'
 alias na='nvim ~/.config/alacritty/alacritty.toml'
 alias top='bpytop'
