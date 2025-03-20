@@ -1,10 +1,6 @@
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  -- { "snacks.nvim", enabled = false },
-  -- { "echasnovski/mini.animate", enabled = false },
-  -- require("bufferline").setup({
-  --   options = {
-  --     show_bufferline = false, -- Hide the bufferline
-  --   },
-  -- }),
+  { "iamcco/markdown-preview.nvim", enabled = true },
+  { "MeanderingProgrammer/render-markdown.nvim", enabled = true },
+  -- { "saghen/blink.nvim", enabled = false },
 }

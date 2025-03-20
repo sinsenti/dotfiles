@@ -5,6 +5,7 @@ return {
   -- ft = 'markdown',
   dependencies = {
     "nvim-lua/plenary.nvim",
+    "ibhagwan/fzf-lua",
     "hrsh7th/nvim-cmp",
     "nvim-treesitter",
   },
@@ -17,7 +18,7 @@ return {
       workspaces = {
         {
           name = "obsidian",
-          path = "~/git/obsidian",
+          path = "/home/sinsenti/git/obsidian",
           -- path = "/mnt/c/users/Сергей/obsidian",
         },
       },
@@ -26,7 +27,7 @@ return {
         default_tags = { "daily-notes" },
       },
       templates = {
-        folder = "Templates",
+        folder = "/home/sinsenti/git/obsidian/Templates",
         date_format = "%d-%m-%y",
         time_format = "%H:%M",
       },
