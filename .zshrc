@@ -5,11 +5,11 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
-alias copyall="~/dotfiles/.config/scripts/copy_for_help.sh"
+alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
 alias run="~/dotfiles/.config/scripts/run_scripts.sh"
-alias TT="~/scripts/toggle_noblur.sh"
-alias layout="watch -n 0.5 /home/sinsenti/scripts/switch_keyboard.sh"
+alias TT="~/dotfiles/.config/scripts/toggle_noblur.sh"
+alias layout="watch -n 0.5 ~/dotfiles/.config/scripts/switch_keyboard.sh"
 alias n="nvim"
 alias cl='clear'
 alias nz="nvim ~/.zshrc"
