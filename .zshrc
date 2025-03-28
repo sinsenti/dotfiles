@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias gbv="git branch --verbose"
 alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
 alias run="~/dotfiles/.config/scripts/run_scripts.sh"
