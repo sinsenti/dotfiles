@@ -1,31 +1,18 @@
-plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux)
+plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose)
 
 export TERM=xterm-256color
-export TERMINAL=/usr/bin/alacritty
+export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
-# bindkey '^M' autosuggest-accept
-alias ni='nvim ~/.config/i3/config'
-alias na='nvim ~/.config/alacritty/alacritty.toml'
-alias top='bpytop'
 
-
-source <(fzf --zsh)
-
-HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
-setopt appendhistory
-
-
-alias wayon="systemctl --user enable --now waybar.service"
-alias wayoff="systemctl --user disable --now waybar.service"
-alias nh="nvim ~/.config/hypr/hyprland.conf"
-alias matrix="tmatrix -c default -s 50 -f 0.3,0.7 -g 0,45 -G 10,20 --no-fade -t 'OUR LIFE IS THE CREATION OF OUR MIND' -C blue"
+alias copyall="~/scripts/copy_for_help.sh"
+alias gitpush="~/scripts/git_push.sh"
+alias run="~/scripts/run_scripts.sh"
+alias TT="~/scripts/toggle_noblur.sh"
+alias layout="watch -n 0.5 /home/sinsenti/scripts/switch_keyboard.sh"
 alias n="nvim"
 alias cl='clear'
 alias nz="nvim ~/.zshrc"
-alias ns="nvim -S"
 alias sz="source ~/.zshrc"
 alias e="exit"
 alias q="exit"
@@ -37,6 +24,17 @@ alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
 alias tree0='exa --tree --header --icons -a'
 alias ffg='find_preview'
 alias nt='nvim ~/.tmux.conf'
+
+
+
+source <(fzf --zsh)
+
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
+
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -74,6 +72,4 @@ source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 echo -ne '\e[5 q'
-
-
 
