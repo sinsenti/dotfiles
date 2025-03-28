@@ -5,9 +5,9 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
-alias copyall="~/scripts/copy_for_help.sh"
-alias gitpush="~/scripts/git_push.sh"
-alias run="~/scripts/run_scripts.sh"
+alias copyall="~/dotfiles/.config/scripts/copy_for_help.sh"
+alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
+alias run="~/dotfiles/.config/scripts/run_scripts.sh"
 alias TT="~/scripts/toggle_noblur.sh"
 alias layout="watch -n 0.5 /home/sinsenti/scripts/switch_keyboard.sh"
 alias n="nvim"
