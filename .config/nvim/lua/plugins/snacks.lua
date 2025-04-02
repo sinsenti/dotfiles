@@ -27,6 +27,14 @@ return {
           hidden = true, -- Always show hidden files
         },
       },
+      indent = {
+        enabled = false,
+      },
+      -- zen = {
+      --   signcolumn = "no", -- disable signcolumn
+      --   number = false, -- disable number column
+      --   relativenumber = false, -- disable relative numbers
+      -- },
     },
   -- stylua: ignore
   keys = {

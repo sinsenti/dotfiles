@@ -36,8 +36,8 @@ case $DIRECTION in
   TARGET_LANG=$ENGLISH
   ;;
 *)
-  echo "Invalid direction selected."
-  exit 1
+  SOURCE_LANG=$ENGLISH
+  TARGET_LANG=$RUSSIAN
   ;;
 esac
 

@@ -8,7 +8,7 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
--- vim.keymap.set("n", "<leader>z", "<leader>uZ", a("toggle zoom mode"))
+vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
 vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
 vim.keymap.set("n", "<c-h>", ":TmuxNavigateLeft<CR>", opts)
