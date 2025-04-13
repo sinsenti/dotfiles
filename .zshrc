@@ -6,6 +6,7 @@ export TERMINAL=/usr/bin/kitty
 bindkey '^p' autosuggest-accept
 
 alias gbv="git branch --verbose"
+alias smartcopy="python /home/sinsenti/dotfiles/.config/scripts/backup_code.py"
 alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
 alias run="~/dotfiles/.config/scripts/run_scripts.sh"
@@ -74,3 +75,7 @@ source $ZSH/oh-my-zsh.sh
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 echo -ne '\e[5 q'
 
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
