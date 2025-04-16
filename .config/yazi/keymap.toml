@@ -126,11 +126,11 @@ keymap = [
 	{ on = [ "g", "h" ],       run = "cd ~",             desc = "Go to home" },
 	{ on = [ "g", "y" ],       run = "cd /home/sinsenti/.config/yazi", desc = "Go to  yazi" },
 	{ on = [ "g", "." ],       run = "cd /",             desc = "Go to /" },
-	{ on = [ "g", "d" ],       run = "cd ~/dotfiles",             desc = "Go to dotfiles" },
-	{ on = [ "g", "p" ],       run = "cd /mnt/c/users/Сергей/projects",             desc = "Go to projects" },
-	{ on = [ "g", "o" ],       run = "cd /mnt/c/users/Сергей/obsidian",             desc = "Go to obsidian" },
+	{ on = [ "g", "d" ],       run = "cd ~/Downloads/",             desc = "Go to Downloads" },
+	{ on = [ "g", "p" ],       run = "cd ~/git",             desc = "Go to projects" },
+	{ on = [ "g", "o" ],       run = "cd ~/git/obsidian/",             desc = "Go to obsidian" },
 	{ on = [ "g", "n" ],       run = "cd /home/sinsenti/.config/nvim",     desc = "Goto nvim config" },
-	{ on = [ "g", "c" ],       run = "cd ~/.config",     desc = "Goto ~/.config" },
+	{ on = [ "g", "c" ],       run = "cd ~/dotfiles/",     desc = "Goto ~/dotfiles/" },
 	{ on = [ "g", "<Space>" ], run = "cd --interactive", desc = "Jump interactively" },
 
 	# Tabs

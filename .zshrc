@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
 alias smartcopy="python /home/sinsenti/dotfiles/.config/scripts/backup_code.py"
 alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
