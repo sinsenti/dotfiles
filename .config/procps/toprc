@@ -28,4 +28,4 @@ Usr	fieldscur=  75   77   79   81   85   97  115  111  117  137  139   82   86  
 		   234  236  238  240  242  244  246  248  250  252  254  256  258  260  262  264  266  268  270  272 
 	winflags=193844, sortindx=3, maxtasks=0, graph_cpus=0, graph_mems=0, double_up=0, combine_cpus=0, core_types=0
 	summclr=3, msgsclr=3, headclr=2, taskclr=-1, task_xy=3
-Fixed_widest=0, Summ_mscale=1, Task_mscale=0, Zero_suppress=0, Tics_scaled=0
+Fixed_widest=0, Summ_mscale=1, Task_mscale=1, Zero_suppress=0, Tics_scaled=0
