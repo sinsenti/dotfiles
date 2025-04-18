@@ -7,6 +7,7 @@ bindkey '^p' autosuggest-accept
 
 alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
+alias soliditycopy="python /home/sinsenti/dotfiles/.config/scripts/backup_solidity_project.py"
 alias smartcopy="python /home/sinsenti/dotfiles/.config/scripts/backup_code.py"
 alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
