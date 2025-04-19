@@ -3,8 +3,8 @@ import subprocess
 import sys
 
 # --- Configuration ---
-# List of directories and files to skip relative to the project root
-SKIP_LIST = [
+# List of paths to skip relative to the directory argument
+SKIP_LIST = {  # Using a set for faster lookups
     "node_modules",
     ".env",
     "cache",
@@ -15,69 +15,66 @@ SKIP_LIST = [
     "coverage.json",
     "ignition/deployments/chain-31337",
     ".gitignore",
-]
-
-
-def should_skip(relative_path, backup_filename="backup_code.txt"):
-    """
-    Checks if a path should be skipped based on the SKIP_LIST.
-    Handles both files and directories.
-    """
-    # Normalize path to use forward slashes and remove leading/trailing slashes for consistent matching
-    normalized_path = relative_path.replace("\\", "/").strip("/")
-
-    # Always skip the backup file itself
-    if normalized_path == backup_filename:
-        return True
-
-    for skip_item in SKIP_LIST:
-        normalized_skip_item = skip_item.replace("\\", "/").strip("/")
-        # Check if the path is the skip item or starts with the skip item followed by a slash
-        if normalized_path == normalized_skip_item or normalized_path.startswith(
-            normalized_skip_item + "/"
-        ):
-            return True
-    return False
+    "backup_code.txt",  # Added the backup file itself to the skip list
+}
 
 
 # --- Recursive function to copy code files ---
-def copy_code_to_backup(directory, backup_file_stream, project_root):
+def copy_code_to_backup(directory, backup_file):
     """
     Recursively copies all non-skipped files from the given directory to the backup file stream.
+    Skips directories and files specified in the SKIP_LIST.
     """
-    # Walk through the directory
-    # topdown=True allows us to modify the 'dirs' list in place to skip subdirectories
+    abs_skip_dirs = {
+        os.path.join(os.path.abspath(directory), skip_path)
+        for skip_path in SKIP_LIST
+        if not os.path.splitext(skip_path)[1]
+    }  # Only add directories
+
     for root, dirs, files in os.walk(directory, topdown=True):
         # Calculate the relative path of the current directory
-        relative_root = os.path.relpath(root, project_root)
+        relative_root_path = os.path.relpath(root, directory)
 
         # Check if the current directory should be skipped
-        if should_skip(relative_root):
-            print(f"Skipping directory: {relative_root}")
+        # We check both the relative path and if it's a subdirectory of a skipped path
+        should_skip_dir = False
+        if relative_root_path in SKIP_LIST and relative_root_path != ".":
+            should_skip_dir = True
+        # Also check if the current directory's absolute path starts with a skipped absolute directory path
+        elif any(
+            os.path.abspath(root).startswith(abs_skip_dir)
+            for abs_skip_dir in abs_skip_dirs
+        ):
+            should_skip_dir = True
+
+        if should_skip_dir:
+            if (
+                relative_root_path != "."
+            ):  # Don't print skipping the starting directory itself
+                print(f"Skipping directory: {relative_root_path}")
             dirs.clear()  # Skip all subdirectories of this directory
             continue
 
-        # Filter out directories that should be skipped from the 'dirs' list
-        # This prevents os.walk from entering them
-        dirs[:] = [d for d in dirs if not should_skip(os.path.join(relative_root, d))]
-
         # Process files in the current directory
         for file in files:
-            file_path = os.path.join(root, file)
-            relative_file_path = os.path.relpath(file_path, project_root)
+            relative_file_path = os.path.join(relative_root_path, file)
 
-            # Check if the current file should be skipped
-            if should_skip(relative_file_path):
+            # Check if the file should be skipped
+            if relative_file_path in SKIP_LIST:
                 print(f"Skipping file: {relative_file_path}")
                 continue
+
+            file_path = os.path.join(
+                root, file
+            )  # Get the full file path here for opening
 
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
                 # Write the file's content to the backup file
-                backup_file_stream.write(f"--- File: {relative_file_path} ---\n")
-                backup_file_stream.write(content)
-                backup_file_stream.write("\n\n")  # Add some spacing between files
+                backup_file.write(f"--- File: {relative_file_path} ---\n")
+                backup_file.write(content)
+                backup_file.write("\n\n")  # Add some spacing between files
                 print(f"Copied: {relative_file_path}")
             except Exception as e:
                 print(f"Error reading {relative_file_path}: {e}", file=sys.stderr)
@@ -85,12 +82,13 @@ def copy_code_to_backup(directory, backup_file_stream, project_root):
 
 # --- Main function ---
 def main():
-    project_root = os.getcwd()
+    directory = os.getcwd()
     backup_filename = "backup_code.txt"
     try:
         with open(backup_filename, "w", encoding="utf-8") as backup_file:
-            print(f"Creating backup of code files in '{project_root}'...")
-            copy_code_to_backup(project_root, backup_file, project_root)
+            print(f"Creating backup of code files in '{directory}'...")
+            # Pass the directory to the function
+            copy_code_to_backup(directory, backup_file)
     except Exception as e:
         print(f"Error creating backup file: {e}", file=sys.stderr)
         return  # Exit if backup file creation/writing fails
@@ -103,17 +101,27 @@ def main():
     try:
         with open(backup_filename, "r", encoding="utf-8") as f:
             content = f.read()
-            subprocess.run(["wl-copy"], input=content.encode("utf-8"))
+            # Use a more portable way to copy to clipboard if wl-copy fails
+            try:
+                subprocess.run(["wl-copy"], input=content.encode("utf-8"), check=True)
+            except Exception as e:
+                print(f"Error copying to clipboard with wl-copy: {e}", file=sys.stderr)
+
         print("Backup content copied to clipboard.")
+    except FileNotFoundError:
+        print(
+            "Backup file not found after creation, cannot copy to clipboard.",
+            file=sys.stderr,
+        )
     except Exception as e:
-        print(f"Error copying to clipboard: {e}")
+        print(f"Error reading backup file for clipboard copy: {e}", file=sys.stderr)
 
     # Delete the backup file regardless of clipboard copy success or interruption
     try:
         os.remove(backup_filename)
         print(f"Deleted backup file: {backup_filename}")
     except Exception as e:
-        print(f"Error deleting backup file: {e}")
+        print(f"Error deleting backup file: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

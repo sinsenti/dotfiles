@@ -1,56 +1,50 @@
 #!/bin/bash
 
-# Define the target languages
-RUSSIAN="ru"
-ENGLISH="en"
-SPANISH="es"
+INPUT=$(rofi -dmenu -p "Format: LANG->LANG:text")
+if [ -z "$INPUT" ]; then exit 0; fi
 
-# Prompt the user to select the translation direction via Rofi
-DIRECTION=$(echo -e "en->ru\nru->en\nen->es\nru->es\nsp->en" | rofi -dmenu -p "Select Translation Direction:")
+# DIRECTION=$(echo "$INPUT" | cut -d: -f1)
+# TEXT=$(echo "$INPUT" | cut -d: -f2-)
+DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
+TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 
-# Exit if no input is provided
-if [ -z "$DIRECTION" ]; then
-  exit 0
-fi
-
-# Determine source and target languages based on the selected direction
 case $DIRECTION in
-"en->ru")
-  SOURCE_LANG=$ENGLISH
-  TARGET_LANG=$RUSSIAN
+"en,ru")
+  SOURCE_LANG="en"
+  TARGET_LANG="ru"
   ;;
-"ru->en")
-  SOURCE_LANG=$RUSSIAN
-  TARGET_LANG=$ENGLISH
+"ru,en")
+  SOURCE_LANG="ru"
+  TARGET_LANG="en"
   ;;
-"en->es")
-  SOURCE_LANG=$ENGLISH
-  TARGET_LANG=$SPANISH
+"ru")
+  SOURCE_LANG="ru"
+  TARGET_LANG="en"
   ;;
-"ru->es")
-  SOURCE_LANG=$RUSSIAN
-  TARGET_LANG=$SPANISH
+"кг")
+  SOURCE_LANG="ru"
+  TARGET_LANG="en"
   ;;
-"es->en")
-  SOURCE_LANG=$SPANISH
-  TARGET_LANG=$ENGLISH
+"en,es")
+  SOURCE_LANG="en"
+  TARGET_LANG="es"
+  ;;
+"ru,es")
+  SOURCE_LANG="ru"
+  TARGET_LANG="es"
+  ;;
+"es,en")
+  SOURCE_LANG="es"
+  TARGET_LANG="en"
   ;;
 *)
-  SOURCE_LANG=$ENGLISH
-  TARGET_LANG=$RUSSIAN
+  SOURCE_LANG="en"
+  TARGET_LANG="ru"
   ;;
 esac
 
-# Prompt the user to input text via Rofi
-TEXT=$(echo "" | rofi -dmenu -p "Enter text to translate:")
-
-# Exit if no input is provided
-if [ -z "$TEXT" ]; then
-  exit 0
-fi
-
-# Use translate-shell to perform the translation
 TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-
-# echo "$TRANSLATION"
-echo -e "$TRANSLATION" | rofi -dmenu -p "Translation:" | wl-copy
+CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+if [ "$CHOICE" = "Copy" ]; then
+  echo -n "$TRANSLATION" | wl-copy
+fi
