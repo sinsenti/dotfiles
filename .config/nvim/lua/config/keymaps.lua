@@ -12,10 +12,10 @@ vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp commen
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
 vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
-vim.keymap.set("n", "<c-h>", ":TmuxNavigateLeft<CR>", opts)
-vim.keymap.set("n", "<c-l>", ":TmuxNavigateRight<CR>", opts)
-vim.keymap.set("n", "<c-j>", ":TmuxNavigateDown<CR>", opts)
-vim.keymap.set("n", "<c-k>", ":TmuxNavigateUp<CR>", opts)
+vim.keymap.set("n", "<c-h>", ":w<CR>:TmuxNavigateLeft<CR>", opts)
+vim.keymap.set("n", "<c-l>", ":w<CR>:TmuxNavigateRight<CR>", opts)
+vim.keymap.set("n", "<c-j>", ":w<CR>:TmuxNavigateDown<CR>", opts)
+vim.keymap.set("n", "<c-k>", ":w<CR>:TmuxNavigateUp<CR>", opts)
 
 vim.keymap.set("n", "<leader>-", ":Oil<CR>", opts)
 
