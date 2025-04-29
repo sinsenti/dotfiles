@@ -5,6 +5,8 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias pm="python main.py"
+alias pcd="python /home/sinsenti/dotfiles/.config/scripts/create_python_dir_with_main.py"
 alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
 alias soliditycopy="python /home/sinsenti/dotfiles/.config/scripts/backup_solidity_project.py"

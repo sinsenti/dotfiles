@@ -8,7 +8,8 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
-vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp comments"))
+vim.keymap.set("n", "<F5>", require("dap").step_into)
+-- vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp comments"))
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
 vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
@@ -93,9 +94,13 @@ vim.keymap.set("n", "<leader>DD", function()
   end, 100)
 end, opts)
 
--- vim.keymap.set("n", "<leader>md", function()
---   vim.cmd("ZenMode")
---   -- vim.cmd('set spell!')
---   vim.cmd("PencilSoft")
---   vim.cmd("Twilight")
--- end, { desc = "Toggle Zenmode and pensil" })
+vim.keymap.set("n", "<leader>oc", function()
+  local ft = vim.bo.filetype
+  if ft == "python" then
+    vim.cmd([[g/^\s*#/d]])
+    vim.cmd([[%s/#.*//]])
+  elseif vim.tbl_contains({ "c", "cpp", "cs", "javascript", "go" }, ft) then
+    vim.cmd([[g@^\s*//@d]])
+    vim.cmd([[%s@//.*@@]])
+  end
+end, opts)
