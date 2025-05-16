@@ -8,6 +8,29 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
+vim.keymap.set("n", "<leader>t", function()
+  local current_dir = vim.fn.expand("%:p:h")
+  if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
+    current_dir = vim.fn.getcwd()
+  end
+
+  local in_terminal = vim.bo.buftype == "terminal"
+
+  if in_terminal then
+    vim.cmd("hide")
+  else
+    require("snacks").terminal("zsh", {
+      cwd = current_dir,
+      env = { TERM = "x-256color" },
+      win = {
+        style = "terminal",
+        relative = "editor",
+        -- height = 0.83,
+        height = 0.83,
+      },
+    })
+  end
+end, { desc = "Toggle Fish Terminal" })
 vim.keymap.set("n", "<F5>", require("dap").step_into)
 -- vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp comments"))
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
@@ -28,7 +51,6 @@ vim.keymap.set("i", "<c-a>", "<Esc>mpggyG'p:delmarks p<cr>", opts)
 vim.keymap.set("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
 vim.keymap.set("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
 vim.keymap.set("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
-vim.keymap.set("n", "<leader>mt", ":source Session.vim<cr>", a("Toggle Session"))
 
 -- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", opts)
 vim.keymap.set("n", "<leader>gg", ":Neogit cwd=%:p:h<cr>", opts)
@@ -61,7 +83,7 @@ vim.keymap.set("i", "Jk", "<Esc>", opts)
 vim.keymap.set("i", "JK", "<Esc>", opts)
 vim.keymap.set("n", "ss", ":vsplit<Return>", opts)
 vim.keymap.set("n", "sv", ":split<Return>", opts)
-vim.keymap.set("n", "te", ":tabedit<cr>", opts)
+-- vim.keymap.set("n", "te", ":tabedit<cr>", opts)
 -- vim.keymap.set('n', '<tab>', ':tabnext<Return>', opts)
 -- vim.keymap.set('n', '<s-tab>', ':tabprev<Return>', opts)
 
