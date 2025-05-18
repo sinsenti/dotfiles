@@ -8,29 +8,6 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
-vim.keymap.set("n", "<leader>t", function()
-  local current_dir = vim.fn.expand("%:p:h")
-  if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
-    current_dir = vim.fn.getcwd()
-  end
-
-  local in_terminal = vim.bo.buftype == "terminal"
-
-  if in_terminal then
-    vim.cmd("hide")
-  else
-    require("snacks").terminal("zsh", {
-      cwd = current_dir,
-      env = { TERM = "x-256color" },
-      win = {
-        style = "terminal",
-        relative = "editor",
-        -- height = 0.83,
-        height = 0.83,
-      },
-    })
-  end
-end, { desc = "Toggle Fish Terminal" })
 vim.keymap.set("n", "<F5>", require("dap").step_into)
 -- vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp comments"))
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
@@ -104,6 +81,33 @@ vim.keymap.set("n", "<leader>cp", function()
   print("Copied file path to clipboard: " .. filepath)
 end, { desc = "Copy file path to clipboard with forward slashes and escaped spaces" })
 
+vim.keymap.set("n", "<leader>t", function()
+  -- vim.cmd("w")
+  local current_dir = vim.fn.expand("%:p:h")
+  if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
+    current_dir = vim.fn.getcwd()
+  end
+
+  local in_terminal = vim.bo.buftype == "terminal"
+  local current_file = vim.fn.expand("%:t")
+  local command = "python " .. current_file
+  vim.fn.setreg("+", command) -- '+' is the system clipboard register
+
+  if in_terminal then
+    vim.cmd("hide")
+  else
+    require("snacks").terminal("zsh", {
+      cwd = current_dir,
+      env = { TERM = "x-256color" },
+      win = {
+        style = "terminal",
+        relative = "editor",
+        -- height = 0.83,
+        height = 0.83,
+      },
+    })
+  end
+end, { desc = "Toggle Terminal" })
 vim.keymap.set("n", "<leader>DD", function()
   vim.cmd("w")
   local path = vim.fn.expand("%:p:r")
