@@ -14,8 +14,16 @@ fi
 # Stage all changes
 git add .
 
+# Show all staged files (files that will be committed)
+echo "Files staged for commit:"
+git diff --cached --name-only
+
 # Commit changes with the chosen message
 git commit -m "$commit_message"
+
+# Show files changed in this commit (optional)
+echo "Files changed in this commit:"
+git show --name-only --pretty="" HEAD
 
 # Get the current branch name
 current_branch=$(git rev-parse --abbrev-ref HEAD)
