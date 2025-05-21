@@ -29,16 +29,8 @@ vim.keymap.set("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
 vim.keymap.set("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
 vim.keymap.set("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
 
--- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", opts)
 vim.keymap.set("n", "<leader>gg", ":Neogit cwd=%:p:h<cr>", opts)
--- vim.keymap.set("n", "<leader>gc", ":Neogit commit<cr>", opts)
--- vim.keymap.set("n", "<leader>gp", ":Neogit pull<cr>", opts)
--- vim.keymap.set("n", "<leader>gP", ":Neogit push<cr>", opts)
 vim.keymap.set("n", "<leader>ga", ":Git add .<cr>", opts)
--- vim.keymap.set('n', '<leader>gb', ':Telescope git_branches<cr>', opts)
--- vim.keymap.set('n', '<leader>gB', ':G blame<cr>', opts)
--- vim.keymap.set('n', '<leader>gg', ':Git ', { desc = 'Git' })
---
 -- vim.keymap.set('n', '<leader>e', ':GoIfErr<cr>', opts)
 
 vim.api.nvim_set_keymap("n", "tw", ":Twilight<cr>", opts)
@@ -60,9 +52,6 @@ vim.keymap.set("i", "Jk", "<Esc>", opts)
 vim.keymap.set("i", "JK", "<Esc>", opts)
 vim.keymap.set("n", "ss", ":vsplit<Return>", opts)
 vim.keymap.set("n", "sv", ":split<Return>", opts)
--- vim.keymap.set("n", "te", ":tabedit<cr>", opts)
--- vim.keymap.set('n', '<tab>', ':tabnext<Return>', opts)
--- vim.keymap.set('n', '<s-tab>', ':tabprev<Return>', opts)
 
 vim.api.nvim_create_user_command("DeleteFile", function()
   vim.cmd("w")
@@ -118,15 +107,4 @@ vim.keymap.set("n", "<leader>DD", function()
   vim.defer_fn(function()
     vim.api.nvim_put({ command }, "l", true, true)
   end, 100)
-end, opts)
-
-vim.keymap.set("n", "<leader>oc", function()
-  local ft = vim.bo.filetype
-  if ft == "python" then
-    vim.cmd([[g/^\s*#/d]])
-    vim.cmd([[%s/#.*//]])
-  elseif vim.tbl_contains({ "c", "cpp", "cs", "javascript", "go" }, ft) then
-    vim.cmd([[g@^\s*//@d]])
-    vim.cmd([[%s@//.*@@]])
-  end
 end, opts)

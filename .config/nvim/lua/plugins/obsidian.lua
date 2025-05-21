@@ -13,8 +13,13 @@ return {
     require("obsidian").setup({
       -- disable_frontmatter = false,
       --to open obsidian by :ObsdianOpen
-      -- use_advanced_uri=true,
+      -- use_advanced_uri = true,
       open_app_foreground = true,
+      follow_url_func = function(url)
+        -- Open the URL in the default web browser on Linux
+        vim.fn.jobstart({ "xdg-open", url })
+      end,
+
       workspaces = {
         {
           name = "obsidian",

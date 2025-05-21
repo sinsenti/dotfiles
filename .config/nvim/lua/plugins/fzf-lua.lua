@@ -178,8 +178,10 @@ return {
     -- find
     { "<leader>fb", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
     { "<leader>fc", LazyVim.pick.config_files(), desc = "Find Config File" },
-    { "<leader>ff", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
-    { "<leader>FF", LazyVim.pick("files", { cwd = "." }), desc = "Find Files (cwd)" },
+    -- { "<leader>ff", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+    -- { "<leader>FF", LazyVim.pick("files", { cwd = "." }), desc = "Find Files (cwd)" },
+    { "<leader>FF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+    { "<leader>ff", LazyVim.pick("files", { cwd = "." }), desc = "Find Files (cwd)" },
     { "<leader>fG", "<cmd>FzfLua git_files<cr>", desc = "Find Files (git-files)" },
     { "<leader>fg", "<cmd>FzfLua grep_project<CR>", desc = "Find rg" },
     { "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent" },
