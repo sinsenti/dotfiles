@@ -14,10 +14,6 @@ fi
 # Stage all changes
 git add .
 
-# Show all staged files (files that will be committed)
-echo "Files staged for commit:"
-git diff --cached --name-only
-
 # Commit changes with the chosen message
 git commit -m "$commit_message"
 
