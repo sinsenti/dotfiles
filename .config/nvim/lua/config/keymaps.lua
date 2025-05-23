@@ -7,9 +7,27 @@ local opts = { noremap = true, silent = true }
 local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
+vim.keymap.set("n", "<leader>Fa", function()
+  local codeium_config = require("codeium.config").options.virtual_text
+  codeium_config.manual = not codeium_config.manual
+  if codeium_config.manual then
+    print("Codeium disabled")
+  else
+    print("Codeium enabled")
+  end
+end, { desc = "Toggle Codeium completion" })
 
 vim.keymap.set("n", "<F5>", require("dap").step_into)
--- vim.keymap.set("n", "<leader>oc", [[:%s/\/\/.*//<CR>]], a("delete all cpp comments"))
+vim.keymap.set("n", "<leader>oc", function()
+  local ft = vim.bo.filetype
+  if ft == "python" then
+    vim.cmd([[g/^\s*#/d]])
+    vim.cmd([[%s/#.*//]])
+  elseif vim.tbl_contains({ "c", "cpp", "cs", "javascript", "go" }, ft) then
+    vim.cmd([[g@^\s*//@d]])
+    vim.cmd([[%s@//.*@@]])
+  end
+end, opts)
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
 vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
