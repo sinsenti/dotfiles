@@ -6,7 +6,7 @@ export TERMINAL=/usr/bin/kitty
 bindkey '^p' autosuggest-accept
 
 alias crp="/home/sinsenti/dotfiles/.config/scripts/create-file-and-paste.sh"
-alias pm="python main.py"
+alias pm="python manage.py"
 alias pcd="python /home/sinsenti/dotfiles/.config/scripts/create_python_dir_with_main.py"
 alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
