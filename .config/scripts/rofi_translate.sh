@@ -1,6 +1,11 @@
 #!/bin/bash
 
 INPUT=$(rofi -dmenu -p "Format: LANG,LANG text (or just text for en->ru)")
+
+if [ $? -ne 0 ]; then
+  # User pressed Esc or canceled, exit without translating
+  exit 0
+fi
 if [ -z "$INPUT" ]; then
   INPUT=$(wl-paste)
   if [ -z "$INPUT" ]; then
