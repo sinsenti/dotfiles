@@ -1,7 +1,12 @@
 #!/bin/bash
 
 INPUT=$(rofi -dmenu -p "Format: LANG,LANG text (or just text for en->ru)")
-if [ -z "$INPUT" ]; then exit 0; fi
+if [ -z "$INPUT" ]; then
+  INPUT=$(wl-paste)
+  if [ -z "$INPUT" ]; then
+    exit 0
+  fi
+fi
 
 DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
 TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
