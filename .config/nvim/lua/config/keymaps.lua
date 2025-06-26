@@ -20,10 +20,10 @@ end, { desc = "Toggle Codeium completion" })
 vim.keymap.set("n", "<F5>", require("dap").step_into)
 vim.keymap.set("n", "<leader>oc", function()
   local ft = vim.bo.filetype
-  if ft == "python" then
+  if vim.tbl_contains({ "python", "yaml" }, ft) then
     vim.cmd([[g/^\s*#/d]])
     vim.cmd([[%s/#.*//]])
-  elseif vim.tbl_contains({ "c", "cpp", "cs", "javascript", "go" }, ft) then
+  elseif vim.tbl_contains({ "java", "c", "cpp", "cs", "javascript", "go" }, ft) then
     vim.cmd([[g@^\s*//@d]])
     vim.cmd([[%s@//.*@@]])
   end
