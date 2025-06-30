@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias jrun="$HOME/dotfiles/.config/scripts/run_all_java_files.sh"
 alias grdl="./gradlew clean build; ./gradlew bootRun"
 alias crp="/home/sinsenti/dotfiles/.config/scripts/create-file-and-paste.sh"
 alias pm="python manage.py"
