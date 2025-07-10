@@ -1,27 +1,42 @@
 #!/bin/bash
 
-# Compile all Java files in the current directory
-echo "Compiling all Java files..."
-javac *.java
-
-if [ $? -ne 0 ]; then
-  echo "Compilation failed. Exiting."
-  exit 1
-fi
-
 if [ $# -eq 1 ]; then
-  # If a class name is provided as an argument, run only that class
+  # Compile only the specified Java file
+  filename="$1.java"
+  if [ ! -f "$filename" ]; then
+    echo "File $filename does not exist. Exiting."
+    exit 1
+  fi
+
+  echo "Compiling $filename..."
+  javac "$filename"
+
+  if [ $? -ne 0 ]; then
+    echo "Compilation failed. Exiting."
+    exit 1
+  fi
+
   classname="$1"
   echo "Running $classname..."
   java "$classname"
-  echo "----------------------------"
+  echo -e "\n----------------------------"
+
 else
-  # If no argument, run all classes
+  # Compile all Java files
+  echo "Compiling all Java files..."
+  javac *.java
+
+  if [ $? -ne 0 ]; then
+    echo "Compilation failed. Exiting."
+    exit 1
+  fi
+
+  # Run all classes
   for file in *.java; do
     classname="${file%.java}"
     echo "Running $classname..."
     java "$classname"
-    echo "----------------------------"
+    echo -e "\n----------------------------"
   done
 fi
 
