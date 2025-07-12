@@ -28,6 +28,11 @@ vim.keymap.set("n", "<leader>oc", function()
     vim.cmd([[%s@//.*@@]])
   end
 end, opts)
+
+vim.keymap.set("n", "<leader>ri", ":MagmaInit python3<CR>", {})
+vim.keymap.set("n", "<leader>rr", ":MagmaEvaluateLine<CR>", {})
+vim.keymap.set("v", "<leader>rr", ":MagmaEvaluateVisual<CR>", {})
+
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
 vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
