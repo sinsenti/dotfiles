@@ -29,9 +29,20 @@ vim.keymap.set("n", "<leader>oc", function()
   end
 end, opts)
 
-vim.keymap.set("n", "<leader>ri", ":MagmaInit python3<CR>", {})
-vim.keymap.set("n", "<leader>rr", ":MagmaEvaluateLine<CR>", {})
-vim.keymap.set("v", "<leader>rr", ":MagmaEvaluateVisual<CR>", {})
+vim.keymap.set("n", "<leader>re", ":MoltenEvaluateOperator<CR>", { desc = "evaluate operator", silent = true })
+vim.keymap.set("n", "<leader>ro", ":noautocmd MoltenEnterOutput<CR>", { desc = "open output window", silent = true })
+vim.keymap.set("n", "<leader>rr", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
+vim.keymap.set(
+  "v",
+  "<leader>r",
+  ":<C-u>MoltenEvaluateVisual<CR>gv",
+  { desc = "execute visual selection", silent = true }
+)
+vim.keymap.set("n", "<leader>rh", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
+vim.keymap.set("n", "<leader>dd", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+
+-- if you work with html outputs:
+vim.keymap.set("n", "<leader>mx", ":MoltenOpenInBrowser<CR>", { desc = "open output in browser", silent = true })
 
 vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
 vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
