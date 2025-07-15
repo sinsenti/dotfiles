@@ -63,16 +63,11 @@ vim.keymap.set("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
 vim.keymap.set("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
 vim.keymap.set("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
 
-vim.keymap.set("n", "<leader>gg", ":Neogit cwd=%:p:h<cr>", opts)
-vim.keymap.set("n", "<leader>ga", ":Git add .<cr>", opts)
--- vim.keymap.set('n', '<leader>e', ':GoIfErr<cr>', opts)
-
 vim.api.nvim_set_keymap("n", "tw", ":Twilight<cr>", opts)
 vim.api.nvim_set_keymap("n", "QQ", ":q<cr>", opts)
 vim.api.nvim_set_keymap("n", "WW", ":w<cr>", opts)
 vim.api.nvim_set_keymap("n", "WQ", ":wqa<cr>", opts)
 vim.api.nvim_set_keymap("n", "<c-s>", ":w<cr>", opts)
-vim.api.nvim_set_keymap("n", "TT", ":TransparentToggle<cr>", opts)
 vim.api.nvim_set_keymap("n", "E", "$", opts)
 vim.api.nvim_set_keymap("n", "B", "^", opts)
 vim.keymap.set("n", "<Up>", ":resize -2<cr>", opts)
@@ -105,17 +100,14 @@ vim.keymap.set("n", "<leader>cp", function()
 end, { desc = "Copy file path to clipboard with forward slashes and escaped spaces" })
 
 vim.keymap.set("n", "<leader>t", function()
-  -- vim.cmd("w")
   local current_dir = vim.fn.expand("%:p:h")
   if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
     current_dir = vim.fn.getcwd()
   end
-
   local in_terminal = vim.bo.buftype == "terminal"
   local current_file = vim.fn.expand("%:t")
   local command = "python " .. current_file
   vim.fn.setreg("+", command) -- '+' is the system clipboard register
-
   if in_terminal then
     vim.cmd("hide")
   else
@@ -131,14 +123,3 @@ vim.keymap.set("n", "<leader>t", function()
     })
   end
 end, { desc = "Toggle Terminal" })
-vim.keymap.set("n", "<leader>DD", function()
-  vim.cmd("w")
-  local path = vim.fn.expand("%:p:r")
-  path = vim.fn.substitute(path, "\\", "/", "g")
-  local fileDir = vim.fn.expand("%:p:h")
-  local command = "cd " .. fileDir .. " && " .. "clang++ --debug -o " .. path .. " " .. path .. ".cpp && " .. path
-  vim.api.nvim_input("<C-/>")
-  vim.defer_fn(function()
-    vim.api.nvim_put({ command }, "l", true, true)
-  end, 100)
-end, opts)

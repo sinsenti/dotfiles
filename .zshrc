@@ -5,15 +5,15 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
-alias jrun="$HOME/dotfiles/.config/scripts/run_all_java_files.sh"
+alias gclone="~/dotfiles/.config/scripts/gclone.sh"
+alias jrun="~/dotfiles/.config/scripts/run_all_java_files.sh"
 alias grdl="./gradlew clean build; ./gradlew bootRun"
-alias crp="/home/sinsenti/dotfiles/.config/scripts/create-file-and-paste.sh"
+alias crp="~/dotfiles/.config/scripts/create-file-and-paste.sh"
 alias pm="python manage.py"
-alias pcd="python /home/sinsenti/dotfiles/.config/scripts/create_python_dir_with_main.py"
+alias pcd="python ~/dotfiles/.config/scripts/create_python_dir_with_main.py"
 alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
-alias soliditycopy="python /home/sinsenti/dotfiles/.config/scripts/backup_solidity_project.py"
-alias smartcopy="python /home/sinsenti/dotfiles/.config/scripts/backup_code.py"
+alias smartcopy="python ~/dotfiles/.config/scripts/backup_code.py"
 alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
 alias run="~/dotfiles/.config/scripts/run_scripts.sh"

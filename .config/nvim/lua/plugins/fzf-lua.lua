@@ -113,6 +113,7 @@ return {
           ["alt-i"] = { actions.toggle_ignore },
           ["alt-h"] = { actions.toggle_hidden },
         },
+        fd_opts = "--color=never --type f --strip-cwd-prefix -E venv -E .venv -E .git",
       },
       grep = {
         actions = {
