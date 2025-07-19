@@ -2,6 +2,11 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 -- This file is automatically loaded by plugins.core
+
+-- vim.g.molten_virt_text_output = true
+-- vim.g.molten_virt_lines_off_by_1 = true
+-- vim.g.molten_image_location = "virt"
+vim.g.molten_kernel_name = "python3"
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 

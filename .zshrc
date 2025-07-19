@@ -5,7 +5,9 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias mlvenv="source ~/git/ML/.venv/bin/activate"
 alias gclone="~/dotfiles/.config/scripts/gclone.sh"
+alias gmnoff="git merge --no-ff"
 alias jrun="~/dotfiles/.config/scripts/run_all_java_files.sh"
 alias grdl="./gradlew clean build; ./gradlew bootRun"
 alias crp="~/dotfiles/.config/scripts/create-file-and-paste.sh"
