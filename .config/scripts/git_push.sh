@@ -18,8 +18,8 @@ git add .
 git commit -m "$commit_message"
 
 # Show files changed in this commit (optional)
-echo "Files changed in this commit:"
-git show --name-only --pretty="" HEAD
+# echo "Files changed in this commit:"
+# git show --name-only --pretty="" HEAD
 
 # Get the current branch name
 current_branch=$(git rev-parse --abbrev-ref HEAD)
