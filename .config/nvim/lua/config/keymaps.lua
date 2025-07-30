@@ -13,6 +13,7 @@ vim.keymap.set(
   ":<C-u>MoltenEvaluateVisual<CR>gv",
   { desc = "execute visual selection", silent = true }
 )
+vim.keymap.set("n", "<leader>rh", ":MoltenEvaluateLine<CR>", { desc = "evaluate line", silent = true })
 vim.keymap.set("n", "<leader>rh", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
 vim.keymap.set("n", "<leader>dd", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
 vim.keymap.set("n", "<leader>rx", ":MoltenOpenInBrowser<CR>", { desc = "open output in browser", silent = true })
