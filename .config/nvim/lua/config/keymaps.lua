@@ -4,6 +4,8 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
+vim.keymap.set("n", "<leader>oa", ":ObsidianToggleCheckbox<CR>04la<space><space><space><esc>0", a("Add in obsidian"))
+
 vim.keymap.set("n", "<leader>re", ":MoltenEvaluateOperator<CR>", { desc = "evaluate operator", silent = true })
 vim.keymap.set("n", "<leader>ro", ":noautocmd MoltenEnterOutput<CR>", { desc = "open output window", silent = true })
 vim.keymap.set("n", "<leader>rr", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })

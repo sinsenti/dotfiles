@@ -5,6 +5,8 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias dps="docker ps"
+alias dpsa="docker ps -a"
 alias mlvenv="source ~/git/ML/.venv/bin/activate"
 alias gclone="~/dotfiles/.config/scripts/gclone.sh"
 alias gmnoff="git merge --no-ff"
