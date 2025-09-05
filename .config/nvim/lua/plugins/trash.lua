@@ -6,7 +6,6 @@ return {
     dependencies = { "3rd/image.nvim" },
     build = ":UpdateRemotePlugins",
     init = function()
-      -- these are examples, not defaults. Please see the readme
       vim.g.molten_image_provider = "image.nvim"
       vim.g.molten_output_win_max_height = 20
     end,
@@ -24,22 +23,6 @@ return {
       window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
     },
   },
-  -- {
-  --   "dccsillag/magma-nvim",
-  --   lazy = false,
-  --   run = ":UpdateRemotePlugins",
-  --   -- config = function()
-  --   --   require("magma").setup({
-  --   --     automatically_open_output = true,
-  --   --     output_window_borders = true,
-  --   --     output_window_style = "minimal", -- <--- This fixes the 'style' nil error
-  --   --     image_provider = "none", -- or "kitty" / "ueberzug" if supported
-  --   --     cell_highlight_group = "Visual",
-  --   --     save_path = vim.fn.stdpath("data") .. "/magma",
-  --   --     wrap_output = true,
-  --   --   })
-  --   -- end,
-  -- },
   {
     "aveplen/ruscmd.nvim",
     config = true,

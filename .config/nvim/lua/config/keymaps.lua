@@ -31,7 +31,7 @@ vim.keymap.set("n", "<c-k>", ":TmuxNavigateUp<CR>", opts)
 
 vim.keymap.set("n", "<leader>-", ":Oil<CR>", opts)
 
-vim.keymap.set("t", "jk", "<C-\\><C-n>", opts)
+-- vim.keymap.set("t", "jk", "<C-\\><C-n>", opts)
 vim.keymap.set("n", "<leader>df", ":DeleteFile", {})
 
 vim.keymap.set("i", "<C-h>", "<C-w>", opts)
@@ -52,12 +52,13 @@ vim.keymap.set("n", "<Down>", ":resize +2<cr>", opts)
 vim.keymap.set("n", "<Left>", ":vertical resize -2<cr>", opts)
 vim.keymap.set("n", "<Right>", ":vertical resize +2<cr>", opts)
 vim.keymap.set("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
-vim.keymap.set("i", "jk", "<Esc>", opts)
-vim.keymap.set("i", "ОЛ", "<Esc>", opts)
-vim.keymap.set("i", "Jk", "<Esc>", opts)
-vim.keymap.set("i", "JK", "<Esc>", opts)
+-- vim.keymap.set("i", "jk", "<Esc>", opts)
+-- vim.keymap.set("i", "ОЛ", "<Esc>", opts)
+-- vim.keymap.set("i", "Jk", "<Esc>", opts)
+-- vim.keymap.set("i", "JK", "<Esc>", opts)
 vim.keymap.set("n", "ss", ":vsplit<Return>", opts)
 vim.keymap.set("n", "sv", ":split<Return>", opts)
+vim.keymap.set("n", "<F5>", require("dap").step_into)
 
 vim.keymap.set("n", "<leader>Fa", function()
   local codeium_config = require("codeium.config").options.virtual_text
@@ -68,8 +69,6 @@ vim.keymap.set("n", "<leader>Fa", function()
     print("Codeium enabled")
   end
 end, { desc = "Toggle Codeium completion" })
-
-vim.keymap.set("n", "<F5>", require("dap").step_into)
 vim.keymap.set("n", "<leader>oc", function()
   local ft = vim.bo.filetype
   if vim.tbl_contains({ "python", "yaml" }, ft) then
@@ -97,27 +96,39 @@ vim.keymap.set("n", "<leader>cp", function()
   print("Copied file path to clipboard: " .. filepath)
 end, { desc = "Copy file path to clipboard with forward slashes and escaped spaces" })
 
-vim.keymap.set("n", "<leader>t", function()
-  local current_dir = vim.fn.expand("%:p:h")
-  if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
-    current_dir = vim.fn.getcwd()
-  end
-  local in_terminal = vim.bo.buftype == "terminal"
-  local current_file = vim.fn.expand("%:t")
-  local command = "python " .. current_file
-  vim.fn.setreg("+", command) -- '+' is the system clipboard register
-  if in_terminal then
-    vim.cmd("hide")
-  else
-    require("snacks").terminal("zsh", {
-      cwd = current_dir,
-      env = { TERM = "x-256color" },
-      win = {
-        style = "terminal",
-        relative = "editor",
-        -- height = 0.83,
-        height = 0.83,
-      },
-    })
-  end
-end, { desc = "Toggle Terminal" })
+-- vim.keymap.set("n", "<leader>t", function()
+--   local current_dir = vim.fn.expand("%:p:h")
+--   if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
+--     current_dir = vim.fn.getcwd()
+--   end
+--   local in_terminal = vim.bo.buftype == "terminal"
+--   local current_file = vim.fn.expand("%:t")
+--   local command = "python " .. current_file
+--   vim.fn.setreg("+", command) -- '+' is the system clipboard register
+--   if in_terminal then
+--     vim.cmd("hide")
+--   else
+--     require("snacks").terminal("zsh", {
+--       cwd = current_dir,
+--       env = { TERM = "x-256color" },
+--       win = {
+--         style = "terminal",
+--         relative = "editor",
+--         -- height = 0.83,
+--         height = 0.83,
+--       },
+--     })
+--   end
+-- end, { desc = "Toggle Terminal" })
+
+vim.keymap.set("n", "<leader>DD", function()
+  vim.cmd("w")
+  local path = vim.fn.expand("%:p:r")
+  path = vim.fn.substitute(path, "\\", "/", "g")
+  local fileDir = vim.fn.expand("%:p:h")
+  local command = "cd " .. fileDir .. " && " .. "clang++ --debug -o " .. path .. " " .. path .. ".cpp && " .. path
+  vim.api.nvim_input("<C-/>")
+  vim.defer_fn(function()
+    vim.api.nvim_put({ command }, "l", true, true)
+  end, 100)
+end, opts)

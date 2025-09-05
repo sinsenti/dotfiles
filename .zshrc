@@ -1,4 +1,4 @@
-plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose)
+plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose vi-mode)
 
 export TERM=xterm-256color
 export TERMINAL=/usr/bin/kitty
@@ -84,8 +84,26 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-echo -ne '\e[5 q'
+# echo -ne '\e[5 q'
 
+# Set cursor shape in insert mode: vertical bar
+# function zle-keymap-select {
+#   if [[ ${KEYMAP} == vicmd ]]; then
+#     echo -ne "\e[1 q"  # block cursor in normal mode
+#   else
+#     echo -ne "\e[5 q"  # blinking bar in insert mode
+#   fi
+# }
+#
+# function zle-line-finish {
+#   echo -ne "\e[1 q"    # block cursor on command finish
+# }
+#
+# zle -N zle-keymap-select
+# zle -N zle-line-finish
+#
+# # Initialize cursor shape
+# echo -ne "\e[5 q"
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
