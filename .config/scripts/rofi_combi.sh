@@ -4,10 +4,13 @@ DIR1="$HOME/dotfiles/.config/scripts"
 DIR2="$HOME/.config/hypr/UserScripts"
 DIR3="$HOME/.config/hypr/scripts"
 
-echo -e "calculator\ntranslator\nemoji\nshutdown\nsuspend\nsearch\nwallpaper\ndownloads\ngit" |
+echo -e "music\ncalculator\ntranslator\nemoji\nshutdown\nsuspend\nsearch\nwallpaper\ndownloads\ngit" |
   rofi -i -dmenu -p "Select:" |
   while read -r choice; do
     case "$choice" in
+    music)
+      bash $DIR1/my_music.sh
+      ;;
     translator)
       bash $DIR1/rofi_translate.sh
       ;;
