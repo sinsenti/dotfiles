@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias gs="git status"
 alias dps="docker ps"
 alias dpsa="docker ps -a"
 alias mlvenv="source ~/git/ML/.venv/bin/activate"

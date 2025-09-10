@@ -1,6 +1,5 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.codeium",
     "lazyvim.plugins.extras.coding.mini-surround",
     "lazyvim.plugins.extras.coding.neogen",
     "lazyvim.plugins.extras.dap.core",
@@ -13,6 +12,7 @@
     "lazyvim.plugins.extras.lang.java",
     "lazyvim.plugins.extras.lang.json",
     "lazyvim.plugins.extras.lang.python",
+    "lazyvim.plugins.extras.lang.tex",
     "lazyvim.plugins.extras.lang.yaml",
     "lazyvim.plugins.extras.util.gitui"
   ],
