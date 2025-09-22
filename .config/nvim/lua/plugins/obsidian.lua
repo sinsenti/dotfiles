@@ -73,13 +73,6 @@ return {
     vim.keymap.set("n", "<leader>ob", ":ObsidianBacklinks<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<leader>ot", ":ObsidianNewFromTemplate", {})
 
-    -- vim.keymap.set('n', '<leader>oc',require('obsidian').create_new_note({ name = id }), {})
-    -- vim.keymap.set('n', '<leader>oc', function()
-    --   vim.api.nvim_feedkeys(':ObsidianNewFromTemplate<CR>.md', 'n', false)
-    --   -- vim.api.nvim_feedkeys(':e ~/obsidian/.md', 'n', false)
-    --   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Left><Left><Left>', true, false, true), 'n', false)
-    -- end, { noremap = true, silent = true, desc = 'Create new note' })
-
     vim.keymap.set("n", "<leader>ot", function()
       vim.api.nvim_feedkeys(":ObsidianNewFromTemplate ", "n", false)
       vim.schedule(function()

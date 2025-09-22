@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias zipsrc="zip -r pardaev.zip src"
 alias gs="git status"
 alias dps="docker ps"
 alias dpsa="docker ps -a"
