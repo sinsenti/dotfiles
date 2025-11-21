@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias glsh="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad)%Creset' --date=short"
 alias zipsrc="zip -r pardaev.zip src"
 alias gs="git status"
 alias dps="docker ps"
@@ -109,3 +110,8 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 bindkey '\t' end-of-line
+
+# opencode
+export PATH=/home/sinsenti/.opencode/bin:$PATH
+
+

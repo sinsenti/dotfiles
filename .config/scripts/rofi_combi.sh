@@ -4,12 +4,15 @@ DIR1="$HOME/dotfiles/.config/scripts"
 DIR2="$HOME/.config/hypr/UserScripts"
 DIR3="$HOME/.config/hypr/scripts"
 
-echo -e "suspend\nmusic\ncalculator\ntranslator\nemoji\nshutdown\nsearch\nwallpaper\ndownloads\ngit" |
+echo -e "mentiforce\nsuspend\nmusic\ncalculator\ntranslator\nemoji\nshutdown\nsearch\nwallpaper\ndownloads\ngit" |
   rofi -i -dmenu -p "Select:" |
   while read -r choice; do
     case "$choice" in
     music)
       bash $DIR1/my_music.sh
+      ;;
+    mentiforce)
+      ~/Downloads/Mentiforce-0.0.18-linux-x86_64.AppImage
       ;;
     translator)
       bash $DIR1/rofi_translate.sh
