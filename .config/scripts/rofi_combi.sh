@@ -12,7 +12,7 @@ echo -e "mentiforce\nsuspend\nmusic\ncalculator\ntranslator\nemoji\nshutdown\nse
       bash $DIR1/my_music.sh
       ;;
     mentiforce)
-      ~/Downloads/Mentiforce-0.0.18-linux-x86_64.AppImage
+      ~/Downloads/unused/Mentiforce-0.0.18-linux-x86_64.AppImage
       ;;
     translator)
       bash $DIR1/rofi_translate.sh
