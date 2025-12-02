@@ -10,19 +10,17 @@ alias zipsrc="zip -r pardaev.zip src"
 alias gs="git status"
 alias dps="docker ps"
 alias dpsa="docker ps -a"
-alias mlvenv="source ~/git/ML/.venv/bin/activate"
-alias gclone="~/dotfiles/.config/scripts/gclone.sh"
+alias mlvenv="source ~/git/ml/.venv/bin/activate"
+alias gclone="bash ~/dotfiles/.config/scripts/gclone.sh"
 alias gmnoff="git merge --no-ff"
-alias jrun="~/dotfiles/.config/scripts/run_all_java_files.sh"
+alias jrun="bash ~/dotfiles/.config/scripts/run_all_java_files.sh"
 alias grdl="./gradlew clean build; ./gradlew bootRun"
-alias crp="~/dotfiles/.config/scripts/create-file-and-paste.sh"
+alias crp="bash ~/dotfiles/.config/scripts/create-file-and-paste.sh"
 alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
 alias smartcopy="python ~/dotfiles/.config/scripts/backup_code.py"
-alias copyall="~/dotfiles/.config/scripts/copy_all.sh"
-alias gitpush="~/dotfiles/.config/scripts/git_push.sh"
-alias TT="~/dotfiles/.config/scripts/toggle_noblur.sh"
-alias layout="watch -n 0.5 ~/dotfiles/.config/scripts/switch_keyboard.sh"
+alias copyall="bash ~/dotfiles/.config/scripts/copy_all.sh"
+alias gitpush="bash ~/dotfiles/.config/scripts/git_push.sh"
 alias n="nvim"
 alias cl='clear'
 alias nz="nvim ~/.zshrc"
@@ -113,5 +111,4 @@ bindkey '\t' end-of-line
 
 # opencode
 export PATH=/home/sinsenti/.opencode/bin:$PATH
-
 

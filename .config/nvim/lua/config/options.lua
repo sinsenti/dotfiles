@@ -116,16 +116,16 @@ opt.updatetime = 200 -- Save swap file and trigger CursorHold
 opt.virtualedit = "block" -- Allow cursor to move where there is no text in visual block mode
 opt.wildmode = "longest:full,full" -- Command-line completion mode
 opt.winminwidth = 5 -- Minimum window width
-opt.wrap = true -- Disable line wrap
+opt.wrap = true -- Enable line wrap
 
 if vim.fn.has("nvim-0.10") == 1 then
   opt.smoothscroll = true
-  opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-  opt.foldmethod = "expr"
+  vim.opt.foldmethod = "expr"
+  vim.opt.foldexpr = "v:lua.LazyVim.treesitter.foldexpr()"
   opt.foldtext = ""
 else
-  opt.foldmethod = "indent"
-  opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
+  vim.opt.foldmethod = "expr"
+  vim.opt.foldexpr = "v:lua.LazyVim.treesitter.foldexpr()"
 end
 
 -- Fix markdown indentation settings

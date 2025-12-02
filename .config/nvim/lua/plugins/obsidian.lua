@@ -23,7 +23,7 @@ return {
       workspaces = {
         {
           name = "obsidian",
-          path = "/home/sinsenti/git/obsidian",
+          path = "~/git/obsidian",
           -- path = "/mnt/c/users/Сергей/obsidian",
         },
       },
@@ -32,7 +32,7 @@ return {
         default_tags = { "daily-notes" },
       },
       templates = {
-        folder = "/home/sinsenti/git/obsidian/Templates",
+        folder = "~/git/obsidian/Templates",
         date_format = "%d-%m-%y",
         time_format = "%H:%M",
       },
