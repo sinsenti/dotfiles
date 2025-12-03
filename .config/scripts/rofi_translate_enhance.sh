@@ -1,23 +1,54 @@
 #!/bin/bash
 
-DEFAULT_SCRIPT="/home/sinsenti/dotfiles/.config/scripts/rofi_translate.sh"
-# Get clipboard content
-INPUT=$(wl-paste)
+INPUT=$(rofi -dmenu -p "Format: LANG,LANG text (or just text for en->ru)")
 
-# Exit if clipboard is empty
+if [ $? -ne 0 ]; then
+  exit 0
+fi
 if [ -z "$INPUT" ]; then
-  $DEFAULT_SCRIPT
+  INPUT=$(wl-paste)
+  if [ -z "$INPUT" ]; then
+    exit 0
+  fi
 fi
 
-# Translate text
-TRANSLATION=$(trans -b ":ru" "$INPUT")
+DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
+TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 
-# Show translation with menu options
-CHOICE=$(echo -e "Default\nCopy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+# List of valid directions
+if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
+  [[ "$DIRECTION" == "ru" ]] || [[ "$DIRECTION" == "кг" ]] ||
+  [[ "$DIRECTION" == "en,es" ]] || [[ "$DIRECTION" == "ru,es" ]] ||
+  [[ "$DIRECTION" == "es,en" ]]; then
 
-if [ "$CHOICE" = "Default" ]; then
-  $DEFAULT_SCRIPT
-elif [ "$CHOICE" = "Copy" ]; then
+  # Set languages based on direction
+  if [ "$DIRECTION" = "en,ru" ]; then
+    TARGET_LANG="ru"
+    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  elif [ "$DIRECTION" = "ru,en" ] || [ "$DIRECTION" = "ru" ] || [ "$DIRECTION" = "кг" ]; then
+    TARGET_LANG="en"
+    r TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  elif [ "$DIRECTION" = "en,es" ]; then
+    TARGET_LANG="es"
+    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  elif [ "$DIRECTION" = "ru,es" ]; then
+    TARGET_LANG="es"
+    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  elif [ "$DIRECTION" = "es,en" ]; then
+    TARGET_LANG="en"
+    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  fi
+
+else
+  TARGET_LANG="ru"
+  TEXT="$INPUT"
+  TMP_RU=$(trans -b "en:ru" "$TEXT")
+  TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
+
+fi
+
+CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+if [ "$CHOICE" = "Copy" ]; then
   echo -n "$TRANSLATION" | wl-copy
 elif [ "$CHOICE" = "Close" ]; then
   exit 0
@@ -69,5 +100,3 @@ else
     fi
   done
 fi
-
-exit 0
