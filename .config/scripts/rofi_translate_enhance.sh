@@ -43,8 +43,8 @@ else
   TARGET_LANG="ru"
   TEXT="$INPUT"
   TMP_RU=$(trans -b "en:ru" "$TEXT")
+  wl-copy <<<"$TMP_RU"
   TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
-
 fi
 
 CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
