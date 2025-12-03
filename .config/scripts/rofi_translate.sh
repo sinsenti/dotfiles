@@ -19,7 +19,7 @@ TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
   [[ "$DIRECTION" == "ru" ]] || [[ "$DIRECTION" == "кг" ]] ||
   [[ "$DIRECTION" == "en,es" ]] || [[ "$DIRECTION" == "ru,es" ]] ||
-  [[ "$DIRECTION" == "es,en" ]] || [[ "$DIRECTION" == "re" ]]; then
+  [[ "$DIRECTION" == "es,en" ]] || [[ "$DIRECTION" == "fj" ]]; then
 
   # Set languages based on direction
   if [ "$DIRECTION" = "en,ru" ]; then
@@ -37,12 +37,14 @@ if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
   elif [ "$DIRECTION" = "es,en" ]; then
     TARGET_LANG="en"
     TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "re" ]; then
+  elif [ "$DIRECTION" = "fj" ]; then
+    if [[ -z "$TEXT" ]]; then
+      TEXT=$(wl-paste)
+    fi
     TARGET_LANG="ru"
     # TEXT="$INPUT"
-    wl-copy <<<"$TEXT"
     TMP_RU=$(trans -b "en:ru" "$TEXT")
-    wl-copy <<<"$TMP_RU"
+    # wl-copy <<<"$TMP_RU"
     TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
 
   fi
@@ -53,7 +55,15 @@ else
   TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
 fi
 
-CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+if [[ "$DIRECTION" = "fj" ]]; then
+  MESSAGE="$TMP_RU"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
+
+  CHOICE=$(echo -e "Copy\nClose" |
+    rofi -mesg "$MESSAGE" -dmenu -p "Done:")
+
+else
+  CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+fi
 if [ "$CHOICE" = "Copy" ]; then
   echo -n "$TRANSLATION" | wl-copy
 elif [ "$CHOICE" = "Close" ]; then

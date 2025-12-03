@@ -69,7 +69,10 @@ find_preview() {
       done
 }
 
-export EDITOR='nvim'
+export EDITOR="nvim"
+export VISUAL="nvim"
+export SYSTEMD_EDITOR="nvim"
+export SUDO_EDITOR="nvim"
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
