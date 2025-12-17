@@ -24,15 +24,16 @@ if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
     TEXT=$(wl-paste)
     [ -z "$TEXT" ] && exit 0
   fi
-  word="$TEXT"
+  word=$(echo "$TEXT" | awk '{print $1}')
 
   url="https://api.dictionaryapi.dev/api/v2/entries/en/${word}"
   data=$(curl -s "$url")
 
-  if echo "$data" | jq -e '.[0].title == "No Definitions Found"' >/dev/null 2>&1; then
-    rofi -e "No definition found for '$word'"
-    exit 1
-  fi
+  # NOTE: doesn't work fine
+  # if echo "$data" | jq -e '.[0].title == "No Definitions Found"' >/dev/null 2>&1; then
+  #   rofi -e "No definition found for '$word'"
+  #   exit 1
+  # fi
 
   MESSAGE=$(echo "$data" | jq -r '
     .[0] as $e |
@@ -42,7 +43,7 @@ if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
         ($e.phonetics[]? | select(.text != null) | .text) //
         "N/A"
     )\n\n" +
-    "Definition: \(
+"Definition: \(
         $e.meanings[0].definitions[0].definition
     )"
   ')
@@ -55,7 +56,12 @@ if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
     mpv --no-video --really-quiet "$audio_url" >/dev/null 2>~/.local/state/mpv-dict.log &
   fi
 
-  rofi -mesg "$MESSAGE" -dmenu -p "Dict:" <<<"Close" >/dev/null
+  DCHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$MESSAGE" -dmenu -p "Dict:")
+
+  if [ "$DCHOICE" = "Copy" ]; then
+    dict_url="https://dictionary.cambridge.org/dictionary/english/${word}"
+    echo -n "$dict_url" | wl-copy
+  fi
 
   exit 0
 fi
