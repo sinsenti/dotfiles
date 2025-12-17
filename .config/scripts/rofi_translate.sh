@@ -38,30 +38,27 @@ if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
     TARGET_LANG="en"
     TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
   elif [ "$DIRECTION" = "fj" ]; then
-    if [[ -z "$TEXT" ]]; then
-      TEXT=$(wl-paste)
-    fi
     TARGET_LANG="ru"
-    # TEXT="$INPUT"
-    TMP_RU=$(trans -b "en:ru" "$TEXT")
-    # wl-copy <<<"$TMP_RU"
-    TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
-
+    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
   fi
 
 else
+  # if [[ -z "$TEXT" ]]; then
+  #   TEXT=$(wl-paste)
+  # fi
   TARGET_LANG="ru"
   TEXT="$INPUT"
-  TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-fi
-
-if [[ "$DIRECTION" = "fj" ]]; then
+  TMP_RU=$(trans -b "en:ru" "$TEXT")
+  # wl-copy <<<"$TMP_RU"
+  TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
   MESSAGE="$TMP_RU"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
 
   CHOICE=$(echo -e "Copy\nClose" |
     rofi -mesg "$MESSAGE" -dmenu -p "Done:")
 
-else
+fi
+
+if [ -z "$DIRECTION" ]; then
   CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
 fi
 if [ "$CHOICE" = "Copy" ]; then

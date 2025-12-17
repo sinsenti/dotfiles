@@ -1,6 +1,6 @@
 #!/bin/bash
 output_file="backup_code.txt"
-exclude_dirs=(".git" "node_modules")
+exclude_dirs=(".git" "node_modules" "dist" "uploads")
 exclude_files=("package-lock.json")
 
 echo
@@ -8,22 +8,23 @@ echo "=========================================="
 echo " Interactive exclusion setup"
 echo "=========================================="
 echo
-echo "  [1] Add directory to exclude"
-echo "  [2] Add file to exclude"
+echo "  [dir] Add directory to exclude"
+echo "  [file] Add file to exclude"
 echo "  [Enter] Continue with default script"
 echo
 
 while true; do
-  read -p "Choose option (1/2/Enter): " choice
-  if [[ "$choice" == "1" ]]; then
-    read -p "  Enter directory name to exclude: " dir
+  read -p $'Choose option\n1) dir\n2) file\n3) Enter\n' choice
+  if [[ "$choice" == "1" || "$choice" == "dir" ]]; then
+    read -p "Enter directory name to exclude: " dir
     [[ -n "$dir" ]] && exclude_dirs+=("$dir")
-    echo "    Will exclude directories: ${exclude_dirs[*]}"
     echo
-  elif [[ "$choice" == "2" ]]; then
-    read -p "  Enter file name to exclude: " fname
+    echo "    ${exclude_dirs[*]}"
+    echo
+  elif [[ "$choice" == "2" || "$choice" == "file" ]]; then
+    read -p "Enter file name to exclude: " fname
     [[ -n "$fname" ]] && exclude_files+=("$fname")
-    echo "    Will exclude files: ${exclude_files[*]}"
+    echo "   ${exclude_files[*]}"
     echo
   elif [[ -z "$choice" ]]; then
     break
