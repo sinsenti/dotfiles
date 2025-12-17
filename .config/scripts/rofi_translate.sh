@@ -1,115 +1,143 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-INPUT=$(rofi -dmenu -p "Format: LANG,LANG text (or just text for en->ru)")
+# deps: rofi, wl-clipboard, trans (translate-shell), curl, jq, mpv
 
+INPUT=$(rofi -dmenu -p "Format: LANG,LANG text | d word | dno word | just text for en->ru")
+
+# user cancelled
 if [ $? -ne 0 ]; then
   exit 0
 fi
+
+# if empty, try clipboard
 if [ -z "$INPUT" ]; then
   INPUT=$(wl-paste)
-  if [ -z "$INPUT" ]; then
-    exit 0
-  fi
+  [ -z "$INPUT" ] && exit 0
 fi
 
 DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
 TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 
-# List of valid directions
-if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
-  [[ "$DIRECTION" == "ru" ]] || [[ "$DIRECTION" == "кг" ]] ||
-  [[ "$DIRECTION" == "en,es" ]] || [[ "$DIRECTION" == "ru,es" ]] ||
-  [[ "$DIRECTION" == "es,en" ]] || [[ "$DIRECTION" == "fj" ]]; then
+# ================== DICTIONARY MODE: d / dno word ==================
+if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
+  if [ -z "$TEXT" ]; then
+    TEXT=$(wl-paste)
+    [ -z "$TEXT" ] && exit 0
+  fi
+  word="$TEXT"
 
-  # Set languages based on direction
-  if [ "$DIRECTION" = "en,ru" ]; then
-    TARGET_LANG="ru"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "ru,en" ] || [ "$DIRECTION" = "ru" ] || [ "$DIRECTION" = "кг" ]; then
-    TARGET_LANG="en"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "en,es" ]; then
-    TARGET_LANG="es"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "ru,es" ]; then
-    TARGET_LANG="es"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "es,en" ]; then
-    TARGET_LANG="en"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-  elif [ "$DIRECTION" = "fj" ]; then
-    TARGET_LANG="ru"
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  url="https://api.dictionaryapi.dev/api/v2/entries/en/${word}"
+  data=$(curl -s "$url")
+
+  if echo "$data" | jq -e '.[0].title == "No Definitions Found"' >/dev/null 2>&1; then
+    rofi -e "No definition found for '$word'"
+    exit 1
   fi
 
+  MESSAGE=$(echo "$data" | jq -r '
+    .[0] as $e |
+    "Word: \($e.word)\n" +
+    "Phonetic: \(
+        $e.phonetic //
+        ($e.phonetics[]? | select(.text != null) | .text) //
+        "N/A"
+    )\n\n" +
+    "Definition: \(
+        $e.meanings[0].definitions[0].definition
+    )"
+  ')
+
+  audio_url=$(echo "$data" | jq -r '
+    .[0].phonetics[]? | select(.audio != null and .audio != "") | .audio
+  ' | head -n1)
+
+  if [ "$DIRECTION" = "d" ] && [ -n "$audio_url" ] && [ "$audio_url" != "null" ]; then
+    mpv --no-video --really-quiet "$audio_url" >/dev/null 2>~/.local/state/mpv-dict.log &
+  fi
+
+  rofi -mesg "$MESSAGE" -dmenu -p "Dict:" <<<"Close" >/dev/null
+
+  exit 0
+fi
+# ================== END DICTIONARY MODE ==================
+
+# ================== TRANSLATION MODES ==================
+
+is_valid_direction=false
+case "$DIRECTION" in
+"en,ru" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en" | "fj")
+  is_valid_direction=true
+  ;;
+esac
+
+if $is_valid_direction; then
+  case "$DIRECTION" in
+  "en,ru") TARGET_LANG="ru" ;;
+  "ru,en" | "ru" | "кг") TARGET_LANG="en" ;;
+  "en,es") TARGET_LANG="es" ;;
+  "ru,es") TARGET_LANG="es" ;;
+  "es,en") TARGET_LANG="en" ;;
+  "fj") TARGET_LANG="ru" ;;
+  esac
+
+  TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+
+  CHOICE=$(echo -e "Copy\nClose" |
+    rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+
 else
-  # if [[ -z "$TEXT" ]]; then
-  #   TEXT=$(wl-paste)
-  # fi
   TARGET_LANG="ru"
   TEXT="$INPUT"
   TMP_RU=$(trans -b "en:ru" "$TEXT")
-  # wl-copy <<<"$TMP_RU"
   TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
   MESSAGE="$TMP_RU"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
 
   CHOICE=$(echo -e "Copy\nClose" |
     rofi -mesg "$MESSAGE" -dmenu -p "Done:")
-
 fi
 
-if [ -z "$DIRECTION" ]; then
-  CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
-fi
 if [ "$CHOICE" = "Copy" ]; then
   echo -n "$TRANSLATION" | wl-copy
-elif [ "$CHOICE" = "Close" ]; then
   exit 0
-else
-  while true; do
-    INPUT=$CHOICE
-    echo "Printing input: $INPUT"
-    if [ $? -ne 0 ]; then
-      exit 0
-    fi
-    DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
-    TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
-
-    # List of valid directions
-    if [[ "$DIRECTION" == "en,ru" ]] || [[ "$DIRECTION" == "ru,en" ]] ||
-      [[ "$DIRECTION" == "ru" ]] || [[ "$DIRECTION" == "кг" ]] ||
-      [[ "$DIRECTION" == "en,es" ]] || [[ "$DIRECTION" == "ru,es" ]] ||
-      [[ "$DIRECTION" == "es,en" ]]; then
-
-      # Set languages based on direction
-      if [ "$DIRECTION" = "en,ru" ]; then
-        TARGET_LANG="ru"
-      elif [ "$DIRECTION" = "ru,en" ] || [ "$DIRECTION" = "ru" ] || [ "$DIRECTION" = "кг" ]; then
-        TARGET_LANG="en"
-      elif [ "$DIRECTION" = "en,es" ]; then
-        TARGET_LANG="es"
-      elif [ "$DIRECTION" = "ru,es" ]; then
-        TARGET_LANG="es"
-      elif [ "$DIRECTION" = "es,en" ]; then
-        TARGET_LANG="en"
-      fi
-
-    else
-      TARGET_LANG="ru"
-      TEXT="$INPUT"
-    fi
-    if [ -z "$CHOICE" ]; then
-      exit 0
-    fi
-
-    TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
-    CHOICE=$(echo -e "Copy\nClose" | rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
-    if [ "$CHOICE" = "Copy" ]; then
-      echo -n "$TRANSLATION" | wl-copy
-    elif [ "$CHOICE" = "Close"]; then
-      exit 0
-    elif [ -z "$CHOICE" ]; then
-      exit 0
-    fi
-  done
+elif [ "$CHOICE" = "Close" ] || [ -z "$CHOICE" ]; then
+  exit 0
 fi
+
+while true; do
+  INPUT=$CHOICE
+  [ -z "$INPUT" ] && exit 0
+
+  DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
+  TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
+
+  is_valid_direction=false
+  case "$DIRECTION" in
+  "en,ru" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en")
+    is_valid_direction=true
+    ;;
+  esac
+
+  if $is_valid_direction; then
+    case "$DIRECTION" in
+    "en,ru") TARGET_LANG="ru" ;;
+    "ru,en" | "ru" | "кг") TARGET_LANG="en" ;;
+    "en,es") TARGET_LANG="es" ;;
+    "ru,es") TARGET_LANG="es" ;;
+    "es,en") TARGET_LANG="en" ;;
+    esac
+    [ -z "$TEXT" ] && TEXT="$INPUT"
+  else
+    TARGET_LANG="ru"
+    TEXT="$INPUT"
+  fi
+
+  TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
+  CHOICE=$(echo -e "Copy\nClose" |
+    rofi -mesg "$TRANSLATION" -dmenu -p "Done:")
+
+  if [ "$CHOICE" = "Copy" ]; then
+    echo -n "$TRANSLATION" | wl-copy
+  elif [ "$CHOICE" = "Close" ] || [ -z "$CHOICE" ]; then
+    exit 0
+  fi
+done
