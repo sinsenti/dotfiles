@@ -61,9 +61,9 @@ if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
   if [ "$DCHOICE" = "Copy" ]; then
     dict_url="https://dictionary.cambridge.org/dictionary/english/${word}"
     echo -n "$dict_url" | wl-copy
+    exit 0
   fi
 
-  exit 0
 fi
 # ================== END DICTIONARY MODE ==================
 
@@ -109,12 +109,12 @@ elif [ "$CHOICE" = "Close" ] || [ -z "$CHOICE" ]; then
   exit 0
 fi
 
+TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 while true; do
   INPUT=$CHOICE
   [ -z "$INPUT" ] && exit 0
 
   DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
-  TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 
   is_valid_direction=false
   case "$DIRECTION" in
