@@ -56,7 +56,7 @@ play = [
 	{ run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
 ]
 pdf = [
-	{ run = 'zathura "$1"', desc = "Zathura", orphan = true, for = "unix" },
+	{ run = 'firefox "$1"', desc = "Zathura", orphan = true, for = "unix" },
 ]
 epub = [
   { run = 'zathura "$1"', desc = "Zathura (EPUB)", orphan = true, for = "unix" },
