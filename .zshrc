@@ -5,6 +5,7 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+alias wifil="nmcli device wifi list"
 alias dcp="docker compose"
 alias create="wl-paste --type text/plain > s.sh && bash s.sh"
 alias glsh="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad)%Creset' --date=short"

@@ -6,7 +6,6 @@ while true; do
   INPUT=$(rofi -dmenu -p "Format: LANG,LANG text | d word | dno word | just text for en->ru")
   [ $? -ne 0 ] && exit 0 # user Esc
 
-  # if empty, try clipboard
   if [ -z "$INPUT" ]; then
     INPUT=$(wl-paste)
     [ -z "$INPUT" ] && exit 0
@@ -15,7 +14,6 @@ while true; do
   DIRECTION=$(echo "$INPUT" | cut -d' ' -f1)
   TEXT=$(echo "$INPUT" | cut -d' ' -f2-)
 
-  # ---- DICTIONARY MODE ----
   if [ "$DIRECTION" = "d" ] || [ "$DIRECTION" = "dno" ]; then
     if [ -z "$TEXT" ]; then
       TEXT=$(wl-paste)
@@ -26,23 +24,17 @@ while true; do
     url="https://api.dictionaryapi.dev/api/v2/entries/en/${word}"
     data=$(curl -s "$url")
 
-    # handle error object
-    # if echo "$data" | jq -e '.[0].title == "No Definitions Found"' >/dev/null 2>&1; then
-    #   rofi -e "No definition found for '$word'"
-    #   continue
-    # fi
-
     MESSAGE=$(echo "$data" | jq -r '
-      .[0] as $e |
-      "Word: \($e.word)\n" +
-      "Phonetic: \(
-          $e.phonetic //
-          ($e.phonetics[]? | select(.text != null) | .text) //
-          "N/A"
-      )\n\n" +
-      "Definition: \(
-          $e.meanings[0].definitions[0].definition
-      )"
+    .[0] as $e |
+    "Word: \($e.word)\n" +
+    "Phonetic: \(
+        $e.phonetic //
+        ([$e.phonetics[]? | select(.text != null) | .text][0]) //
+        "N/A"
+    )\n\n" +
+    "Definition: \(
+        $e.meanings[0].definitions[0].definition
+    )"
     ')
 
     audio_url=$(echo "$data" | jq -r '
@@ -58,9 +50,9 @@ while true; do
     if [ "$DCHOICE" = "Copy" ]; then
       dict_url="https://dictionary.cambridge.org/dictionary/english/${word}"
       echo -n "$dict_url" | wl-copy
+      exit 0
     fi
 
-    # then go back to the top (ask rofi again)
     if [[ -z "$CHOICE" ]]; then
       exit 0
 
@@ -72,20 +64,24 @@ while true; do
   # ---- TRANSLATION MODES ----
   is_valid_direction=false
   case "$DIRECTION" in
-  "en,ru" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en" | "fj")
+  "en,ru" | "en" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en" | "fj")
     is_valid_direction=true
     ;;
   esac
 
   if $is_valid_direction; then
     case "$DIRECTION" in
-    "en,ru") TARGET_LANG="ru" ;;
+    "en,ru" | "en") TARGET_LANG="ru" ;;
     "ru,en" | "ru" | "кг") TARGET_LANG="en" ;;
     "en,es") TARGET_LANG="es" ;;
     "ru,es") TARGET_LANG="es" ;;
     "es,en") TARGET_LANG="en" ;;
     "fj") TARGET_LANG="ru" ;;
     esac
+    if [ -z "$TEXT" ]; then
+      TEXT=$(wl-paste)
+      [ -z "$TEXT" ] && exit 0
+    fi
 
     TRANSLATION=$(trans -b ":$TARGET_LANG" "$TEXT")
 
@@ -105,8 +101,7 @@ while true; do
 
   if [ "$CHOICE" = "Copy" ]; then
     echo -n "$TRANSLATION" | wl-copy
-    # then loop again
-    continue
+    exit 0
   elif [ "$CHOICE" = "Close" ] || [ -z "$CHOICE" ]; then
     exit 0
   fi
