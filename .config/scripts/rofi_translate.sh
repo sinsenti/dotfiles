@@ -50,7 +50,7 @@ while true; do
     if [ "$DCHOICE" = "Copy" ]; then
       dict_url="https://dictionary.cambridge.org/dictionary/english/${word}"
       echo -n "$dict_url" | wl-copy
-      exit 0
+      # exit 0
     fi
 
     if [[ -z "$CHOICE" ]]; then

@@ -66,13 +66,13 @@ return {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
-  -- {
-  --   "xiyaowong/transparent.nvim",
-  --   lazy = false,
-  --   config = function()
-  --     require("transparent").setup({})
-  --   end,
-  -- },
+  {
+    "xiyaowong/transparent.nvim",
+    lazy = false,
+    config = function()
+      require("transparent").setup({})
+    end,
+  },
 
   {
     "folke/twilight.nvim",
