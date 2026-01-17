@@ -1,9 +1,10 @@
 return {
   {
     "folke/snacks.nvim",
+    -- enabled = false,
     opts = {
       picker = {
-        enabled = false,
+        -- enabled = false,
         win = {
           input = {
             keys = {

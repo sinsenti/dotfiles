@@ -36,7 +36,7 @@ vim.keymap.set("n", "<c-l>", ":TmuxNavigateRight<CR>", opts)
 vim.keymap.set("n", "<c-j>", ":TmuxNavigateDown<CR>", opts)
 vim.keymap.set("n", "<c-k>", ":TmuxNavigateUp<CR>", opts)
 
-vim.keymap.set("n", "<leader>-", ":Oil<CR>", opts)
+-- vim.keymap.set("n", "<leader>-", ":Oil<CR>", opts)
 
 vim.keymap.set("t", "jk", "<C-\\><C-n>", opts)
 vim.keymap.set("n", "<leader>df", ":DeleteFile", {})
