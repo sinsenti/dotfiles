@@ -1,6 +1,6 @@
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  { "iamcco/markdown-preview.nvim", enabled = true },
-  { "MeanderingProgrammer/render-markdown.nvim", enabled = true },
+  { "iamcco/markdown-preview.nvim", enabled = false },
+  { "MeanderingProgrammer/render-markdown.nvim", enabled = false, event = "BufRead" },
   -- { "saghen/blink.nvim", enabled = false },
 }

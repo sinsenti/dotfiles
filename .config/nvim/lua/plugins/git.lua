@@ -1,7 +1,6 @@
 return {
   {
     "NeogitOrg/neogit",
-    lazy = false,
     event = "BufRead",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -11,5 +10,6 @@ return {
   },
   {
     "tpope/vim-fugitive",
+    event = "BufRead",
   },
 }

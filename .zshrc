@@ -5,6 +5,13 @@ export TERMINAL=/usr/bin/kitty
 
 bindkey '^p' autosuggest-accept
 
+
+
+alias a="tmux"
+alias st="sudo systemctl status tor"
+alias start="sudo systemctl start tor"
+alias rest="sudo systemctl restart tor"
+alias stop="sudo systemctl stop tor"
 alias nh="cd ~/.config/hypr && nvim"
 alias wifil="nmcli device wifi list"
 alias dcp="docker compose"

@@ -6,7 +6,12 @@ end
 
 vim.keymap.set("n", "TT", ":TransparentToggle<CR>", a("Toggle transparetn mode"))
 vim.keymap.set("n", "<leader>mp", ":MarkdownPreview<CR>", a("preview of .md"))
-vim.keymap.set("n", "<leader>oa", ":ObsidianToggleCheckbox<CR>04la<space><space><space><esc>0", a("Add in obsidian"))
+vim.keymap.set(
+  "n",
+  "<leader>oa",
+  ":ObsidianToggleCheckbox<CR>04la<space><space><space><esc>0",
+  a("Create task in obsidian")
+)
 
 vim.keymap.set("n", "<leader>re", ":MoltenEvaluateOperator<CR>", { desc = "evaluate operator", silent = true })
 vim.keymap.set("n", "<leader>ro", ":noautocmd MoltenEnterOutput<CR>", { desc = "open output window", silent = true })
