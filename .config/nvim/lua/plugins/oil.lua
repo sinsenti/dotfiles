@@ -1,6 +1,6 @@
 return {
   "stevearc/oil.nvim",
-  event = "VeryLazy",
+  event = "BufRead",
   config = function()
     local actions = require("oil.actions")
 
