@@ -1,10 +1,6 @@
-plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose vi-mode)
+fpath=(/usr/share/zsh-completions/src $fpath)
 
-export TERM=xterm-256color
-export TERMINAL=/usr/bin/kitty
-
-bindkey '^p' autosuggest-accept
-
+plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose vi-mode fzf-tab)
 
 
 alias a="tmux"
@@ -49,15 +45,7 @@ alias nt='nvim ~/.tmux.conf'
 
 
 
-source <(fzf --zsh)
-
-HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
-setopt appendhistory
-
-
-
+# yazi
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
@@ -67,7 +55,6 @@ function y() {
 	rm -f -- "$tmp"
 }
 
-unsetopt BEEP
 
 
 find_preview() {
@@ -79,50 +66,65 @@ find_preview() {
         nvim +"$line" "$file"
       done
 }
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+# history settings
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+
+# shut up sounds
+unsetopt BEEP
+
+# term emulator settings
+export TERM=xterm-256color
+export TERMINAL=/usr/bin/kitty
+
+
 
 export EDITOR="nvim"
 export VISUAL="nvim"
 export SYSTEMD_EDITOR="nvim"
 export SUDO_EDITOR="nvim"
 
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
-export ZSH="$HOME/.oh-my-zsh"
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+source <(fzf --zsh)
+# ctrl-r became comfortable to search through history
+eval "$(fzf --zsh)"
 
-source $ZSH/oh-my-zsh.sh
+# Comppletion
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
 
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-# echo -ne '\e[5 q'
+# navigate
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
-# Set cursor shape in insert mode: vertical bar
-# function zle-keymap-select {
-#   if [[ ${KEYMAP} == vicmd ]]; then
-#     echo -ne "\e[1 q"  # block cursor in normal mode
-#   else
-#     echo -ne "\e[5 q"  # blinking bar in insert mode
-#   fi
-# }
-#
-# function zle-line-finish {
-#   echo -ne "\e[1 q"    # block cursor on command finish
-# }
-#
-# zle -N zle-keymap-select
-# zle -N zle-line-finish
-#
-# # Initialize cursor shape
-# echo -ne "\e[5 q"
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# bindkey '\t' end-of-line
 
-bindkey '\t' end-of-line
+bindkey '^p' autosuggest-accept
+
+
 
 # opencode
 export PATH=/home/sinsenti/.opencode/bin:$PATH
 
+
+# oh-my-zsh settings
+export ZSH="$HOME/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh

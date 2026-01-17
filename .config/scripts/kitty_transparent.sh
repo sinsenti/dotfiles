@@ -5,7 +5,8 @@ CONF="$HOME/.config/kitty/kitty.conf"
 toggle() {
   # 1 -> 0.8
   sed -i 's/^\([[:space:]]*background_opacity[[:space:]]\+\)1\([[:space:]]*\)\(.*\)$/\10.8\2\3/' "$CONF"
-  kitty --class kitty-float nvim ~/git/obsidian/Help.md
+  # kitty --class kitty-float nvim ~/git/obsidian/Help.md
+  kitty --class kitty-float
   # 0.8 -> 1
   sed -i 's/^\([[:space:]]*background_opacity[[:space:]]\+\)0\.8\([[:space:]]*\)\(.*\)$/\11\2\3/' "$CONF"
 }
