@@ -1,8 +1,62 @@
-fpath=(/usr/share/zsh-completions/src $fpath)
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-plugins=(git aliases history z tmux zsh-autosuggestions zsh-syntax-highlighting archlinux docker-compose vi-mode fzf-tab)
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
+
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 
+zinit light zsh-users/zsh-completions
+# zinit cdreplay -q
+
+zinit light Aloxaf/fzf-tab
+zinit light zsh-users/zsh-syntax-highlighting
+
+zinit light zsh-users/zsh-autosuggestions
+
+zinit snippet OMZP::git
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::command-not-found
+zinit snippet OMZP::docker-compose
+# plugins=(git aliases history z tmux vi-mode )
+
+
+# load completions
+autoload -Uz compinit && compinit
+# just should be after autoload
+zinit cdreplay -q
+
+# ctrl-r became comfortable to search through history
+eval "$(fzf --zsh)"
+
+# Comppletion
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+
+# navigate
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+
+# zioxide
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+
+
+# opencode generated:
+#
+# autoload -Uz _zinit
+# (( ${+_comps} )) && _comps[zinit]=_zinit
+
+
+alias z="cd"
+alias ls="ls --color"
 alias a="tmux"
 alias st="sudo systemctl status tor"
 alias start="sudo systemctl start tor"
@@ -66,16 +120,7 @@ find_preview() {
         nvim +"$line" "$file"
       done
 }
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-ZSH_THEME="powerlevel10k/powerlevel10k"
 
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 # history settings
@@ -102,20 +147,10 @@ export SUDO_EDITOR="nvim"
 
 
 
-source <(fzf --zsh)
-# ctrl-r became comfortable to search through history
-eval "$(fzf --zsh)"
-
-# Comppletion
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' menu no
-
-# navigate
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
 
-# bindkey '\t' end-of-line
+
+bindkey '\t' end-of-line
 
 bindkey '^p' autosuggest-accept
 
@@ -125,6 +160,8 @@ bindkey '^p' autosuggest-accept
 export PATH=/home/sinsenti/.opencode/bin:$PATH
 
 
-# oh-my-zsh settings
-export ZSH="$HOME/.oh-my-zsh"
-source $ZSH/oh-my-zsh.sh
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+eval "$(zoxide init --cmd cd zsh)"
