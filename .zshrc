@@ -13,8 +13,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 
-zinit light zsh-users/zsh-completions
-# zinit cdreplay -q
+# zinit light zsh-users/zsh-completions
 
 zinit light Aloxaf/fzf-tab
 zinit light zsh-users/zsh-syntax-highlighting
@@ -25,13 +24,27 @@ zinit snippet OMZP::git
 zinit snippet OMZP::archlinux
 zinit snippet OMZP::command-not-found
 zinit snippet OMZP::docker-compose
-# plugins=(git aliases history z tmux vi-mode )
+zinit snippet OMZP::vi-mode
+# zinit snippet OMZP::tmux
+# ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
+# plugins=(history tmux)
 
+# load completions for zsh
+# autoload -Uz compinit && compinit
 
-# load completions
-autoload -Uz compinit && compinit
-# just should be after autoload
+# carapace completion
+zinit light carapace-sh/carapace-bin
+autoload -U compinit && compinit
+export CARAPACE_BRIDGES='zsh,bash' # optional
+# export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+# zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+zstyle ':completion:*:git:*' group-order 'main commands','alias commands','external commands'
+source <(carapace _carapace)
 zinit cdreplay -q
+
+# bindkey '\t' end-of-line
+
+bindkey '^p' autosuggest-accept
 
 # ctrl-r became comfortable to search through history
 eval "$(fzf --zsh)"
@@ -55,6 +68,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
+alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
 alias z="cd"
 alias ls="ls --color"
 alias a="tmux"
@@ -83,13 +97,14 @@ alias smartcopy="python ~/dotfiles/.config/scripts/backup_code.py"
 alias copyall="bash ~/dotfiles/.config/scripts/copy_all.sh"
 alias gitpush="bash ~/dotfiles/.config/scripts/git_push.sh"
 alias n="nvim"
-alias cl='clear'
+alias c="clear"
 alias nz="nvim ~/.zshrc"
 alias sz="source ~/.zshrc"
 alias e="exit"
 alias q="exit"
 alias ff='fzf --height 100% --preview "bat -n --color=always --theme=Dracula {}" | { read -r file && nvim "$file"; }'
 alias tree='exa --tree --header --icons -a --level=1 --group-directories-first'
+alias l='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree1='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
@@ -127,9 +142,14 @@ find_preview() {
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
+HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
 setopt hist_ignore_space
+
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+
 
 # shut up sounds
 unsetopt BEEP
@@ -150,14 +170,12 @@ export SUDO_EDITOR="nvim"
 
 
 
-bindkey '\t' end-of-line
-
-bindkey '^p' autosuggest-accept
 
 
 
 # opencode
 export PATH=/home/sinsenti/.opencode/bin:$PATH
+source ~/.env
 
 
 
