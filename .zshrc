@@ -25,7 +25,14 @@ zinit snippet OMZP::archlinux
 zinit snippet OMZP::command-not-found
 zinit snippet OMZP::docker-compose
 zinit snippet OMZP::vi-mode
-# zinit snippet OMZP::tmux
+zinit snippet OMZP::tmux
+# Auto-start tmux when opening terminal
+ZSH_TMUX_AUTOSTART=true
+# Only autostart if no tmux running (recommended)
+ZSH_TMUX_AUTOSTART_ONCE=true
+# Auto-connect to existing sessions
+ZSH_TMUX_AUTOCONNECT=true
+
 # ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
 # plugins=(history tmux)
 
