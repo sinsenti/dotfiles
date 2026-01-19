@@ -76,6 +76,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
+alias zi="cdi"
 alias z="cd"
 alias ls="ls --color"
 alias a="tmux"

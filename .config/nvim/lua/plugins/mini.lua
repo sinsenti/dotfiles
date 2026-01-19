@@ -1,6 +1,7 @@
 return {
   {
     "nvim-mini/mini.files",
+    layz = false,
     opts = {
       mappings = {
         close = "q",
@@ -54,9 +55,11 @@ return {
       {
         "-",
         function()
-          require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+          if not require("mini.files").close() then
+            require("mini.files").open(vim.api.nvim_buf_get_name(0), true)
+          end
         end,
-        desc = "Open mini.files (Directory of Current File)",
+        desc = "Toggle mini.files (Directory of Current File)",
       },
 
       {
