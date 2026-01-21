@@ -1,7 +1,7 @@
 return {
   "ibhagwan/fzf-lua",
   -- cmd = "FzfLua",
-  lazy = false,
+  event = "VeryLazy",
   opts = function(_, opts)
     local fzf = require("fzf-lua")
     local config = fzf.config
@@ -76,20 +76,16 @@ return {
             title_pos = "center",
           },
         }, fzf_opts.kind == "codeaction" and {
-          winopts = {
-            layout = "vertical",
-            -- height is number of items minus 15 lines for the preview, with a max of 80% screen height
-            height = math.floor(math.min(vim.o.lines * 0.8 - 16, #items + 2) + 0.5) + 16,
-            width = 0.5,
-            preview = not vim.tbl_isempty(LazyVim.lsp.get_clients({ bufnr = 0, name = "vtsls" })) and {
-              layout = "vertical",
-              vertical = "down:15,border-top",
-              hidden = "hidden",
-            } or {
-              layout = "vertical",
-              vertical = "down:15,border-top",
-            },
-          },
+          -- winopts = {
+          --   layout = "horizontal", -- ← Picker + preview side-by-side
+          --   height = 0.6, -- ← Shorter height
+          --   width = 0.9, -- ← Almost full width
+          --   preview = { -- ← Preview on RIGHT side
+          --     layout = "horizontal",
+          --     horizontal = "right:50%", -- ← 50% screen width preview
+          --     border = "rounded",
+          --   },
+          -- },
         } or {
           winopts = {
             width = 0.5,

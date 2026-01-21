@@ -75,6 +75,8 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 # (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
+alias gcm="git commit --message"
+alias g="git status"
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
 alias zi="cdi"
 alias z="cd"

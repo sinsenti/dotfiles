@@ -66,7 +66,7 @@ return {
     -- vim.keymap.set("n", "<leader>or", ":ObsidianRename", {})
     -- vim.keymap.set("n", "<leader>oi", ":ObsidianPasteImg<CR>", {})
 
-    vim.keymap.set("n", "<leader>oo", ":Obsidian", {})
+    -- vim.keymap.set("n", "<leader>oo", ":Obsidian", {})
     vim.keymap.set("n", "<leader>of", ":ObsidianQuickSwitch<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<leader>og", ":ObsidianSearch<CR>", { desc = "Find words", noremap = true, silent = true })
     vim.keymap.set("n", "<leader>ol", ":ObsidianLinks<CR>", { noremap = true, silent = true })

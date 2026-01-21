@@ -4,6 +4,9 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
+vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
+vim.keymap.set("n", "<leader>gd", ":DiffviewOpen<cr>", a("Difference for this file"))
+
 vim.keymap.set("n", "TT", ":TransparentToggle<CR>", a("Toggle transparetn mode"))
 vim.keymap.set("n", "<leader>mp", ":MarkdownPreview<CR>", a("preview of .md"))
 vim.keymap.set(

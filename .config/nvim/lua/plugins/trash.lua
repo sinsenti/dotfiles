@@ -1,9 +1,9 @@
 return {
-  {
-    "aveplen/ruscmd.nvim",
-    event = "VeryLazy",
-    config = true,
-  },
+  -- {
+  --   "aveplen/ruscmd.nvim",
+  --   event = "VeryLazy",
+  --   config = true,
+  -- },
   {
     "christoomey/vim-tmux-navigator",
     lazy = false,
