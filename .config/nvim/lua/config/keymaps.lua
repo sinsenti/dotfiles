@@ -5,7 +5,13 @@ local function a(desctiption)
 end
 
 vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
-vim.keymap.set("n", "<leader>gd", ":DiffviewOpen<cr>", a("Difference for this file"))
+vim.keymap.set("n", "<leader>gd", function()
+  if next(require("diffview.lib").views) == nil then
+    vim.cmd("DiffviewOpen")
+  else
+    vim.cmd("DiffviewClose")
+  end
+end, { desc = "Toggle Diffview for this file" })
 
 vim.keymap.set("n", "TT", ":TransparentToggle<CR>", a("Toggle transparetn mode"))
 vim.keymap.set("n", "<leader>mp", ":MarkdownPreview<CR>", a("preview of .md"))
