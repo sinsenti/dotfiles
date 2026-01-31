@@ -1,6 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -26,18 +23,11 @@ zinit snippet OMZP::command-not-found
 zinit snippet OMZP::docker-compose
 zinit snippet OMZP::vi-mode
 zinit snippet OMZP::tmux
-# Auto-start tmux when opening terminal
 ZSH_TMUX_AUTOSTART=true
-# Only autostart if no tmux running (recommended)
 ZSH_TMUX_AUTOSTART_ONCE=true
-# Auto-connect to existing sessions
 ZSH_TMUX_AUTOCONNECT=true
 
-# ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
-# plugins=(history tmux)
 
-# load completions for zsh
-# autoload -Uz compinit && compinit
 
 # carapace completion
 zinit light carapace-sh/carapace-bin
@@ -69,12 +59,10 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
-# opencode generated:
-#
-# autoload -Uz _zinit
-# (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
+alias tm="task modify"
+alias t="task limit:5 -my"
 alias gcm="git commit --message"
 alias g="git status"
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
@@ -176,15 +164,6 @@ export SYSTEMD_EDITOR="nvim"
 export SUDO_EDITOR="nvim"
 
 
-
-
-
-
-
-
-
-# opencode
-export PATH=/home/sinsenti/.opencode/bin:$PATH
 source ~/.env
 
 

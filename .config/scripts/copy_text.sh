@@ -5,7 +5,7 @@ set -euo pipefail
 
 readonly DIR="$HOME/Pictures/Screenshots"
 readonly IMG="$DIR/screenshot_$(date +%d%m%Y_%H%M%S).png"
-readonly LANGUAGES="eng+rus"
+readonly LANGUAGES="eng"
 
 main() {
   mkdir -p "$DIR"

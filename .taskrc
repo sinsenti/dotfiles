@@ -1,0 +1,36 @@
+# [Created by task 3.4.2 1/29/2026 09:09:30]
+data.location=/home/sinsenti/.task
+news.version=3.4.2
+
+# To use the default location of the XDG directories,
+# move this configuration file from ~/.taskrc to ~/.config/task/taskrc and update location config as follows:
+
+#data.location=~/.local/share/task
+#hooks.location=~/.config/task/hooks
+
+# Color theme (uncomment one to use)
+# include light-16.theme
+# include light-256.theme
+# include bubblegum-256.theme #5
+# include dark-16.theme
+# include dark-256.theme
+# include dark-red-256.theme
+include dark-green-256.theme #2
+# include dark-blue-256.theme #4
+# include dark-violets-256.theme
+# include dark-yellow-green.theme
+# include dark-gray-256.theme #1
+# include dark-gray-blue-256.theme #3
+# include solarized-dark-256.theme
+# include solarized-light-256.theme
+# include no-color.theme #6
+default.command=next
+confirmation=no
+dateformat=D-M-Y
+urgency.user.tag.dev.coefficient=6.0
+urgency.user.tag.ml.coefficient=2.0
+search.case.sensitive=no
+
+# If you have a project that is more important, you can boost the whole project:
+# task config urgency.user.project.Home.coefficient 2.9
+
