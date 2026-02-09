@@ -28,7 +28,8 @@ default.command=next
 confirmation=no
 dateformat=D-M-Y
 urgency.user.tag.dev.coefficient=6.0
-urgency.user.tag.ml.coefficient=2.0
+urgency.user.tag.first.coefficient=15.0
+urgency.user.tag.ml.coefficient=4.0
 search.case.sensitive=no
 
 # If you have a project that is more important, you can boost the whole project:

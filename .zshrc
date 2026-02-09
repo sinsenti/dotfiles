@@ -41,6 +41,7 @@ zinit cdreplay -q
 
 # bindkey '\t' end-of-line
 
+bindkey '^o' autosuggest-execute
 bindkey '^p' autosuggest-accept
 
 # ctrl-r became comfortable to search through history
@@ -61,8 +62,10 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
+alias b="btop"
+alias tw="clear && task waiting"
 alias tm="task modify"
-alias t="task limit:5 -my"
+alias t="clear && task limit:5 -my"
 alias gcm="git commit --message"
 alias g="git status"
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
@@ -162,6 +165,7 @@ export EDITOR="nvim"
 export VISUAL="nvim"
 export SYSTEMD_EDITOR="nvim"
 export SUDO_EDITOR="nvim"
+export OLLAMA_NUM_THREADS=4
 
 
 source ~/.env
