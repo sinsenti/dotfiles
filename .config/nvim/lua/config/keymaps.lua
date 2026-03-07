@@ -4,7 +4,11 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
-vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
+-- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
+vim.keymap.set("n", "<leader>gg", function()
+  local file_dir = vim.fn.expand("%:p:h")
+  require("neogit").open({ cwd = file_dir })
+end, a("Open neogit mod"))
 vim.keymap.set("n", "<leader>gd", function()
   if next(require("diffview.lib").views) == nil then
     vim.cmd("DiffviewOpen")

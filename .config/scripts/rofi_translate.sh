@@ -91,9 +91,10 @@ while true; do
   else
     TARGET_LANG="ru"
     TEXT="$INPUT"
+    ES_TEXT=$(trans -b "en:es" "$TEXT")
     TMP_RU=$(trans -b "en:ru" "$TEXT")
     TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
-    MESSAGE="$TMP_RU"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
+    MESSAGE="$TMP_RU"$'\n\n'"$ES_TEXT(spain)"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
 
     CHOICE=$(echo -e "Copy\nClose" |
       rofi -mesg "$MESSAGE" -dmenu -p "Done:")
