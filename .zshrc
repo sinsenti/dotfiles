@@ -61,6 +61,9 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
+alias vpnup='sudo systemctl start wg-quick@wginno'
+alias vpndown='sudo systemctl stop wg-quick@wginno'
+alias vpnstat='sudo systemctl status wg-quick@wginno'
 alias d="docker ps"
 alias gds='git diff --staged -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
 alias dc="docker compose"
@@ -169,6 +172,8 @@ export SYSTEMD_EDITOR="nvim"
 export SUDO_EDITOR="nvim"
 export OLLAMA_NUM_THREADS=4
 
+export GEMINI_STORAGE_BACKEND=plaintext
+
 
 source ~/.env
 
@@ -178,3 +183,10 @@ source ~/.env
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 eval "$(zoxide init --cmd cd zsh)"
+
+# bun completions
+[ -s "/home/sinsenti/.bun/_bun" ] && source "/home/sinsenti/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

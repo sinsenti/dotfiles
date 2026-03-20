@@ -94,7 +94,7 @@ vim.keymap.set("n", "<leader>oc", function()
   if vim.tbl_contains({ "python", "yaml" }, ft) then
     vim.cmd([[g/^\s*#/d]])
     vim.cmd([[%s/#.*//]])
-  elseif vim.tbl_contains({ "java", "c", "cpp", "cs", "javascript", "go" }, ft) then
+  elseif vim.tbl_contains({ "java", "c", "cpp", "cs", "javascript", "go", "sql" }, ft) then
     vim.cmd([[g@^\s*//@d]])
     vim.cmd([[%s@//.*@@]])
   end

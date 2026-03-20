@@ -64,7 +64,7 @@ while true; do
   # ---- TRANSLATION MODES ----
   is_valid_direction=false
   case "$DIRECTION" in
-  "en,ru" | "en" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en" | "fj")
+  "en,ru" | "en" | "ru,en" | "ru" | "кг" | "en,es" | "ru,es" | "es,en" | "es" | "fj")
     is_valid_direction=true
     ;;
   esac
@@ -74,6 +74,7 @@ while true; do
     "en,ru" | "en") TARGET_LANG="ru" ;;
     "ru,en" | "ru" | "кг") TARGET_LANG="en" ;;
     "en,es") TARGET_LANG="es" ;;
+    "es") TARGET_LANG="en" ;;
     "ru,es") TARGET_LANG="es" ;;
     "es,en") TARGET_LANG="en" ;;
     "fj") TARGET_LANG="ru" ;;
@@ -91,10 +92,10 @@ while true; do
   else
     TARGET_LANG="ru"
     TEXT="$INPUT"
-    ES_TEXT=$(trans -b "en:es" "$TEXT")
     TMP_RU=$(trans -b "en:ru" "$TEXT")
     TRANSLATION=$(trans -b "ru:en" "$TMP_RU")
-    MESSAGE="$TMP_RU"$'\n\n'"$ES_TEXT(spain)"$'\n\n'"$TEXT"$'\n\n'"$TRANSLATION"
+    ES_TEXT=$(trans -b "en:es" "$TRANSLATION")
+    MESSAGE="$TMP_RU"$'\n\n'"$ES_TEXT(spain)"$'\n\n'"$TEXT(input)"$'\n\n'"$TRANSLATION"
 
     CHOICE=$(echo -e "Copy\nClose" |
       rofi -mesg "$MESSAGE" -dmenu -p "Done:")
