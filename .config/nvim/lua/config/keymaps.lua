@@ -4,11 +4,62 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
--- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fugitive",
+  callback = function()
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = true, silent = true })
+  end,
+})
+
+-- tab and terminal settings
+vim.keymap.set("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New Tab" })
+vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { desc = "New Tab" })
+vim.keymap.set("n", "<leader>td", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
+-- Create a new tab and start a terminal in insert mode
+vim.keymap.set("n", "<leader>tt", function()
+  vim.cmd("tabnew")
+  vim.cmd("terminal")
+  vim.cmd("startinsert") -- Automatically enter insert mode so you can start typing
+end, { desc = "New Tab Terminal" })
+
+vim.keymap.set("n", "<leader>a", ":q<CR>", a("quit"))
+vim.keymap.set("n", "SS", function()
+  local win_count = #vim.api.nvim_tabpage_list_wins(0)
+  if win_count ~= 2 then
+    print("Toggle only works with exactly 2 windows")
+    return
+  end
+
+  local layout = vim.fn.winlayout()
+  if layout[1] == "row" then
+    vim.cmd("wincmd K") -- Change vertical to horizontal
+  else
+    vim.cmd("wincmd H") -- Change horizontal to vertical
+  end
+end, { desc = "Toggle Split Orientation" })
+
 vim.keymap.set("n", "<leader>gg", function()
   local file_dir = vim.fn.expand("%:p:h")
-  require("neogit").open({ cwd = file_dir })
+  require("neogit").open({
+    cwd = file_dir,
+    kind = "vsplit",
+  })
 end, a("Open neogit mod"))
+
+vim.keymap.set("n", "<leader>GG", ":vert Git<cr>", a("Git | only"))
+vim.keymap.set("n", "<leader>GA", ":Git add .<CR>", a("Git add ."))
+-- Open Git status in a vertical split
+vim.keymap.set("n", "<leader>GS", ":vert Git<CR>", a("Git status vertical"))
+
+-- Open Git commit in a vertical split
+vim.keymap.set("n", "<leader>GM", ":vert Git commit<CR>", a("Git commit vertical"))
+
+-- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
+-- vim.keymap.set("n", "<leader>gg", function()
+--   local file_dir = vim.fn.expand("%:p:h")
+--   require("neogit").open({ cwd = file_dir })
+-- end, a("Open neogit mod"))
 vim.keymap.set("n", "<leader>gd", function()
   if next(require("diffview.lib").views) == nil then
     vim.cmd("DiffviewOpen")
