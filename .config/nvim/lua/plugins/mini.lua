@@ -1,7 +1,7 @@
 return {
   {
     "nvim-mini/mini.files",
-    layz = false,
+    lazy = false, -- Fixed typo from 'layz'
     opts = {
       mappings = {
         close = "q",
@@ -20,27 +20,13 @@ return {
       },
 
       windows = {
-        -- preview = true,
-        -- width_focus = 30,
-        -- width_preview = 30,
-
-        --my
-        -- max_number = math.huge,
-        -- Whether to show preview of file/directory under cursor
         preview = true,
-        -- Width of focused window
         width_focus = 30,
-        -- Width of non-focused window
         width_nofocus = 15,
-        -- Width of preview window
         width_preview = 50,
       },
       options = {
-        -- Whether to use for editing directories
-        -- Disabled by default in LazyVim because neo-tree is used for that
         use_as_default_explorer = true,
-
-        --my
         permanent_delete = true,
       },
     },
@@ -61,7 +47,6 @@ return {
         end,
         desc = "Toggle mini.files (Directory of Current File)",
       },
-
       {
         "<leader>fM",
         function()
@@ -135,6 +120,20 @@ return {
             files_set_cwd,
             { buffer = args.data.buf_id, desc = "Set cwd" }
           )
+
+          -- =================================================================
+          -- NEW: Auto-save on Enter to create files without hitting "=" manually
+          -- =================================================================
+          vim.keymap.set("n", "<CR>", function()
+            -- Force mini.files to process any lines you just typed/edited
+            local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
+
+            -- Tell mini.files to commit changes to the disk immediately
+            require("mini.files").synchronize()
+
+            -- Keep the standard behavior moving your cursor forward into the file/dir
+            require("mini.files").go_in()
+          end, { buffer = buf_id, desc = "Synchronize and Enter" })
 
           map_split(buf_id, opts.mappings and opts.mappings.go_in_horizontal or "<C-w>s", "horizontal", false)
           map_split(buf_id, opts.mappings and opts.mappings.go_in_vertical or "<C-w>v", "vertical", false)

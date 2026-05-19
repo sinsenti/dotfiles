@@ -4,6 +4,24 @@ local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
+vim.keymap.set("n", "<leader>gc", function()
+  -- If Diffview is open, toggle it closed
+  if next(require("diffview.lib").views) ~= nil then
+    vim.cmd("DiffviewClose")
+  else
+    -- Call your active Snacks picker for git branches
+    require("snacks").picker.git_branches({
+      confirm = function(picker, item)
+        picker:close()
+        if item and item.text then
+          -- Open Diffview comparing your current working directory to the picked target
+          vim.cmd("DiffviewOpen " .. item.text)
+        end
+      end,
+    })
+  end
+end, { desc = "Toggle Diffview against Selected Branch (Snacks)" })
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "fugitive",
   callback = function()
@@ -43,7 +61,7 @@ vim.keymap.set("n", "<leader>gg", function()
   local file_dir = vim.fn.expand("%:p:h")
   require("neogit").open({
     cwd = file_dir,
-    kind = "vsplit",
+    kind = "replace",
   })
 end, a("Open neogit mod"))
 
