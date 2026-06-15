@@ -1,6 +1,6 @@
 #!/bin/bash
 output_file="backup_code.txt"
-exclude_dirs=(".git" "node_modules" "dist" "__pycache__" ".pytest_cache")
+exclude_dirs=(".git" "node_modules" "dist" "__pycache__" ".pytest_cache" ".idea" ".venv" ".github" ".idea")
 exclude_files=("package-lock.json" "poetry.lock" ".gitignore")
 
 echo

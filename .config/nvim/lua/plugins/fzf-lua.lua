@@ -164,6 +164,8 @@ return {
   keys = {
     { "<c-j>", "<c-j>", ft = "fzf", mode = "t", nowait = true },
     { "<c-k>", "<c-k>", ft = "fzf", mode = "t", nowait = true },
+    -- { "<leader><space>", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
+    { "<leader><space>", false },
     {
       "<leader>,",
       "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>",
@@ -171,12 +173,9 @@ return {
     },
     { "<leader>/", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
     { "<leader>:", "<cmd>FzfLua command_history<cr>", desc = "Command History" },
-    { "<leader><space>", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
     -- find
     { "<leader>fb", "<cmd>FzfLua buffers sort_mru=true sort_lastused=true<cr>", desc = "Buffers" },
     { "<leader>fc", LazyVim.pick.config_files(), desc = "Find Config File" },
-    -- { "<leader>ff", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
-    -- { "<leader>FF", LazyVim.pick("files", { cwd = "." }), desc = "Find Files (cwd)" },
     { "<leader>FF", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
     { "<leader>ff", LazyVim.pick("files", { cwd = "." }), desc = "Find Files (cwd)" },
     { "<leader>fG", "<cmd>FzfLua git_files<cr>", desc = "Find Files (git-files)" },
@@ -185,7 +184,7 @@ return {
     { "<leader>fR", LazyVim.pick("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
     -- git
     { "<leader>gC", "<cmd>FzfLua git_commits<CR>", desc = "Commits" },
-    { "<leader>gs", "<cmd>FzfLua git_status<CR>", desc = "Status" },
+    -- { "<leader>gs", "<cmd>FzfLua git_status<CR>", desc = "Status" },
     -- search
     { '<leader>s"', "<cmd>FzfLua registers<cr>", desc = "Registers" },
     { "<leader>sa", "<cmd>FzfLua autocmds<cr>", desc = "Auto Commands" },
@@ -210,6 +209,17 @@ return {
     { "<leader>sw", LazyVim.pick("grep_visual"), mode = "v", desc = "Selection (Root Dir)" },
     { "<leader>sW", LazyVim.pick("grep_visual", { root = false }), mode = "v", desc = "Selection (cwd)" },
     { "<leader>uC", LazyVim.pick("colorschemes"), desc = "Colorscheme with Preview" },
+    {
+      "<leader>gS",
+      function()
+        require("fzf-lua").git_stash({
+          -- This tells the previewer to include untracked files
+          preview = "git stash show -u -p {1}",
+        })
+      end,
+      desc = "Git Stash (including untracked)",
+    },
+
     {
       "<leader>ss",
       function()

@@ -39,6 +39,7 @@ return {
     },
   -- stylua: ignore
   keys = {
+    { "<leader>gh", function() Snacks.picker.git_log_file() end,  desc = "Git Current File History" },
     { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
     -- { "<leader>/", LazyVim.pick("grep"), desc = "Grep (Root Dir)" },
     -- { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },

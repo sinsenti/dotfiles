@@ -2,7 +2,12 @@ return {
   {
     "aveplen/ruscmd.nvim",
     event = "VeryLazy",
-    config = true,
+    config = function()
+      require("ruscmd").setup({
+        abbreviations = true, -- default true
+        keymaps = true, -- default true
+      })
+    end,
   },
   {
     "christoomey/vim-tmux-navigator",
@@ -20,7 +25,10 @@ return {
     "folke/twilight.nvim",
     event = "LazyFile",
     config = function()
-      require("twilight").setup({})
+      require("twilight").setup({
+        throttle = 20,
+        context = 5, -- Limit how many lines of context it looks at
+      })
     end,
   },
   {

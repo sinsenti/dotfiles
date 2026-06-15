@@ -1,223 +1,100 @@
+local map = vim.keymap.set
 local opts = { noremap = true, silent = true }
-
 local function a(desctiption)
   return vim.tbl_deep_extend("force", opts, { desc = desctiption })
 end
 
-vim.keymap.set("n", "<leader>gc", function()
-  -- If Diffview is open, toggle it closed
-  if next(require("diffview.lib").views) ~= nil then
-    vim.cmd("DiffviewClose")
-  else
-    -- Call your active Snacks picker for git branches
-    require("snacks").picker.git_branches({
-      confirm = function(picker, item)
-        picker:close()
-        if item and item.text then
-          -- Open Diffview comparing your current working directory to the picked target
-          vim.cmd("DiffviewOpen " .. item.text)
-        end
-      end,
-    })
-  end
-end, { desc = "Toggle Diffview against Selected Branch (Snacks)" })
+local f = require("config.functions")
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "fugitive",
-  callback = function()
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = true, silent = true })
-  end,
-})
+-- Bind it to a convenient hotkey inside your configuration layout
+map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
+map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
+map("v", "J", ":m '>+1<CR>gv=gv", a("move lines"))
+map("v", "K", ":m '<-2<CR>gv=gv", a("move lines"))
 
--- tab and terminal settings
-vim.keymap.set("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New Tab" })
-vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { desc = "New Tab" })
-vim.keymap.set("n", "<leader>td", "<cmd>tabclose<cr>", { desc = "Close Tab" })
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
--- Create a new tab and start a terminal in insert mode
-vim.keymap.set("n", "<leader>tt", function()
-  vim.cmd("tabnew")
-  vim.cmd("terminal")
-  vim.cmd("startinsert") -- Automatically enter insert mode so you can start typing
-end, { desc = "New Tab Terminal" })
+-- git
 
-vim.keymap.set("n", "<leader>a", ":q<CR>", a("quit"))
-vim.keymap.set("n", "SS", function()
-  local win_count = #vim.api.nvim_tabpage_list_wins(0)
-  if win_count ~= 2 then
-    print("Toggle only works with exactly 2 windows")
-    return
-  end
+map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status (Left Side)" })
+map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
+map("n", "<leader>ga", f.show_git_status_noice, { desc = "Git Status Toast Notification" })
+map("n", "<leader>gd", f.toggle_diffview, { desc = "Toggle Diffview" })
+map("n", "<leader>gt", f.git_stash_with_prompt, { desc = "Git Stash All (Including Untracked)" })
+map("n", "<leader>gc", f.git_commit_with_prompt, { desc = "Git Commit Staged Changes" })
+map("n", "<leader>gs", f.toggle_diffview_branch, { desc = "Toggle Diffview against branch" })
 
-  local layout = vim.fn.winlayout()
-  if layout[1] == "row" then
-    vim.cmd("wincmd K") -- Change vertical to horizontal
-  else
-    vim.cmd("wincmd H") -- Change horizontal to vertical
-  end
-end, { desc = "Toggle Split Orientation" })
+map("n", "<leader>gw", ":FzfLua git_branches<cr>", a("git checkout"))
+map("n", "<leader>gf", ":Gdiffsplit<cr>", a("quit"))
 
-vim.keymap.set("n", "<leader>gg", function()
-  local file_dir = vim.fn.expand("%:p:h")
-  require("neogit").open({
-    cwd = file_dir,
-    kind = "replace",
-  })
-end, a("Open neogit mod"))
+map("n", "<leader>GG", ":vert Git<cr>", a("Git | only"))
+map("n", "<leader>GA", ":Git add .<cr>", a("Git add ."))
+map("n", "<leader>GM", ":vert Git commit<cr>", a("Git commit vertical"))
+map("n", "<leader>GS", ":Neogit stash<cr>", a("Neogit stash"))
 
-vim.keymap.set("n", "<leader>GG", ":vert Git<cr>", a("Git | only"))
-vim.keymap.set("n", "<leader>GA", ":Git add .<CR>", a("Git add ."))
--- Open Git status in a vertical split
-vim.keymap.set("n", "<leader>GS", ":vert Git<CR>", a("Git status vertical"))
+-- tabs
 
--- Open Git commit in a vertical split
-vim.keymap.set("n", "<leader>GM", ":vert Git commit<CR>", a("Git commit vertical"))
+map("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+map("n", "<leader>tk", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+map("n", "<leader>tp", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+map("n", "<leader>tn", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+map("n", "<leader>tf", "<cmd>tabfirst<cr>", { desc = "First Tab" })
+map("n", "<leader>tl", "<cmd>tablast<cr>", { desc = "Last Tab" })
+map("n", "<leader>tt", "<cmd>tabnext<cr>", { desc = "New Tab" })
 
--- vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", a("Open neogit"))
--- vim.keymap.set("n", "<leader>gg", function()
---   local file_dir = vim.fn.expand("%:p:h")
---   require("neogit").open({ cwd = file_dir })
--- end, a("Open neogit mod"))
-vim.keymap.set("n", "<leader>gd", function()
-  if next(require("diffview.lib").views) == nil then
-    vim.cmd("DiffviewOpen")
-  else
-    vim.cmd("DiffviewClose")
-  end
-end, { desc = "Toggle Diffview for this file" })
+-- navigation
 
-vim.keymap.set("n", "TT", ":TransparentToggle<CR>", a("Toggle transparetn mode"))
-vim.keymap.set("n", "<leader>mp", ":MarkdownPreview<CR>", a("preview of .md"))
-vim.keymap.set(
-  "n",
-  "<leader>oa",
-  ":ObsidianToggleCheckbox<CR>04la<space><space><space><esc>0",
-  a("Create task in obsidian")
-)
+map("n", "<c-h>", ":TmuxNavigateLeft<cr>", opts)
+map("n", "<c-l>", ":TmuxNavigateRight<cr>", opts)
+map("n", "<c-j>", ":TmuxNavigateDown<cr>", opts)
+map("n", "<c-k>", ":TmuxNavigateUp<cr>", opts)
+map("n", "<Up>", ":resize -2<cr>", opts)
+map("n", "<Down>", ":resize +2<cr>", opts)
+map("n", "<Left>", ":vertical resize -2<cr>", opts)
+map("n", "<Right>", ":vertical resize +2<cr>", opts)
 
-vim.keymap.set("n", "<leader>re", ":MoltenEvaluateOperator<CR>", { desc = "evaluate operator", silent = true })
-vim.keymap.set("n", "<leader>ro", ":noautocmd MoltenEnterOutput<CR>", { desc = "open output window", silent = true })
-vim.keymap.set("n", "<leader>rr", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
-vim.keymap.set(
-  "v",
-  "<leader>r",
-  ":<C-u>MoltenEvaluateVisual<CR>gv",
-  { desc = "execute visual selection", silent = true }
-)
-vim.keymap.set("n", "<leader>rh", ":MoltenEvaluateLine<CR>", { desc = "evaluate line", silent = true })
-vim.keymap.set("n", "<leader>rh", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
-vim.keymap.set("n", "<leader>dd", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
-vim.keymap.set("n", "<leader>rx", ":MoltenOpenInBrowser<CR>", { desc = "open output in browser", silent = true })
-vim.keymap.set("n", "<leader>rd", ":MoltenDeinit<CR>", { desc = "deinit ", silent = true })
+map("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
+map("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
+-- map("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
 
-vim.keymap.set("n", "<leader>z", ":ZenMode<CR>", a("toggle zoom mode"))
-vim.keymap.set("n", "<leader>y", "ggyG", a("copy full file"))
-vim.keymap.set("n", "<leader>p", "<esc>ggVGp", a("change full file"))
-vim.keymap.set("n", "<c-h>", ":TmuxNavigateLeft<CR>", opts)
-vim.keymap.set("n", "<c-l>", ":TmuxNavigateRight<CR>", opts)
-vim.keymap.set("n", "<c-j>", ":TmuxNavigateDown<CR>", opts)
-vim.keymap.set("n", "<c-k>", ":TmuxNavigateUp<CR>", opts)
+-- help
 
--- vim.keymap.set("n", "<leader>-", ":Oil<CR>", opts)
+map("n", "q:", ":q<cr>", { desc = "misclick" })
+map("n", "<leader>a", ":q<cr>", a("quit"))
+map("n", "<leader>z", ":ZenMode<cr>", a("toggle zoom mode"))
+map("n", "<leader>y", "ggyG", a("copy full file"))
+map("n", "<leader>p", "<esc>ggVGp", a("change full file"))
+map("n", "<c-s>", ":w<cr>", opts)
+map("i", "<c-a>", "<Esc>mpggyG'p:delmarks p<cr>", opts)
 
-vim.keymap.set("t", "jk", "<C-\\><C-n>", opts)
-vim.keymap.set("n", "<leader>df", ":DeleteFile", {})
+map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
+map("t", "jk", "<C-\\><C-n>", opts)
 
-vim.keymap.set("i", "<C-h>", "<C-w>", opts)
-vim.keymap.set("i", "<c-a>", "<Esc>mpggyG'p:delmarks p<cr>", opts)
-vim.keymap.set("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
-vim.keymap.set("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
-vim.keymap.set("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
+map("n", "tw", ":Twilight<cr>", opts)
+map("n", "Q", ":q<cr>", opts)
+map("n", "WW", ":w<cr>", opts)
+map("n", "WQ", ":wqa<cr>", opts)
+map({ "n", "v" }, "E", "$", opts)
+map({ "n", "v" }, "B", "^", opts)
+map("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
+map("n", "ss", ":vsplit<cr>", opts)
+map("n", "sv", ":split<cr>", opts)
 
-vim.api.nvim_set_keymap("n", "tw", ":Twilight<cr>", opts)
-vim.api.nvim_set_keymap("n", "QQ", ":q<cr>", opts)
-vim.api.nvim_set_keymap("n", "WW", ":w<cr>", opts)
-vim.api.nvim_set_keymap("n", "WQ", ":wqa<cr>", opts)
-vim.api.nvim_set_keymap("n", "<c-s>", ":w<cr>", opts)
-vim.api.nvim_set_keymap("n", "E", "$", opts)
-vim.api.nvim_set_keymap("n", "B", "^", opts)
-vim.keymap.set("n", "<Up>", ":resize -2<cr>", opts)
-vim.keymap.set("n", "<Down>", ":resize +2<cr>", opts)
-vim.keymap.set("n", "<Left>", ":vertical resize -2<cr>", opts)
-vim.keymap.set("n", "<Right>", ":vertical resize +2<cr>", opts)
-vim.keymap.set("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
--- vim.keymap.set("i", "jk", "<Esc>", opts)
--- vim.keymap.set("i", "ОЛ", "<Esc>", opts)
--- vim.keymap.set("i", "Jk", "<Esc>", opts)
--- vim.keymap.set("i", "JK", "<Esc>", opts)
-vim.keymap.set("n", "ss", ":vsplit<Return>", opts)
-vim.keymap.set("n", "sv", ":split<Return>", opts)
-vim.keymap.set("n", "<F5>", require("dap").step_into)
+map("n", "TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
+map("n", "<leader>df", ":DeleteFile", {})
 
-vim.keymap.set("n", "<leader>Fa", function()
-  local codeium_config = require("codeium.config").options.virtual_text
-  codeium_config.manual = not codeium_config.manual
-  if codeium_config.manual then
-    print("Codeium disabled")
-  else
-    print("Codeium enabled")
-  end
-end, { desc = "Toggle Codeium completion" })
-vim.keymap.set("n", "<leader>oc", function()
-  local ft = vim.bo.filetype
-  if vim.tbl_contains({ "python", "yaml" }, ft) then
-    vim.cmd([[g/^\s*#/d]])
-    vim.cmd([[%s/#.*//]])
-  elseif vim.tbl_contains({ "java", "c", "cpp", "cs", "javascript", "go", "sql" }, ft) then
-    vim.cmd([[g@^\s*//@d]])
-    vim.cmd([[%s@//.*@@]])
-  end
-end, opts)
-vim.api.nvim_create_user_command("DeleteFile", function()
-  vim.cmd("w")
-  local file = vim.fn.expand("%:p")
-  if vim.fn.filereadable(file) == 1 then
-    vim.fn.delete(file)
-  else
-  end
-  vim.cmd("bdelete")
-end, { desc = "Delete the current file and buffer" })
-vim.keymap.set("n", "<leader>cp", function()
-  local filepath = vim.fn.expand("%:p")
-  filepath = filepath:gsub("\\", "/") -- Replace backslashes with forward slashes
-  filepath = filepath:gsub(" ", "\\ ") -- Escape spaces by adding a backslash before each
-  vim.fn.setreg("+", filepath)
-  print("Copied file path to clipboard: " .. filepath)
-end, { desc = "Copy file path to clipboard with forward slashes and escaped spaces" })
+-- functions
+map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
+map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
+map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-slash filepath" })
+map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 
--- vim.keymap.set("n", "<leader>t", function()
---   local current_dir = vim.fn.expand("%:p:h")
---   if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
---     current_dir = vim.fn.getcwd()
---   end
---   local in_terminal = vim.bo.buftype == "terminal"
---   local current_file = vim.fn.expand("%:t")
---   local command = "python " .. current_file
---   vim.fn.setreg("+", command) -- '+' is the system clipboard register
---   if in_terminal then
---     vim.cmd("hide")
---   else
---     require("snacks").terminal("zsh", {
---       cwd = current_dir,
---       env = { TERM = "x-256color" },
---       win = {
---         style = "terminal",
---         relative = "editor",
---         -- height = 0.83,
---         height = 0.83,
---       },
---     })
---   end
--- end, { desc = "Toggle Terminal" })
+map("n", "<F5>", require("dap").step_into)
+map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
+map("n", "<leader>oa", ":ObsidianToggleCheckbox<cr>04la<space><space><space><esc>0", a("Create task in obsidian"))
 
-vim.keymap.set("n", "<leader>DD", function()
-  vim.cmd("w")
-  local path = vim.fn.expand("%:p:r")
-  path = vim.fn.substitute(path, "\\", "/", "g")
-  local fileDir = vim.fn.expand("%:p:h")
-  local command = "cd " .. fileDir .. " && " .. "clang++ --debug -o " .. path .. " " .. path .. ".cpp && " .. path
-  vim.api.nvim_input("<C-/>")
-  vim.defer_fn(function()
-    vim.api.nvim_put({ command }, "l", true, true)
-  end, 100)
-end, opts)
+-- Create Neovim note
+map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
+
+-- Make 'j' and 'k' move instantly on display lines without triggering timeouts
+map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
+map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, noremap = true })

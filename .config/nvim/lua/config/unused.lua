@@ -1,0 +1,68 @@
+--Molten
+-- map("n", "<leader>re", ":MoltenEvaluateOperator<cr>", { desc = "evaluate operator", silent = true })
+-- map("n", "<leader>ro", ":noautocmd MoltenEnterOutput<cr>", { desc = "open output window", silent = true })
+-- map("n", "<leader>rr", ":MoltenReevaluateCell<cr>", { desc = "re-eval cell", silent = true })
+-- map("v", "<leader>r", ":<C-u>MoltenEvaluateVisual<cr>gv", { desc = "execute visual selection", silent = true })
+-- map("n", "<leader>rh", ":MoltenEvaluateLine<cr>", { desc = "evaluate line", silent = true })
+-- map("n", "<leader>rh", ":MoltenHideOutput<cr>", { desc = "close output window", silent = true })
+-- map("n", "<leader>dd", ":MoltenDelete<cr>", { desc = "delete Molten cell", silent = true })
+-- map("n", "<leader>rx", ":MoltenOpenInBrowser<cr>", { desc = "open output in browser", silent = true })
+-- map("n", "<leader>rd", ":MoltenDeinit<cr>", { desc = "deinit ", silent = true })
+
+-- map("n", "<leader>t", f.toggle_smart_terminal, { desc = "Toggle Smart Terminal Overlay" })
+-- map("n", "<leader>tt", f.open_tab_terminal, { desc = "New Tab Terminal Interface" })
+-- map("n", "<leader>DD", f.compile_and_run_cpp, { desc = "Compile, Debug, and Run C++ active script" })
+
+-- functions
+
+-- BigOpen function can be deleted(not used)
+
+-- vim.api.nvim_create_user_command("BigOpen", function(opts)
+--   local filepath = opts.args
+--   if filepath == "" then
+--     vim.notify("Please provide a file path.", vim.log.levels.ERROR)
+--     return
+--   end
+--
+--   -- 1. Safely blind Neovim before loading the buffer
+--   vim.g.neovim_loading_bigfile = true
+--   vim.opt.eventignore:append({ "BufReadPre", "BufReadPost", "FileType" })
+--
+--   -- 2. Use a protected execution block to guarantee cleanup happens no matter what
+--   local success, err = pcall(function()
+--     vim.cmd("edit " .. vim.fn.fnameescape(filepath))
+--     local buf = vim.api.nvim_get_current_buf()
+--
+--     -- Strip performance killers locally
+--     vim.opt_local.swapfile = false
+--     vim.opt_local.undofile = false
+--     vim.opt_local.foldmethod = "manual"
+--     vim.opt_local.wrap = false
+--     vim.opt_local.statuscolumn = ""
+--     vim.opt_local.relativenumber = false
+--     vim.opt_local.syntax = "off"
+--
+--     -- Disable Treesitter natively if active
+--     pcall(vim.treesitter.stop, buf)
+--
+--     local clients = vim.lsp.get_clients({ bufnr = buf })
+--     for _, client in ipairs(clients) do
+--       vim.lsp.buf_detach_client(buf, client.id)
+--     end
+--   end)
+--
+--   -- 3. GUARANTEED TEARDOWN: This will run even if the edit block above fails
+--   vim.opt.eventignore:remove({ "BufReadPre", "BufReadPost", "FileType" })
+--   vim.g.neovim_loading_bigfile = false
+--
+--   -- If something did go wrong inside the edit block, let you know without breaking Neovim
+--   if not success then
+--     vim.notify("BigOpen encountered an error: " .. tostring(err), vim.log.levels.ERROR)
+--   else
+--     vim.notify("File opened in Fast Raw Mode.", vim.log.levels.WARN)
+--   end
+-- end, {
+--   nargs = 1,
+--   complete = "file",
+--   desc = "Open a massive file instantly in raw text mode",
+-- })

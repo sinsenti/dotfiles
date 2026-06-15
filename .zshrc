@@ -61,6 +61,20 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
+# alias g='echo "\033[1;32m--- STATUS ---\033[0m\n"; git status; echo "\n\n\n\033[1;34m--- STASHES ---\033[0m\n"; git stash list; echo "\n\n\n\033[1;35m--- LATEST LOGS ---\033[0m\n"; git log --graph --all -n 10 --pretty=format:"%C(244)%h%Creset %s %C(cyan)(%an)%Creset %C(auto)%d"'
+alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
+alias gsp="git stash pop"
+alias gsd="git stash drop"
+alias gsa="git stash apply"
+alias ga="git status"
+alias gw="git worktree"
+alias gst='git stash push -u -m '
+alias langup="docker compose --profile langfuse up"
+alias jobrestart="docker compose up -d --no-deps job_service"
+alias joblogs="docker compose logs -f job_service"
+# alias jobenv='docker compose exec job_service env | grep -Ei "posthog|langfuse"'
+alias jobenv='docker compose exec job_service sh -c "env | grep -i '\''posthog'\''; env | grep -i '\''langfuse'\''"'
+alias gsl="git stash list"
 alias vpnup='sudo systemctl start wg-quick@wginno'
 alias vpndown='sudo systemctl stop wg-quick@wginno'
 alias vpnstat='sudo systemctl status wg-quick@wginno'
@@ -68,14 +82,14 @@ alias d="docker ps"
 alias gds='git diff --staged -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
 alias dc="docker compose"
 alias b="btop"
-alias tw="clear && task waiting"
-alias tm="task modify"
-alias t="clear && task limit:5 -my"
+# alias tw="clear && task waiting"
+# alias tm="task modify"
+# alias t="clear && task limit:5 -my"
 alias gcm="git commit --message"
 alias g="git status"
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
-alias zi="cdi"
-alias z="cd"
+# alias zi="cdi"
+# alias z="cd"
 alias ls="ls --color"
 alias a="tmux"
 alias st="sudo systemctl status tor"
@@ -101,7 +115,7 @@ alias matrix="cmatrix -b -s -u 3 -C cyan"
 alias gbv="git branch --verbose"
 alias smartcopy="python ~/dotfiles/.config/scripts/backup_code.py"
 alias copyall="bash ~/dotfiles/.config/scripts/copy_all.sh"
-alias gitpush="bash ~/dotfiles/.config/scripts/git_push.sh"
+# alias gitpush="bash ~/dotfiles/.config/scripts/git_push.sh"
 alias n="nvim"
 alias c="clear"
 alias nz="nvim ~/.zshrc"
@@ -110,6 +124,7 @@ alias e="exit"
 alias q="exit"
 alias ff='fzf --height 100% --preview "bat -n --color=always --theme=Dracula {}" | { read -r file && nvim "$file"; }'
 alias tree='exa --tree --header --icons -a --level=1 --group-directories-first'
+alias t='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias l='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree1='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
@@ -175,8 +190,8 @@ export OLLAMA_NUM_THREADS=4
 export GEMINI_STORAGE_BACKEND=plaintext
 
 
-source ~/.env
 
+# source ~/.env
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -190,3 +205,30 @@ eval "$(zoxide init --cmd cd zsh)"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# for poetry
+export PATH="$HOME/.local/bin:$PATH"
+
+# Define a custom wrapper that explicitly calls nvim
+function open_nvim_command_line() {
+    # Force the editor variable strictly for this execution hook
+    local EDITOR=nvim
+    local VISUAL=nvim
+    autoload -U edit-command-line
+    zle edit-command-line
+}
+zle -N open_nvim_command_line
+
+# Bind the key to our explicit Neovim launcher function
+bindkey -M vicmd 'v' open_nvim_command_line
+
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+# for fzf
+# export PATH= "$PATH:$HOME/.fzf/bin"

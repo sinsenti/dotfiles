@@ -2,7 +2,6 @@ return {
   "epwalsh/obsidian.nvim",
   version = "*",
   event = "VeryLazy",
-  -- ft = "markdown",
   dependencies = {
     "nvim-lua/plenary.nvim",
     "ibhagwan/fzf-lua",
@@ -11,12 +10,8 @@ return {
   },
   config = function()
     require("obsidian").setup({
-      -- disable_frontmatter = false,
-      --to open obsidian by :ObsdianOpen
-      -- use_advanced_uri = true,
       open_app_foreground = true,
       follow_url_func = function(url)
-        -- Open the URL in the default web browser on Linux
         vim.fn.jobstart({ "xdg-open", url })
       end,
 
@@ -25,18 +20,26 @@ return {
           name = "obsidian",
           path = "~/git/obsidian",
         },
+        {
+          name = "project",
+          path = "~/git/not_used/skiftr/project",
+        },
       },
+
+      -- Fallback to your main vault if you open a markdown file outside both paths
+      -- detect_cwd = false,
+
       daily_notes = {
         date_format = "%d-%m-%Y",
         default_tags = { "daily-notes" },
       },
       templates = {
-        folder = "~/git/obsidian/Templates",
+        folder = "Templates", -- Relative to the active workspace path!
         date_format = "%d-%m-%y",
         time_format = "%H:%M",
       },
       ui = {
-        enable = true,
+        enable = false,
         checkboxes = {
           -- [' '] = { char = '󰄱', hl_group = 'ObsidianTodo' },
           -- ['x'] = { char = '', hl_group = 'ObsidianDone' },
@@ -66,12 +69,26 @@ return {
     -- vim.keymap.set("n", "<leader>or", ":ObsidianRename", {})
     -- vim.keymap.set("n", "<leader>oi", ":ObsidianPasteImg<CR>", {})
 
-    -- vim.keymap.set("n", "<leader>oo", ":Obsidian", {})
+    vim.keymap.set("n", "<leader>oh", function()
+      local client = require("obsidian").get_client()
+      local current_workspace = client.current_workspace.name
+
+      if current_workspace == "project" then
+        vim.cmd("ObsidianWorkspace obsidian")
+        -- vim.notify("Switched to Obsidian Vault", vim.log.levels.INFO)
+      else
+        vim.cmd("ObsidianWorkspace project")
+        -- vim.notify("Switched to Project Workspace", vim.log.levels.INFO)
+      end
+    end, { noremap = true, silent = true, desc = "Toggle Obsidian Workspaces" })
+
+    -- Navigation and Search
     vim.keymap.set("n", "<leader>of", ":ObsidianQuickSwitch<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<leader>og", ":ObsidianSearch<CR>", { desc = "Find words", noremap = true, silent = true })
     vim.keymap.set("n", "<leader>ol", ":ObsidianLinks<CR>", { noremap = true, silent = true })
     vim.keymap.set("n", "<leader>ob", ":ObsidianBacklinks<CR>", { noremap = true, silent = true })
-    vim.keymap.set("n", "<leader>ot", ":ObsidianNewFromTemplate", {})
+
+    -- Template Logic
     vim.keymap.set("n", "<leader>ot", function()
       vim.api.nvim_feedkeys(":ObsidianNewFromTemplate ", "n", false)
       vim.schedule(function()
@@ -79,7 +96,8 @@ return {
       end)
     end, { noremap = true, silent = true, desc = "Create new note from template" })
 
-    function ToggleCheckbox()
+    -- Clean checkbox toggle tracking
+    _G.ToggleCheckbox = function()
       local line = vim.api.nvim_get_current_line()
       if line:find("%[x%]") then
         line = line:gsub("%[x%]", "[ ]", 1)
@@ -88,7 +106,5 @@ return {
       end
       vim.api.nvim_set_current_line(line)
     end
-
-    -- vim.api.nvim_set_keymap('n', '<leader>ot', ':lua ToggleCheckbox()<CR>', { noremap = true, silent = true, desc = ' Toggle checkbox' })
   end,
 }
