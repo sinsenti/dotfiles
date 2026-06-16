@@ -66,3 +66,42 @@
 --   complete = "file",
 --   desc = "Open a massive file instantly in raw text mode",
 -- })
+
+-- local function clean_and_append_spaces()
+--   local buf = vim.api.nvim_get_current_buf()
+--   if not vim.api.nvim_buf_is_valid(buf) then
+--     return
+--   end
+--
+--   -- Grab all raw text lines inside the currently active buffer
+--   local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+--   local cleaned_lines = {}
+--
+--   local i = 1
+--   while i <= #lines do
+--     local current_line = lines[i]
+--     local next_line = lines[i + 1]
+--
+--     -- Match exact sequence: 'status:' followed by '  - baby'
+--     if current_line:match("^status:%s*$") and next_line and next_line:match("^%s*-%s*baby%s*$") then
+--       i = i + 2 -- Skip both block lines completely
+--     else
+--       -- If the line contains at least one non-whitespace character/symbol
+--       if current_line:match("%S") then
+--         -- Trim any existing trailing spaces first to avoid making a giant pile of spaces,
+--         -- then cleanly append exactly two spaces to the end of the line.
+--         current_line = current_line:gsub("%s*$", "") .. "  "
+--       end
+--       table.insert(cleaned_lines, current_line)
+--       i = i + 1
+--     end
+--   end
+--
+--   -- Write the transformed text layout safely back down over the active Neovim buffer
+--   vim.api.nvim_buf_set_lines(buf, 0, -1, false, cleaned_lines)
+-- end
+-- Create a user command so you can execute it manually with :CleanMarkdown
+-- vim.api.nvim_create_user_command("CleanMarkdown", clean_and_append_spaces, {})
+--
+-- -- Optional: Map it to a convenient hotkey shortcut layer (e.g., <leader>mc)
+-- vim.keymap.set("n", "<leader>mc", clean_and_append_spaces, { desc = "Clean Status Meta & Add Trailing Spaces" })

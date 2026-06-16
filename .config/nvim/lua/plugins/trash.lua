@@ -1,13 +1,24 @@
 return {
   {
-    "aveplen/ruscmd.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("ruscmd").setup({
-        abbreviations = true, -- default true
-        keymaps = true, -- default true
-      })
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "todotxt" },
+      auto_install = true,
+      highlight = { enable = true },
+    },
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    -- ─── SYSTEM-LEVEL COMPILATION BUILD HOOK ───
+    build = "cd app && npm install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
     end,
+  },
+  {
+    "powerman/vim-plugin-ruscmd",
   },
   {
     "christoomey/vim-tmux-navigator",

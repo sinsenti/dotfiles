@@ -61,7 +61,8 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
-# alias g='echo "\033[1;32m--- STATUS ---\033[0m\n"; git status; echo "\n\n\n\033[1;34m--- STASHES ---\033[0m\n"; git stash list; echo "\n\n\n\033[1;35m--- LATEST LOGS ---\033[0m\n"; git log --graph --all -n 10 --pretty=format:"%C(244)%h%Creset %s %C(cyan)(%an)%Creset %C(auto)%d"'
+alias t='tuxedo'
+alias gpm="git push origin main"
 alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
 alias gsp="git stash pop"
 alias gsd="git stash drop"
@@ -69,11 +70,9 @@ alias gsa="git stash apply"
 alias ga="git status"
 alias gw="git worktree"
 alias gst='git stash push -u -m '
-alias langup="docker compose --profile langfuse up"
-alias jobrestart="docker compose up -d --no-deps job_service"
-alias joblogs="docker compose logs -f job_service"
-# alias jobenv='docker compose exec job_service env | grep -Ei "posthog|langfuse"'
-alias jobenv='docker compose exec job_service sh -c "env | grep -i '\''posthog'\''; env | grep -i '\''langfuse'\''"'
+# alias jobrestart="docker compose up -d --no-deps job_service"
+# alias joblogs="docker compose logs -f job_service"
+# alias jobenv='docker compose exec job_service sh -c "env | grep -i '\''posthog'\''; env | grep -i '\''langfuse'\''"'
 alias gsl="git stash list"
 alias vpnup='sudo systemctl start wg-quick@wginno'
 alias vpndown='sudo systemctl stop wg-quick@wginno'
@@ -124,7 +123,6 @@ alias e="exit"
 alias q="exit"
 alias ff='fzf --height 100% --preview "bat -n --color=always --theme=Dracula {}" | { read -r file && nvim "$file"; }'
 alias tree='exa --tree --header --icons -a --level=1 --group-directories-first'
-alias t='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias l='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree1='exa --tree --header --icons -a --level=1 --group-directories-first'
 alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
@@ -224,6 +222,9 @@ function open_nvim_command_line() {
     zle edit-command-line
 }
 zle -N open_nvim_command_line
+
+source "$HOME/.cargo/env"
+export TODO_DIR="$HOME/Documents"
 
 # Bind the key to our explicit Neovim launcher function
 bindkey -M vicmd 'v' open_nvim_command_line

@@ -1,6 +1,6 @@
 return {
   { "akinsho/bufferline.nvim", enabled = false },
-  { "iamcco/markdown-preview.nvim", enabled = false },
+  -- { "iamcco/markdown-preview.nvim", enabled = true },
   { "MeanderingProgrammer/render-markdown.nvim", enabled = true, event = "BufRead" },
   {
     "nvim-neo-tree/neo-tree.nvim",

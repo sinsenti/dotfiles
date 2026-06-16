@@ -7,6 +7,11 @@ end
 local f = require("config.functions")
 
 -- Bind it to a convenient hotkey inside your configuration layout
+
+map("n", "<leader>nn", ":Dooing<cr>", a("Dooing open"))
+map("n", "<leader>nt", ":DooingDue<cr>", a("Dooing today tasks"))
+vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
+
 map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
 map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
 map("v", "J", ":m '>+1<CR>gv=gv", a("move lines"))
@@ -90,6 +95,7 @@ map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 
 map("n", "<F5>", require("dap").step_into)
 map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
+map("n", "<leader>ma", ":set list!<cr>", a("toggle spces at the end of line"))
 map("n", "<leader>oa", ":ObsidianToggleCheckbox<cr>04la<space><space><space><esc>0", a("Create task in obsidian"))
 
 -- Create Neovim note
