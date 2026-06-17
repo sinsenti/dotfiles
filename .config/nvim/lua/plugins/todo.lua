@@ -1,6 +1,7 @@
 return {
   {
     "phrmendes/todotxt.nvim",
+    event = "VeryLazy",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     init = function()
       vim.filetype.add({
@@ -246,16 +247,11 @@ return {
           end
         end,
       })
-
-      pcall(function()
-        require("nvim-treesitter.configs").setup({
-          ensure_installed = { "todotxt" },
-        })
-      end)
     end,
   },
   {
     "atiladefreitas/dooing",
+    event = "VeryLazy",
     config = function()
       require("dooing").setup({
         window = {

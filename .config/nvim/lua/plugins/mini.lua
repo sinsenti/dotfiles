@@ -1,7 +1,7 @@
 return {
   {
     "nvim-mini/mini.files",
-    lazy = false,
+    event = "VeryLazy",
     opts = {
       mappings = {
         close = "q",

@@ -1,14 +1,76 @@
 return {
   {
+    "ThePrimeagen/harpoon",
+    event = "VeryLazy",
+    branch = "harpoon2",
+    opts = {
+      menu = {
+        width = vim.api.nvim_win_get_width(0) - 4,
+      },
+      settings = {
+        save_on_toggle = true,
+      },
+    },
+    keys = function()
+      local keys = {
+        {
+          "<leader>HH",
+          function()
+            require("harpoon"):list():add()
+          end,
+          desc = "Harpoon File",
+        },
+        {
+          "<leader>hh",
+          function()
+            local harpoon = require("harpoon")
+            harpoon.ui:toggle_quick_menu(harpoon:list())
+          end,
+          desc = "Harpoon Quick Menu",
+        },
+      }
+
+      for i = 1, 9 do
+        table.insert(keys, {
+          "<leader>" .. i,
+          function()
+            require("harpoon"):list():select(i)
+          end,
+          desc = "Harpoon to File " .. i,
+        })
+      end
+      return keys
+    end,
+  },
+  {
+    "linux-cultist/venv-selector.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      {
+        "ibhagwan/fzf-lua",
+        version = "*",
+        dependencies = { "nvim-lua/plenary.nvim" },
+      }, -- optional: you can also use fzf-lua, snacks, mini-pick instead.
+    },
+    ft = "python", -- Load when opening Python files
+    keys = { { "<leader>v", "<cmd>VenvSelect<cr>" } }, -- Open picker on keymap
+    opts = {
+      options = {}, -- plugin-wide options
+      search = {}, -- custom search definitions
+    },
+  },
+
+  {
     "nvim-treesitter/nvim-treesitter",
     opts = {
-      ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "todotxt" },
+      ensure_installed = { "markdown", "todotxt" },
       auto_install = true,
       highlight = { enable = true },
     },
   },
   {
     "iamcco/markdown-preview.nvim",
+    event = "VeryLazy",
     cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
     ft = { "markdown" },
     -- ─── SYSTEM-LEVEL COMPILATION BUILD HOOK ───
@@ -19,6 +81,7 @@ return {
   },
   {
     "powerman/vim-plugin-ruscmd",
+    event = "VeryLazy",
   },
   {
     "christoomey/vim-tmux-navigator",
@@ -26,7 +89,7 @@ return {
   },
   {
     "xiyaowong/transparent.nvim",
-    lazy = false,
+    event = "VeryLazy",
     config = function()
       require("transparent").setup({})
     end,

@@ -74,7 +74,7 @@ return {
         gs.nav_hunk("prev")
       end
     end, "Prev Hunk")
-    map("n", "<leader>hh", ":Gitsigns<cr>", "Gitsigns open")
+    -- map("n", "<leader>hh", ":Gitsigns<cr>", "Gitsigns open")
     map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk")
     map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
     map({ "n", "x" }, "<leader>hs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")

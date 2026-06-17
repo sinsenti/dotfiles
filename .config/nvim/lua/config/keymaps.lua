@@ -6,19 +6,9 @@ end
 
 local f = require("config.functions")
 
--- Bind it to a convenient hotkey inside your configuration layout
-
-map("n", "<leader>nn", ":Dooing<cr>", a("Dooing open"))
-map("n", "<leader>nt", ":DooingDue<cr>", a("Dooing today tasks"))
-vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
-
-map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
-map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
-map("v", "J", ":m '>+1<CR>gv=gv", a("move lines"))
-map("v", "K", ":m '<-2<CR>gv=gv", a("move lines"))
-
 -- git
 
+map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
 map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status (Left Side)" })
 map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>ga", f.show_git_status_noice, { desc = "Git Status Toast Notification" })
@@ -28,7 +18,7 @@ map("n", "<leader>gc", f.git_commit_with_prompt, { desc = "Git Commit Staged Cha
 map("n", "<leader>gs", f.toggle_diffview_branch, { desc = "Toggle Diffview against branch" })
 
 map("n", "<leader>gw", ":FzfLua git_branches<cr>", a("git checkout"))
-map("n", "<leader>gf", ":Gdiffsplit<cr>", a("quit"))
+map("n", "<leader>gf", ":Gdiffsplit<cr>", a("File diff"))
 
 map("n", "<leader>GG", ":vert Git<cr>", a("Git | only"))
 map("n", "<leader>GA", ":Git add .<cr>", a("Git add ."))
@@ -48,6 +38,12 @@ map("n", "<leader>tt", "<cmd>tabnext<cr>", { desc = "New Tab" })
 
 -- navigation
 
+map("v", "J", ":m '>+1<CR>gv=gv", a("move selected lines"))
+map("v", "K", ":m '<-2<CR>gv=gv", a("move selected lines"))
+map("n", "<C-d>", "<C-d>zz", opts)
+map("n", "<C-u>", "<C-u>zz", opts)
+map("n", "n", "nzzzv", opts)
+map("n", "N", "Nzzzv", opts)
 map("n", "<c-h>", ":TmuxNavigateLeft<cr>", opts)
 map("n", "<c-l>", ":TmuxNavigateRight<cr>", opts)
 map("n", "<c-j>", ":TmuxNavigateDown<cr>", opts)
@@ -62,6 +58,11 @@ map("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
 -- map("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
 
 -- help
+
+map({ "n", "v" }, "x", '"_x', opts)
+map({ "n", "v" }, "X", '"_X', opts)
+map({ "n", "v" }, "c", '"_c', opts)
+map({ "n", "v" }, "C", '"_C', opts)
 
 map("n", "q:", ":q<cr>", { desc = "misclick" })
 map("n", "<leader>a", ":q<cr>", a("quit"))
@@ -87,7 +88,15 @@ map("n", "sv", ":split<cr>", opts)
 map("n", "TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
 map("n", "<leader>df", ":DeleteFile", {})
 
+-- notes
+map("n", "<leader>nn", ":Dooing<cr>", a("Dooing open"))
+map("n", "<leader>nt", ":DooingDue<cr>", a("Dooing today tasks"))
+vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
+
 -- functions
+map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
+map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
+map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
 map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-slash filepath" })
@@ -96,7 +105,6 @@ map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 map("n", "<F5>", require("dap").step_into)
 map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
 map("n", "<leader>ma", ":set list!<cr>", a("toggle spces at the end of line"))
-map("n", "<leader>oa", ":ObsidianToggleCheckbox<cr>04la<space><space><space><esc>0", a("Create task in obsidian"))
 
 -- Create Neovim note
 map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })

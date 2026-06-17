@@ -88,6 +88,7 @@ return {
     { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
     -- ui
     -- { "<leader>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+
   },
   },
 }

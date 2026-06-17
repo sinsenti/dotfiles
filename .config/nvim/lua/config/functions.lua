@@ -282,6 +282,120 @@ function M.toggle_split_orientation()
   end
 end
 
+-- markdown function
+
+function M.align_markdown_table_columns()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor_row = vim.api.nvim_win_get_cursor(0)[1]
+
+  -- 1. Scan upwards to find the start of the table
+  local start_row = cursor_row
+  while start_row > 1 do
+    local line = vim.api.nvim_buf_get_lines(bufnr, start_row - 2, start_row - 1, false)[1]
+    if not line or not line:match("^%s*|") then
+      break
+    end
+    start_row = start_row - 1
+  end
+
+  -- 2. Scan downwards to find the end of the table
+  local end_row = cursor_row
+  local total_lines = vim.api.nvim_buf_line_count(bufnr)
+  while end_row <= total_lines do
+    local line = vim.api.nvim_buf_get_lines(bufnr, end_row - 1, end_row, false)[1]
+    if not line or not line:match("^%s*|") then
+      break
+    end
+    end_row = end_row + 1
+  end
+  end_row = end_row - 1
+
+  -- Guard clause: Make sure we are actually on a table
+  if start_row > end_row then
+    return
+  end
+
+  -- 3. Parse the table rows and calculate maximum widths for each column
+  local lines = vim.api.nvim_buf_get_lines(bufnr, start_row - 1, end_row, false)
+  local table_data = {}
+  local col_widths = {}
+
+  for _, line in ipairs(lines) do
+    local row_cells = {}
+
+    -- Strip leading/trailing structural whitespace & pipes completely to isolate text content
+    local clean_line = vim.trim(line):gsub("^|", ""):gsub("|$", "")
+    clean_line = vim.trim(clean_line)
+
+    for cell in (clean_line .. "|"):gmatch("(.-)|") do
+      table.insert(row_cells, vim.trim(cell))
+    end
+
+    table.insert(table_data, row_cells)
+
+    -- Track maximum length per column index natively (ignoring separator rows)
+    for i, cell in ipairs(row_cells) do
+      local is_sep_cell = cell:match("^%s*:%-+%s*$")
+        or cell:match("^%s*%-+:%s*$")
+        or cell:match("^%s*%-+%s*$")
+        or cell:match("^%s*:%-+:%s*$")
+      if not is_sep_cell then
+        local cell_len = vim.fn.strdisplaywidth(cell)
+        col_widths[i] = math.max(col_widths[i] or 0, cell_len)
+      end
+    end
+  end
+
+  -- 4. Reconstruct the aligned table strings
+  local formatted_lines = {}
+  for idx, row_cells in ipairs(table_data) do
+    local formatted_row = {}
+
+    -- Detect if this row is the separator delimiter line (e.g., |---|---|)
+    local is_separator = true
+    for _, cell in ipairs(row_cells) do
+      if
+        cell ~= ""
+        and not cell:match("^%s*:%-+%s*$")
+        and not cell:match("^%s*%-+:%s*$")
+        and not cell:match("^%s*%-+%s*$")
+        and not cell:match("^%s*:%-+:%s*$")
+      then
+        is_separator = false
+      end
+    end
+
+    for i, cell in ipairs(row_cells) do
+      local target_width = col_widths[i] or 0
+
+      if is_separator then
+        -- Separator matches the text width plus its own 2 flanking pad spaces exactly
+        table.insert(formatted_row, string.rep("-", target_width + 2))
+      elseif idx == 1 then
+        -- Center headers perfectly on the first row within the target width boundaries
+        local total_padding = target_width - vim.fn.strdisplaywidth(cell)
+        local left_padding = math.floor(total_padding / 2)
+        local right_padding = total_padding - left_padding
+
+        table.insert(
+          formatted_row,
+          " " .. string.rep(" ", left_padding) .. cell .. string.rep(" ", right_padding) .. " "
+        )
+      else
+        -- Left-align text content cleanly with exactly 1 padding space on the edges
+        local padding = target_width - vim.fn.strdisplaywidth(cell)
+        table.insert(formatted_row, " " .. cell .. string.rep(" ", padding) .. " ")
+      end
+    end
+
+    -- Stitch back together cleanly without adding extra trailing cells or layout shifting
+    table.insert(formatted_lines, "|" .. table.concat(formatted_row, "|") .. "|")
+  end
+
+  -- 5. Write the beautiful aligned lines straight back into your buffer window
+  vim.api.nvim_buf_set_lines(bufnr, start_row - 1, end_row, false, formatted_lines)
+end
+
 -- Automatically register the :DeleteFile command
 vim.api.nvim_create_user_command("DeleteFile", function()
   vim.cmd("w")
