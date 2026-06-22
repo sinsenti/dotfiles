@@ -2,6 +2,7 @@ return {
   {
     "phrmendes/todotxt.nvim",
     event = "VeryLazy",
+    commit = "df1f9cd390562bf4af2292c8c68ea886dfb30c27",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     init = function()
       vim.filetype.add({

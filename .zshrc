@@ -61,6 +61,7 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 
 
+alias т="nvim"
 alias t='tuxedo'
 alias gpm="git push origin main"
 alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
@@ -189,7 +190,7 @@ export GEMINI_STORAGE_BACKEND=plaintext
 
 
 
-# source ~/.env
+source ~/.env
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -206,9 +207,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # for poetry
 export PATH="$HOME/.local/bin:$PATH"

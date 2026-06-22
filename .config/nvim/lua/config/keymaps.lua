@@ -8,6 +8,7 @@ local f = require("config.functions")
 
 -- git
 
+map("n", "<leader>mr", ":RenderMarkdown buf_toggle<cr>", a("toggle rendering .md"))
 map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
 map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status (Left Side)" })
 map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
@@ -34,7 +35,7 @@ map("n", "<leader>tp", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 map("n", "<leader>tn", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 map("n", "<leader>tf", "<cmd>tabfirst<cr>", { desc = "First Tab" })
 map("n", "<leader>tl", "<cmd>tablast<cr>", { desc = "Last Tab" })
-map("n", "<leader>tt", "<cmd>tabnext<cr>", { desc = "New Tab" })
+map("n", "<leader>tt", "<cmd>tabnext<cr>", { desc = "Next Tab" })
 
 -- navigation
 
@@ -59,10 +60,10 @@ map("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
 
 -- help
 
-map({ "n", "v" }, "x", '"_x', opts)
-map({ "n", "v" }, "X", '"_X', opts)
-map({ "n", "v" }, "c", '"_c', opts)
-map({ "n", "v" }, "C", '"_C', opts)
+-- map({ "n", "v" }, "x", '"_x', opts)
+-- map({ "n", "v" }, "X", '"_X', opts)
+-- map({ "n", "v" }, "c", '"_c', opts)
+-- map({ "n", "v" }, "C", '"_C', opts)
 
 map("n", "q:", ":q<cr>", { desc = "misclick" })
 map("n", "<leader>a", ":q<cr>", a("quit"))
@@ -94,9 +95,12 @@ map("n", "<leader>nt", ":DooingDue<cr>", a("Dooing today tasks"))
 vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
 
 -- functions
+vim.keymap.set("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
+vim.keymap.set("n", "<leader>ma", f.flash_wrap_markdown_bold, a("Wrap text with '**' from cursor to Flash target"))
+vim.keymap.set("n", "<leader>mc", f.generate_markdown_map, a("Generate .md map"))
+map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
 map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
 map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
-map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
 map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-slash filepath" })
@@ -104,7 +108,6 @@ map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 
 map("n", "<F5>", require("dap").step_into)
 map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
-map("n", "<leader>ma", ":set list!<cr>", a("toggle spces at the end of line"))
 
 -- Create Neovim note
 map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
