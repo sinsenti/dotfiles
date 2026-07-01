@@ -122,9 +122,10 @@ function M.translation_scratchpad()
   local buf = vim.api.nvim_create_buf(false, true)
 
   -- FIXED: Modernized deprecated vim.api.nvim_buf_set_option calls
-  vim.bo[buf].bufhidden = "wipe"
-  vim.bo[buf].filetype = "markdown"
-  vim.bo[buf].wrap = true
+
+  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+  vim.api.nvim_buf_set_option(buf, "wrap", true)
 
   local width = math.min(80, math.floor(vim.o.columns * 0.6))
   local height = math.min(10, math.floor(vim.o.lines * 0.3))
@@ -369,7 +370,11 @@ function M.toggle_codeium()
 
   local vt = codeium_config.options.virtual_text
   vt.manual = not vt.manual
-  print(vt.manual and "Codeium disabled" or "Codeium enabled")
+  if vt.manual then
+    print("Codeium disabled")
+  else
+    print("Codeium enabled")
+  end
 end
 
 function M.strip_buffer_comments()
@@ -398,24 +403,6 @@ function M.create_obsidian_note()
   end
   vim.cmd("edit ~/git/obsidian/" .. filename .. ".md")
   vim.cmd("write")
-end
-
-function M.toggle_smart_terminal()
-  local current_dir = vim.fn.expand("%:p:h")
-  if current_dir == "" or vim.fn.isdirectory(current_dir) == 0 then
-    current_dir = vim.fn.getcwd()
-  end
-
-  if vim.bo.buftype == "terminal" then
-    vim.cmd("hide")
-  else
-    vim.fn.setreg("+", "python " .. vim.fn.expand("%:t"))
-    require("snacks").terminal("zsh", {
-      cwd = current_dir,
-      env = { TERM = "x-256color" },
-      win = { style = "terminal", relative = "editor", height = 0.83 },
-    })
-  end
 end
 
 function M.compile_and_run_cpp()
@@ -495,7 +482,7 @@ end
 vim.api.nvim_create_user_command("DeleteFile", function()
   vim.cmd("w")
   local file = vim.fn.expand("%:p")
-  if vim.fn.filereable(file) == 1 then
+  if vim.fn.filereadable(file) == 1 then
     vim.fn.delete(file)
   end
   vim.cmd("bdelete")
@@ -520,7 +507,7 @@ vim.api.nvim_create_user_command("FzfBigOpen", function()
 
         if query:match("^/") or query:match("^~") then
           local expanded = vim.fn.expand(query)
-          if vim.fn.filereable(expanded) == 1 then
+          if vim.fn.filereadable(expanded) == 1 then
             filepath = expanded
           end
         end
@@ -573,7 +560,7 @@ end, { desc = "Fuzzy search or open an absolute file path instantly" })
 -- Pick command from Zsh History picker
 vim.api.nvim_create_user_command("PickFromZshHistory", function()
   local zsh_history_path = vim.fn.expand("~/.zsh_history")
-  if vim.fn.filereable(zsh_history_path) == 0 then
+  if vim.fn.filereadable(zsh_history_path) == 0 then
     vim.notify("Could not read .zsh_history file", vim.log.levels.ERROR)
     return
   end

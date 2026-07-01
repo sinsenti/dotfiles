@@ -8,15 +8,15 @@ local f = require("config.functions")
 
 -- git
 
-map("n", "<leader>mr", ":RenderMarkdown buf_toggle<cr>", a("toggle rendering .md"))
+-- map("n", "<leaderk", f.toggle_smart_terminal, a(""))
 map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
-map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status (Left Side)" })
 map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>ga", f.show_git_status_noice, { desc = "Git Status Toast Notification" })
 map("n", "<leader>gd", f.toggle_diffview, { desc = "Toggle Diffview" })
 map("n", "<leader>gt", f.git_stash_with_prompt, { desc = "Git Stash All (Including Untracked)" })
 map("n", "<leader>gc", f.git_commit_with_prompt, { desc = "Git Commit Staged Changes" })
 map("n", "<leader>gs", f.toggle_diffview_branch, { desc = "Toggle Diffview against branch" })
+map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status" })
 
 map("n", "<leader>gw", ":FzfLua git_branches<cr>", a("git checkout"))
 map("n", "<leader>gf", ":Gdiffsplit<cr>", a("File diff"))
@@ -56,17 +56,22 @@ map("n", "<Right>", ":vertical resize +2<cr>", opts)
 
 map("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
 map("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
--- map("n", "<leader>mc", ":mksession!<cr>", a("[C]reate Session"))
 
--- help
+-- Make 'j' and 'k' move instantly on display lines without triggering timeouts
+map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
+map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, noremap = true })
 
+-- uncomment to disable clipboard for 'c' and 'x'
 -- map({ "n", "v" }, "x", '"_x', opts)
 -- map({ "n", "v" }, "X", '"_X', opts)
 -- map({ "n", "v" }, "c", '"_c', opts)
 -- map({ "n", "v" }, "C", '"_C', opts)
 
+-- help
+
 map("n", "q:", ":q<cr>", { desc = "misclick" })
-map("n", "<leader>a", ":q<cr>", a("quit"))
+map("n", ".", "/", { desc = "misclick" })
+map("n", "<leader>a", ":q<cr><cr>", a("quit"))
 map("n", "<leader>z", ":ZenMode<cr>", a("toggle zoom mode"))
 map("n", "<leader>y", "ggyG", a("copy full file"))
 map("n", "<leader>p", "<esc>ggVGp", a("change full file"))
@@ -90,28 +95,25 @@ map("n", "TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
 map("n", "<leader>df", ":DeleteFile", {})
 
 -- notes
+
 map("n", "<leader>nn", ":Dooing<cr>", a("Dooing open"))
-map("n", "<leader>nt", ":DooingDue<cr>", a("Dooing today tasks"))
+map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
+map("n", "<leader>mr", ":RenderMarkdown buf_toggle<cr>", a("toggle rendering .md"))
 vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
+map("n", "<leader>ma", f.flash_wrap_markdown_bold, a("Wrap text with '**' from cursor to Flash target"))
+map("n", "<leader>mc", f.generate_markdown_map, a("Generate .md map"))
+map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
+map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
 
 -- functions
-vim.keymap.set("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
-vim.keymap.set("n", "<leader>ma", f.flash_wrap_markdown_bold, a("Wrap text with '**' from cursor to Flash target"))
-vim.keymap.set("n", "<leader>mc", f.generate_markdown_map, a("Generate .md map"))
-map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
-map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
-map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
+
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
+map("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
+map("n", "<leader>nt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
 map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-slash filepath" })
 map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
+map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
+map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
 
 map("n", "<F5>", require("dap").step_into)
-map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
-
--- Create Neovim note
-map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
-
--- Make 'j' and 'k' move instantly on display lines without triggering timeouts
-map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
-map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, noremap = true })

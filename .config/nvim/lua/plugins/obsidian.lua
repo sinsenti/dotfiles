@@ -34,7 +34,7 @@ return {
         default_tags = { "daily-notes" },
       },
       templates = {
-        folder = "Templates", -- Relative to the active workspace path!
+        folder = "~/git/obsidian/Templates",
         date_format = "%d-%m-%y",
         time_format = "%H:%M",
       },

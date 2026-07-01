@@ -196,7 +196,9 @@ source ~/.env
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-eval "$(zoxide init --cmd cd zsh)"
+# to use through cd
+# eval "$(zoxide init --cmd cd zsh)"
+eval "$(zoxide init zsh)"
 
 # bun completions
 [ -s "/home/sinsenti/.bun/_bun" ] && source "/home/sinsenti/.bun/_bun"
