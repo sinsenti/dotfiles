@@ -17,12 +17,12 @@ return {
 
       workspaces = {
         {
-          name = "obsidian",
-          path = "~/git/obsidian",
+          name = "project",
+          path = "~/git/project/notes",
         },
         {
-          name = "project",
-          path = "~/git/not_used/skiftr/project",
+          name = "obsidian",
+          path = "~/git/obsidian",
         },
       },
 
@@ -75,10 +75,8 @@ return {
 
       if current_workspace == "project" then
         vim.cmd("ObsidianWorkspace obsidian")
-        -- vim.notify("Switched to Obsidian Vault", vim.log.levels.INFO)
       else
         vim.cmd("ObsidianWorkspace project")
-        -- vim.notify("Switched to Project Workspace", vim.log.levels.INFO)
       end
     end, { noremap = true, silent = true, desc = "Toggle Obsidian Workspaces" })
 

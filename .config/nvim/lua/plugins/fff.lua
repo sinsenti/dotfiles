@@ -42,8 +42,10 @@ return {
         modes = { "regex", "fuzzy", "plain" },
       },
       layout = {
-        height = 1.0,
-        width = 1.0,
+        -- height = 1.0,
+        -- width = 1.0,
+        height = 0.85,
+        width = 0.85,
         preview_size = 0.65,
       },
       git = {

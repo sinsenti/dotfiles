@@ -1,5 +1,5 @@
 #!/bin/bash
-# OCR4Linux Ultra-Fast: 0.4s total (75% faster)
+# OCR4Linux Ultra-Fast: Updated for GNOME/Wayland
 
 set -euo pipefail
 
@@ -10,10 +10,10 @@ readonly LANGUAGES="eng"
 main() {
   mkdir -p "$DIR"
 
-  # PIPELINE 1: slurp → grim (0.1s)
-  grim -g "$(slurp)" "$IMG"
+  # PIPELINE 1: Use GNOME's native area selection tool
+  gnome-screenshot -a -f "$IMG"
 
-  # PIPELINE 2: Direct OCR → clipboard (0.3s) - NO files, NO parsing
+  # PIPELINE 2: Direct OCR → clipboard
   python3 -c "
 from PIL import Image
 import pytesseract, subprocess, sys
@@ -24,7 +24,7 @@ print('✓ OCR → clipboard', file=sys.stderr)
 " &
 
   # Parallel notifications (non-blocking)
-  notify-send "OCR Done" "Eng+Rus → clipboard ($IMG)" -t 1500 &
+  # notify-send "OCR Done" "Eng → clipboard ($IMG)" -t 1500 &
 }
 
 main "$@"

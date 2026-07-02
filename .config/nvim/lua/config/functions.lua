@@ -121,7 +121,7 @@ end
 function M.translation_scratchpad()
   local buf = vim.api.nvim_create_buf(false, true)
 
-  -- FIXED: Modernized deprecated vim.api.nvim_buf_set_option calls
+  -- FIXED: Modernized deprecated vim.api.nvim_buf_set_option calls to vim.bo
 
   vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
   vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
@@ -140,7 +140,7 @@ function M.translation_scratchpad()
     height = height,
     style = "minimal",
     border = "rounded",
-    title = " Type Text to Translate ",
+    title = " Type Text to Translate (Empty uses Clipboard) ",
     title_pos = "center",
   })
 
@@ -151,6 +151,11 @@ function M.translation_scratchpad()
     local full_text = table.concat(lines, " "):gsub("^%s*(.-)%s*$", "%1")
 
     if full_text == "" then
+      full_text = vim.fn.getreg("+"):gsub("^%s*(.-)%s*$", "%1")
+    end
+
+    -- If clipboard is also entirely empty, exit silently
+    if full_text == "" then
       return
     end
 
@@ -159,7 +164,7 @@ function M.translation_scratchpad()
 
     local is_russian = first_word:match("[а-яА-ЯёЁ]")
     local target_lang = is_russian and "ru:en" or "en:ru"
-    local direction_label = is_russian and "RU ➔ EN" or "EN ➔ RU"
+    local direction_label = string.format("%s ➔ %s", is_russian and "RU" or "EN", is_russian and "EN" or "RU")
 
     vim.fn.jobstart({ "trans", "-brief", "-no-auto", target_lang, full_text }, {
       stdout_buffered = true,
@@ -170,7 +175,7 @@ function M.translation_scratchpad()
           vim.fn.setreg('"', result)
 
           vim.notify(result, vim.log.levels.INFO, {
-            title = "Translation (" .. direction_label .. ") [Copied]",
+            title = "Translation " .. direction_label .. " [Copied]",
             icon = "󰗊",
           })
         end
@@ -210,6 +215,7 @@ function M.translation_scratchpad()
   })
 
   vim.keymap.set({ "n" }, "<Esc>", safe_trigger_and_close, { buffer = buf, silent = true })
+  vim.keymap.set({ "n" }, "<CR>", safe_trigger_and_close, { buffer = buf, silent = true })
   vim.keymap.set("n", "q", safe_trigger_and_close, { buffer = buf, silent = true })
 end
 
