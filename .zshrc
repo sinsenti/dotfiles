@@ -52,6 +52,7 @@ zinit ice wait"0" lucid; zinit snippet OMZP::docker-compose
 # Handle vi-mode keymap initialization asynchronously
 zinit ice wait"0" lucid atload"bindkey -M viins '^r' fzf-history-widget; bindkey -M vicmd '^r' fzf-history-widget"
 zinit snippet OMZP::vi-mode
+zinit snippet OMZP::git
 
 # Optimized OMZP::tmux handling
 export ZSH_TMUX_CONFIG="$HOME/dotfiles/.config/tmux/tmux.conf"
