@@ -117,6 +117,61 @@ end
 -- =============================================================================
 -- 2. TRANSLATOR SCRATCHPAD
 -- =============================================================================
+function M.translate_visual_selection()
+  -- 1. Save current unnamed register state to avoid corrupting user history
+  local old_reg = vim.fn.getreg('"')
+  local old_regtype = vim.fn.getregtype('"')
+
+  -- 2. Extract active visual selection safely into the unnamed register
+  vim.cmd('normal! gv""y')
+  local full_text = vim.fn.getreg('"'):gsub("^%s*(.-)%s*$", "%1")
+
+  -- 3. Instantly restore your original unnamed register content
+  vim.fn.setreg('"', old_reg, old_regtype)
+
+  vim.cmd("normal! gv")
+
+  -- If selection is empty, exit silently
+  if full_text == "" then
+    return
+  end
+
+  -- 4. Language direction detection (Preserved directly from your core logic)
+  local clean_text = full_text:gsub('[%*%_#%-%[%]%(%)%`%"]', " ")
+  local first_word = clean_text:match("(%a+)") or clean_text:match("([а-яА-ЯёЁ]+)") or ""
+
+  local is_russian = first_word:match("[а-яА-ЯёЁ]")
+  local target_lang = is_russian and "ru:en" or "en:ru"
+  local direction_label = string.format("%s ➔ %s", is_russian and "RU" or "EN", is_russian and "EN" or "RU")
+
+  -- 5. Asynchronous job call out to the 'trans' engine
+  vim.fn.jobstart({ "trans", "-brief", "-no-auto", target_lang, full_text }, {
+    stdout_buffered = true,
+    on_stdout = function(_, data)
+      if data and #data > 0 and data[1] ~= "" then
+        local result = table.concat(data, "\n"):gsub("^%s*(.-)%s*$", "%1")
+
+        -- Copy translated block to system and local registers
+        vim.fn.setreg("+", result)
+        vim.fn.setreg('"', result)
+
+        -- Send instant pop-up notification
+        vim.notify(result, vim.log.levels.INFO, {
+          title = "Translation " .. direction_label .. " [Copied]",
+          icon = "󰗊",
+        })
+      end
+    end,
+    on_stderr = function(_, data)
+      if data and data[1] ~= "" then
+        local err_msg = table.concat(data, "\n"):gsub("\27%[[0-9;]*m", ""):gsub("^%s*(.-)%s*$", "%1")
+        if #err_msg > 0 then
+          vim.notify(err_msg, vim.log.levels.ERROR, { title = "Translation Error" })
+        end
+      end
+    end,
+  })
+end
 
 function M.translation_scratchpad()
   local buf = vim.api.nvim_create_buf(false, true)

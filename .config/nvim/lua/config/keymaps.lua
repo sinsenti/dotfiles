@@ -9,6 +9,7 @@ local f = require("config.functions")
 -- git
 
 -- map("n", "<leaderk", f.toggle_smart_terminal, a(""))
+map("n", "m", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
 map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>ga", f.show_git_status_noice, { desc = "Git Status Toast Notification" })
@@ -91,7 +92,7 @@ map("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
 map("n", "ss", ":vsplit<cr>", opts)
 map("n", "sv", ":split<cr>", opts)
 
-map("n", "TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
+map("n", "<leader>TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
 map("n", "<leader>df", ":DeleteFile", {})
 
 -- notes
@@ -108,6 +109,11 @@ map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidia
 -- functions
 
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
+-- Maps to your preferred trigger sequence (e.g., <leader>t or <C-t>)
+map("v", "<leader>mt", f.translate_visual_selection, {
+  desc = "Translate highlighted text block",
+  silent = true,
+})
 map("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>nt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
