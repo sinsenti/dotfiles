@@ -9,14 +9,14 @@ local f = require("config.functions")
 -- git
 
 -- map("n", "<leaderk", f.toggle_smart_terminal, a(""))
-map("n", "m", f.open_neogit_in_current_dir, { desc = "Open neogit" })
+map("n", "T", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
 map("n", "<leader>gg", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>ga", f.show_git_status_noice, { desc = "Git Status Toast Notification" })
 map("n", "<leader>gd", f.toggle_diffview, { desc = "Toggle Diffview" })
 map("n", "<leader>gt", f.git_stash_with_prompt, { desc = "Git Stash All (Including Untracked)" })
-map("n", "<leader>gc", f.git_commit_with_prompt, { desc = "Git Commit Staged Changes" })
 map("n", "<leader>gs", f.toggle_diffview_branch, { desc = "Toggle Diffview against branch" })
+map("n", "<leader>gS", f.toggle_diffview_commit, { desc = "Toggle Diffview against branch" })
 map("n", "<leader>hg", "<cmd>Neogit<cr>", { desc = "Git Status" })
 
 map("n", "<leader>gw", ":FzfLua git_branches<cr>", a("git checkout"))
@@ -46,6 +46,10 @@ map("n", "<C-d>", "<C-d>zz", opts)
 map("n", "<C-u>", "<C-u>zz", opts)
 map("n", "n", "nzzzv", opts)
 map("n", "N", "Nzzzv", opts)
+-- map("n", "<c-h>", ":NavigatorLeft<CR>", opts)
+-- map("n", "<c-j>", ":NavigatorDown<CR>", opts)
+-- map("n", "<c-k>", ":NavigatorUp<CR>", opts)
+-- map("n", "<c-l>", ":NavigatorRight<CR>", opts)
 map("n", "<c-h>", ":TmuxNavigateLeft<cr>", opts)
 map("n", "<c-l>", ":TmuxNavigateRight<cr>", opts)
 map("n", "<c-j>", ":TmuxNavigateDown<cr>", opts)
@@ -72,6 +76,7 @@ map({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true
 
 map("n", "q:", ":q<cr>", { desc = "misclick" })
 map("n", ".", "/", { desc = "misclick" })
+map("n", "<leader>l", ":q<cr><cr>", a("quit"))
 map("n", "<leader>a", ":q<cr><cr>", a("quit"))
 map("n", "<leader>z", ":ZenMode<cr>", a("toggle zoom mode"))
 map("n", "<leader>y", "ggyG", a("copy full file"))
@@ -79,8 +84,8 @@ map("n", "<leader>p", "<esc>ggVGp", a("change full file"))
 map("n", "<c-s>", ":w<cr>", opts)
 map("i", "<c-a>", "<Esc>mpggyG'p:delmarks p<cr>", opts)
 
-map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
-map("t", "jk", "<C-\\><C-n>", opts)
+map("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
+-- map("t", "jk", "<C-\\><C-n>", opts)
 
 map("n", "tw", ":Twilight<cr>", opts)
 map("n", "Q", ":q<cr>", opts)
@@ -92,7 +97,7 @@ map("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
 map("n", "ss", ":vsplit<cr>", opts)
 map("n", "sv", ":split<cr>", opts)
 
-map("n", "<leader>TT", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
+map("n", "<leader>T", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
 map("n", "<leader>df", ":DeleteFile", {})
 
 -- notes
@@ -110,10 +115,8 @@ map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidia
 
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
 -- Maps to your preferred trigger sequence (e.g., <leader>t or <C-t>)
-map("v", "<leader>mt", f.translate_visual_selection, {
-  desc = "Translate highlighted text block",
-  silent = true,
-})
+map("v", "<leader>mt", f.translate_visual_selection, { desc = "Translate highlighted text block" })
+map("v", "<leader>nt", f.translate_visual_selection, { desc = "Translate highlighted text block" })
 map("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>nt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })

@@ -393,6 +393,36 @@ function M.git_commit_with_prompt()
   end)
 end
 
+function M.toggle_diffview_commit()
+  local has_diffview, diffview_lib = pcall(require, "diffview.lib")
+  if has_diffview and next(diffview_lib.views) ~= nil then
+    vim.cmd("DiffviewClose")
+    return
+  end
+
+  require("snacks").picker.git_log({
+    confirm = function(picker, item)
+      picker:close()
+
+      if not item then
+        return
+      end
+
+      local commit = item.commit
+        or item.hash
+        or (item.data and (item.data.commit or item.data.hash))
+        or (item.data and item.data.oid)
+
+      if not commit then
+        vim.notify("No commit hash found: " .. vim.inspect(item), vim.log.levels.ERROR)
+        return
+      end
+
+      vim.cmd("DiffviewOpen " .. commit)
+    end,
+  })
+end
+
 function M.toggle_diffview_branch()
   local has_diffview, diffview_lib = pcall(require, "diffview.lib")
   if has_diffview and next(diffview_lib.views) ~= nil then

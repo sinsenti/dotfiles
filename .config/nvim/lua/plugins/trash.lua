@@ -1,22 +1,5 @@
 return {
   {
-    "linux-cultist/venv-selector.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      {
-        "ibhagwan/fzf-lua",
-        version = "*",
-        dependencies = { "nvim-lua/plenary.nvim" },
-      }, -- optional: you can also use fzf-lua, snacks, mini-pick instead.
-    },
-    ft = "python", -- Load when opening Python files
-    keys = { { "<leader>v", "<cmd>VenvSelect<cr>" } }, -- Open picker on keymap
-    opts = {
-      options = {}, -- plugin-wide options
-      search = {}, -- custom search definitions
-    },
-  },
-  {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = { "markdown", "todotxt" },

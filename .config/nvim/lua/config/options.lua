@@ -4,7 +4,7 @@
 -- This file is automatically loaded by plugins.core
 
 -- vim.g.molten_virt_text_output = true vim.g.molten_virt_lines_off_by_1 = true vim.g.molten_image_location = "virt"
-vim.opt.mouse = ""
+-- vim.opt.mouse = ""
 vim.g.molten_kernel_name = "python3"
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -86,7 +86,8 @@ opt.jumpoptions = "view"
 opt.laststatus = 3 -- global statusline
 opt.linebreak = true -- Wrap lines at convenient points
 opt.list = true -- Show some invisible characters (tabs...
--- opt.mouse = "a" -- Enable mouse mode
+opt.mouse = "a" -- Enable mouse mode
+-- opt.mouse = "" -- Disable mouse mode
 opt.number = true -- Print line number
 opt.relativenumber = true -- Relative line numbers
 opt.pumblend = 10 -- Popup blend

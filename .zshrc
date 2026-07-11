@@ -152,7 +152,10 @@ setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups hist_ig
 unsetopt BEEP
 
 # --- Aliases List ---
-alias zi="zoxide query -i"
+
+
+alias lab="cd /home/user/git/project/a1labs"
+alias zi='cd "$(zoxide query -i)"'
 alias т="nvim"
 alias t='tuxedo'
 alias gpm="git push origin main"
@@ -212,7 +215,24 @@ alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
 alias tree0='exa --tree --header --icons -a'
 alias ffg='find_preview'
-alias nt='nvim ~/.tmux.conf'
+alias nt='nvim ~/dotfiles/.config/tmux/.tmux.conf'
+alias copy='copy_last'
+alias venv='source ~/git/project/help/.venv/bin/activate'
+
+copy_last() {
+    local cmd output
+
+    cmd=$(fc -ln -1)
+    output=$(eval "$cmd" 2>&1)
+
+    {
+        printf '$ %s\n' "$cmd"
+        printf '%s\n' "$output"
+    } | wl-copy
+
+    printf '%s\n' "$output"
+}
+
 
 function y() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
