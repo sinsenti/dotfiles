@@ -55,7 +55,7 @@ zinit snippet OMZP::vi-mode
 zinit snippet OMZP::git
 
 # Optimized OMZP::tmux handling
-export ZSH_TMUX_CONFIG="$HOME/dotfiles/.config/tmux/tmux.conf"
+# export ZSH_TMUX_CONFIG="$HOME/dotfiles/.config/tmux/tmux.conf"
 # ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true

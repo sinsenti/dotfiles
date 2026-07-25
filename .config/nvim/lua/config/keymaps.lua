@@ -99,6 +99,7 @@ map("n", "sv", ":split<cr>", opts)
 
 map("n", "<leader>T", ":TransparentToggle<cr>", a("Toggle transparetn mode"))
 map("n", "<leader>df", ":DeleteFile", {})
+map("n", "<leader>ra", ":CurlOpen global<CR>", a("curl commands"))
 
 -- notes
 

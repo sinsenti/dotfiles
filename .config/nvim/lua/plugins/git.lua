@@ -80,6 +80,7 @@ return {
     map({ "n", "x" }, "<leader>hs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
     map({ "n", "x" }, "<leader>hr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
     map("n", "<leader>hS", gs.stage_buffer, "Stage Buffer")
+    map("n", "<leader>ho", gs.preview_hunk_inline, "Preview Hunk Inline")
     map("n", "<leader>hc", gs.show_commit, "Show commit")
     map("n", "<leader>hu", gs.undo_stage_hunk, "Undo Stage Hunk")
     map("n", "<leader>hR", gs.reset_buffer, "Reset Buffer")
