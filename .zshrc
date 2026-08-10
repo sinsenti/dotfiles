@@ -154,7 +154,12 @@ unsetopt BEEP
 # --- Aliases List ---
 
 
+alias localhost="google-chrome http://localhost:5173 &>/dev/null &"
+alias .env='$EDITOR .env'
+alias python="python3"
 alias lab="cd /home/user/git/project/a1labs"
+alias obs="cd /home/user/git/obsidian/"
+
 alias zi='cd "$(zoxide query -i)"'
 alias т="nvim"
 alias t='tuxedo'

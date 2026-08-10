@@ -57,10 +57,7 @@ map("n", "<c-k>", ":TmuxNavigateUp<cr>", opts)
 map("n", "<Up>", ":resize -2<cr>", opts)
 map("n", "<Down>", ":resize +2<cr>", opts)
 map("n", "<Left>", ":vertical resize -2<cr>", opts)
-map("n", "<Right>", ":vertical resize +2<cr>", opts)
-
-map("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
-map("n", "<leader>ms", ":set spell!<cr>", a("Toggle spelling"))
+map("n", "<Right>", ":vertijal resize +2<cr>", opts)
 
 -- Make 'j' and 'k' move instantly on display lines without triggering timeouts
 map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
@@ -102,23 +99,28 @@ map("n", "<leader>df", ":DeleteFile", {})
 map("n", "<leader>ra", ":CurlOpen global<CR>", a("curl commands"))
 
 -- notes
-
+map("n", "<leader>ms", f.google_search_scratchpad, { desc = "Default browser search" })
+map("n", "<leader>md", f.cambridge_dictionary_clean, { desc = "Search Dictionary" })
+map("n", "<leader>Me", f.browser_search_scratchpad, { desc = "Browser search" })
+map("n", "<leader>mz", "bb]s1z=", a("Fix spelling mistake"))
+map("n", "<leader>mo", ":set spell!<cr>", a("Toggle spelling"))
 map("n", "<leader>nn", ":Dooing<cr>", a("Dooing open"))
 map("n", "<leader>mp", ":MarkdownPreview<cr>", a("preview of .md"))
 map("n", "<leader>mr", ":RenderMarkdown buf_toggle<cr>", a("toggle rendering .md"))
-vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
 map("n", "<leader>ma", f.flash_wrap_markdown_bold, a("Wrap text with '**' from cursor to Flash target"))
 map("n", "<leader>mc", f.generate_markdown_map, a("Generate .md map"))
 map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
 map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
+vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
 
 -- functions
 
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
--- Maps to your preferred trigger sequence (e.g., <leader>t or <C-t>)
+map("n", "<leader>mn", f.renumber_markdown_list, { desc = "Renumber list" })
 map("v", "<leader>mt", f.translate_visual_selection, { desc = "Translate highlighted text block" })
-map("v", "<leader>nt", f.translate_visual_selection, { desc = "Translate highlighted text block" })
 map("n", "<leader>mt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
+map("v", "<leader>nt", f.translate_visual_selection, { desc = "Translate highlighted text block" })
+map("n", "<leader>ье", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>nt", f.translation_scratchpad, { desc = "Open translation scratchpad" })
 map("n", "<leader>oc", f.strip_buffer_comments, { desc = "Strip all comments from buffer" })
 map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-slash filepath" })
