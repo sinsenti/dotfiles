@@ -55,8 +55,6 @@ zinit snippet OMZP::vi-mode
 zinit snippet OMZP::git
 
 # Optimized OMZP::tmux handling
-# export ZSH_TMUX_CONFIG="$HOME/dotfiles/.config/tmux/tmux.conf"
-# ZSH_TMUX_AUTOSTART=true
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
 zinit ice wait"0" lucid
@@ -104,7 +102,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # ==========================================
-# 6. LAZY-LOADING HEAVY MODULES (The NVM Fix)
+# 6. Lazy-Loading Modules
 # ==========================================
 export NVM_DIR="$HOME/.nvm"
 nvm() {
@@ -114,13 +112,10 @@ nvm() {
   nvm "$@"
 }
 
-# ==========================================
-# 7. Keybindings, Functions, & Aliases
-# ==========================================
-# Read the compiled FZF layout statically to stop the subshell fork lag
+# Read compiled FZF layout statically
 [ -f ~/.fzf-static.zsh ] && source ~/.fzf-static.zsh
 
-# Strict map assignments across standard and vi states
+# Keybindings & History
 bindkey '^r' fzf-history-widget
 bindkey -M viins '^r' fzf-history-widget
 bindkey -M vicmd '^r' fzf-history-widget
@@ -133,17 +128,13 @@ bindkey -M viins '^p' autosuggest-accept
 function open_nvim_command_line() {
     # Set the fast mode flag globally for this subshell execution
     export NVIM_FAST_MODE=1
-    
     autoload -Uz edit-command-line
     zle edit-command-line
-    
-    # Clean up the flag after Neovim closes
     unset NVIM_FAST_MODE
 }
 zle -N open_nvim_command_line
 bindkey -M vicmd 'v' open_nvim_command_line
 
-# History Layout Configuration
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
@@ -151,112 +142,18 @@ HISTDUP=erase
 setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups hist_ignore_dups
 unsetopt BEEP
 
-# --- Aliases List ---
-
-
-alias localhost="google-chrome http://localhost:5173 &>/dev/null &"
-alias .env='$EDITOR .env'
-alias python="python3"
-alias lab="cd /home/user/git/project/a1labs"
-alias obs="cd /home/user/git/obsidian/"
-
-alias zi='cd "$(zoxide query -i)"'
-alias т="nvim"
-alias t='tuxedo'
-alias gpm="git push origin main"
-alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
-alias gsp="git stash pop"
-alias gsd="git stash drop"
-alias gsa="git status apply"
-alias ga="git status"
-alias gw="git worktree"
-alias gst='git stash push -u -m '
-alias gsl="git stash list"
-alias vpnup='sudo systemctl start wg-quick@wginno'
-alias vpndown='sudo systemctl stop wg-quick@wginno'
-alias vpnstat='sudo systemctl status wg-quick@wginno'
-alias d="docker ps"
-alias gds='git diff --staged -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
-alias dc="docker compose"
-alias b="btop"
-alias gcm="git commit --message"
-alias g="git status"
-alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
-alias ls="ls --color"
-alias a="tmux"
-alias st="sudo systemctl status tor"
-alias start="sudo systemctl start tor"
-alias rest="sudo systemctl restart tor"
-alias stop="sudo systemctl stop tor"
-alias nh="cd ~/.config/hypr && nvim"
-alias wifil="nmcli device wifi list"
-alias dcp="docker compose"
-alias glsh="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad)%Creset' --date=short"
-alias zipsrc="zip -r pardaev.zip src"
-alias gs="git status"
-alias dps="docker ps"
-alias dpsa="docker ps -a"
-alias mlvenv="source ~/git/ml/.venv/bin/activate"
-alias gclone="bash ~/dotfiles/.config/scripts/gclone.sh"
-alias gmnoff="git merge --no-ff"
-alias jrun="bash ~/dotfiles/.config/scripts/run_all_java_files.sh"
-alias grdl="./gradlew clean build; ./gradlew bootRun"
-alias crp="bash ~/dotfiles/.config/scripts/create-file-and-paste.sh"
-alias matrix="cmatrix -b -s -u 3 -C cyan"
-alias gbv="git branch --verbose"
-alias smartcopy="python ~/dotfiles/.config/scripts/backup_code.py"
-alias copyall="bash ~/dotfiles/.config/scripts/copy_all.sh"
-alias n="nvim"
-alias c="clear"
-alias nz="nvim ~/.zshrc"
-alias sz="source ~/.zshrc"
-alias e="exit"
-alias q="exit"
-alias ff='fzf --height 100% --preview "bat -n --color=always --theme=Dracula {}" | { read -r file && nvim "$file"; }'
-alias tree='exa --tree --header --icons -a --level=1 --group-directories-first'
-alias l='exa --tree --header --icons -a --level=1 --group-directories-first'
-alias tree1='exa --tree --header --icons -a --level=1 --group-directories-first'
-alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
-alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
-alias tree0='exa --tree --header --icons -a'
-alias ffg='find_preview'
-alias nt='nvim ~/dotfiles/.config/tmux/.tmux.conf'
-alias copy='copy_last'
-alias venv='source ~/git/project/help/.venv/bin/activate'
-
-copy_last() {
-    local cmd output
-
-    cmd=$(fc -ln -1)
-    output=$(eval "$cmd" 2>&1)
-
-    {
-        printf '$ %s\n' "$cmd"
-        printf '%s\n' "$output"
-    } | wl-copy
-
-    printf '%s\n' "$output"
+# Don't save 'cat <<' multiline pastes to history
+zshaddhistory() {
+  [[ $1 == *"cat <<"* ]] && return 1
+  return 0
 }
 
-
-function y() {
-    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-    yazi "$@" --cwd-file="$tmp"
-    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        builtin cd -- "$cwd"
-    fi
-    rm -f -- "$tmp"
-}
-
-find_preview() {
-  rg --hidden --line-number --color=always "$1" \
-    | fzf --ansi \
-          --preview 'echo "\033[1;35mFile: $(echo {} | cut -d: -f1)\033[0m" && bat --style=numbers --color=always --theme=Dracula --line-range :500 $(echo {} | cut -d: -f1) --highlight-line $(echo {} | cut -d: -f2)' \
-          --preview-window=right:60%:wrap \
-    | while IFS=: read -r file line _; do
-        nvim +"$line" "$file"
-      done
-}
+# ==========================================
+# 7. Dynamic Modular Function Sourcing
+# ==========================================
+for config_file (~/.config/zsh/functions/*.zsh); do
+  source "$config_file"
+done
 
 # ==========================================
 # 8. Post-Prompt Profile Theme Sourcing
