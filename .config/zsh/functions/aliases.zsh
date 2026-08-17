@@ -9,6 +9,7 @@ alias obs="cd /home/user/git/obsidian/"
 
 alias zi='cd "$(zoxide query -i)"'
 alias т="nvim"
+alias gcaq="git commit --amend --no-edit"
 alias gpm="git push origin main"
 alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
 alias gsp="git stash pop"

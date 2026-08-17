@@ -1,4 +1,3 @@
-unalias p 2>/dev/null
 
 p() {
     setopt local_options null_glob

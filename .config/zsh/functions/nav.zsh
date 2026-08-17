@@ -1,25 +1,45 @@
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
+
+fn() {
+  local file
+  file=$(fzf --preview 'bat --color=always --style=numbers {} 2>/dev/null || cat {}')
+  if [ -n "$file" ]; then
+    nvim "$file"
+  fi
+}
+
 n() {
+    # 1. Interactive session selection
     if [[ "$1" == "-s" || "$1" == "--select" ]]; then
         nvim -c 'lua vim.schedule(function() require("persistence").select() end)'
         return
     fi
 
+    # 2. Git mode
     if [[ "$1" == "-g" || "$1" == "--git" ]]; then
         nvim -c 'lua vim.schedule(function() require("persistence").load(); require("neogit").open({ kind = "replace" }) end)'
         return
     fi
 
+    # 3. Clean start in current directory (bypasses session restore)
+    if [[ "$1" == "." || "$1" == "./" ]]; then
+        nvim
+        return
+    fi
+
+    # 4. Jump to directory and load its saved session
     if [[ -d "$1" ]]; then
         cd "$1" || return
         nvim -c 'lua vim.schedule(function() require("persistence").load() end)'
         return
     fi
 
+    # 5. No arguments: Restore session in current directory
     if [ $# -eq 0 ]; then
         nvim -c 'lua vim.schedule(function() require("persistence").load() end)'
     else
+        # 6. Specific file(s) passed (e.g. `n main.py`)
         nvim "$@"
     fi
 }

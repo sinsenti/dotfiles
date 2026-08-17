@@ -3,6 +3,9 @@ return {
     "folke/snacks.nvim",
     event = "VeryLazy",
     opts = {
+      dashboard = {
+        enabled = false, -- Disables the dashboard completely
+      },
       picker = {
         win = {
           input = {
