@@ -89,6 +89,7 @@ export LC_ALL="en_US.UTF-8"
 # Path expansions (Inlined Cargo path to completely skip sourcing its env file)
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export YDOTOOL_SOCKET=/tmp/.ydotool_socket
 
 # Run local environments
 [[ -f ~/.env ]] && source ~/.env

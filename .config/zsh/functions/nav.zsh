@@ -1,6 +1,38 @@
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
 
+f() {
+    local cmd
+    local header_text="[ Select command from history ]"
+    if [ $# -gt 0 ]; then
+        header_text="[ History query: '$*' ]"
+    fi
+
+    # Deduplicate history (newest first) and stream to FZF
+    cmd=$(fc -ln 1 | \
+          awk '{ a[NR] = $0 } END { for (i = NR; i > 0; i--) if (!seen[a[i]]++) print a[i] }' | \
+          fzf --layout=reverse --no-sort --header="$header_text" --query="$*")
+
+    if [ -n "$cmd" ]; then
+        print -s "$cmd" # Push to Zsh history buffer
+        echo -e "\033[1;32mExecuting:\033[0m $cmd"
+        eval "$cmd"
+    fi
+}
+
+fcurl() {
+  local cmd
+  cmd=$(fc -ln 1 | grep -E '^\s*curl\b' | \
+        awk '{ a[NR] = $0 } END { for (i = NR; i > 0; i--) if (!seen[a[i]]++) print a[i] }' | \
+        fzf --layout=reverse --no-sort --header="[ Select curl command ]" --query="$*")
+
+  if [ -n "$cmd" ]; then
+    print -s "$cmd" # Push to command history buffer
+    echo -e "\033[1;32mExecuting:\033[0m $cmd"
+    eval "$cmd"
+  fi
+}
+
 fn() {
   local file
   file=$(fzf --preview 'bat --color=always --style=numbers {} 2>/dev/null || cat {}')

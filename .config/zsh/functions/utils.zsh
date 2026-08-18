@@ -1,3 +1,5 @@
+preexec() { printf '%s\n%s\n' "$PWD" "$1" > ~/.cache/last_cmd }
+
 fkill() {
   local pids
   pids=$(ps -eo pid,user,%cpu,%mem,comm --sort=-%mem | sed 1d | \
