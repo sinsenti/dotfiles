@@ -1,6 +1,22 @@
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
 
+ndry() {
+  local query="$1"
+  local -a selected
+
+  selected=("${(@f)$(fzf ${query:+-q "$query"} \
+                         -m \
+                         --bind 'enter:transform:[ $FZF_SELECT_COUNT -eq 0 ] && echo "select-all+accept" || echo "accept"' \
+                         --preview 'bat --color=always --style=header,grid --line-range :300 {} 2>/dev/null || head -n 100 {}' \
+                         --header 'ENTER: Open ALL matching (or selected) | TAB: Select specific file(s)')}")
+
+  # Open selected or matching files in Neovim/EDITOR
+  if (( ${#selected[@]} > 0 && ${#selected[1]} > 0 )); then
+    ${EDITOR:-nvim} "${selected[@]}"
+  fi
+}
+
 f() {
     local cmd
     local header_text="[ Select command from history ]"

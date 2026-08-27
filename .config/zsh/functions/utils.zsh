@@ -1,5 +1,37 @@
 preexec() { printf '%s\n%s\n' "$PWD" "$1" > ~/.cache/last_cmd }
 
+record_myself() {
+    # 1. Define output directory and ensure it exists
+    local out_dir="$HOME/Videos/self_recording"
+    mkdir -p "$out_dir"
+
+    # 2. Generate timestamped filename
+    local filename="$(date +'%d-%m-%Y_%H-%M').mp4"
+    local filepath="$out_dir/$filename"
+
+    echo -e "\033[1;31m🎥 [Recording Started]\033[0m"
+    echo -e "Saving to: \033[1;36m$filepath\033[0m"
+    echo -e "Press \033[1;33m[q]\033[0m in this terminal to stop recording.\n"
+
+    # 3. Stream at 60 FPS; split immediately to isolate preview from recording filters
+    ffmpeg -thread_queue_size 1024 -f v4l2 -input_format mjpeg -video_size 1920x1080 -framerate 60 -i /dev/video0 \
+           -thread_queue_size 1024 -f pulse -i default \
+           -filter_complex "[0:v]split=2[prev_raw][rec_raw]; \
+                            [prev_raw]format=yuv420p[prev]; \
+                            [rec_raw]hqdn3d=1.2:1.2:2:2,scale=in_range=pc:out_range=tv[rec]" \
+           -map "[rec]" -map 1:a \
+               -c:v libx264 -preset fast -crf 16 -pix_fmt yuv420p \
+               -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \
+               -movflags +faststart \
+               -c:a aac -b:a 320k -ar 48000 \
+               "$filepath" \
+           -map "[prev]" \
+               -c:v rawvideo -pix_fmt yuv420p -f nut - | mpv --profile=low-latency --untimed --no-cache --demuxer-thread=no --vo=gpu --title="Live Camera Preview" -
+
+    echo -e "\n\033[1;32m✅ [Recording Saved Successfully]\033[0m"
+    echo "$filepath"
+}
+
 fkill() {
   local pids
   pids=$(ps -eo pid,user,%cpu,%mem,comm --sort=-%mem | sed 1d | \
