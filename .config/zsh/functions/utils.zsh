@@ -63,7 +63,7 @@ fenv() {
     selected_key=$(env | cut -d= -f1 | \
       fzf --layout=reverse --header="[ System Environment Variables ]" \
           --preview 'echo ${(P)1}')
-    
+
     if [ -n "$selected_key" ]; then
       echo -n "${(P)selected_key}" | wl-copy
       echo "Copied value of '$selected_key' to clipboard!"

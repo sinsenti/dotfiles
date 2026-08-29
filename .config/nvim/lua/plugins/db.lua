@@ -17,7 +17,7 @@ return {
             {
               name = "TimeTrace",
               type = "sqlite",
-              url = "/home/user/.timetrace/timetrace.db",
+              url = vim.fn.expand("~/.timetrace/timetrace.db"), -- Resolves ~ to absolute home directory path
             },
           }),
         },

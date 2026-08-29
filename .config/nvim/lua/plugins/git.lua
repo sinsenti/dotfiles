@@ -37,6 +37,11 @@ return {
         changedelete = { text = "▎" },
       },
       on_attach = function(buffer)
+        -- Disable gitsigns if the window is in diff mode or inside Diffview
+        if vim.wo.diff or vim.bo[buffer].filetype:find("^Diffview") then
+          return false
+        end
+
         local gs = package.loaded.gitsigns
 
         local function map(mode, l, r, desc)

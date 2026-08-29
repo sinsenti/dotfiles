@@ -1,3 +1,4 @@
+alias paste_image='wl-paste > "image_$(date +'%Y-%m-%d_%H-%M-%S').png'
 alias jv="wl-paste | jq . | nvim -c 'set ft=json' - && rm Untitled"
 alias db="python ~/dotfiles/.config/scripts/db.py"
 alias t="tuicr"
@@ -5,14 +6,13 @@ alias uvp="uv run python"
 alias localhost="google-chrome http://localhost:5173 &>/dev/null &"
 alias .env='$EDITOR .env'
 alias python="python3"
-alias lab="cd /home/user/git/project/a1labs"
-alias obs="cd /home/user/git/obsidian/"
+alias lab="cd ~/git/project/a1labs"
+alias obs="cd ~/git/obsidian/"
 
 alias zi='cd "$(zoxide query -i)"'
 alias т="nvim"
 alias gcaq="git commit --amend --no-edit"
 alias gpm="git push origin main"
-alias wifi="bash ~/dotfiles/.config/scripts/check_wifi.sh"
 alias gsp="git stash pop"
 alias gsd="git stash drop"
 alias gsa="git status apply"

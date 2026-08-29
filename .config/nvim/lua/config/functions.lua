@@ -304,7 +304,7 @@ function M.renumber_markdown_list()
     return
   end
 
-  -- 1. Scan upwards to find the start of the block
+  -- 1. Scan upwards to find the start of the contiguous block
   local start_row = cursor_row
   while start_row > 1 do
     local prev_line = vim.api.nvim_buf_get_lines(bufnr, start_row - 2, start_row - 1, false)[1]
@@ -315,7 +315,7 @@ function M.renumber_markdown_list()
     end
   end
 
-  -- 2. Scan downwards to find the end of the block
+  -- 2. Scan downwards to find the end of the contiguous block
   local end_row = cursor_row
   while end_row < total_lines do
     local next_line = vim.api.nvim_buf_get_lines(bufnr, end_row, end_row + 1, false)[1]
@@ -326,14 +326,30 @@ function M.renumber_markdown_list()
     end
   end
 
-  -- 3. Fetch block lines and renumber sequentially
+  -- 3. Fetch block lines and renumber hierarchically using an indentation stack
   local lines = vim.api.nvim_buf_get_lines(bufnr, start_row - 1, end_row, false)
   local new_lines = {}
+  local stack = {} -- Tracks { indent_width = number, count = number } per level
 
-  for i, line in ipairs(lines) do
+  for _, line in ipairs(lines) do
     local indent, _, space, rest = parse_list_line(line)
     if indent then
-      table.insert(new_lines, string.format("%s%d.%s%s", indent, i, space, rest))
+      local indent_width = vim.fn.strdisplaywidth(indent)
+
+      -- Pop levels deeper than the current item's indentation
+      while #stack > 0 and stack[#stack].indent_width > indent_width do
+        table.remove(stack)
+      end
+
+      -- Increment current level counter or initialize a new sublist level
+      if #stack > 0 and stack[#stack].indent_width == indent_width then
+        stack[#stack].count = stack[#stack].count + 1
+      else
+        table.insert(stack, { indent_width = indent_width, count = 1 })
+      end
+
+      local new_num = stack[#stack].count
+      table.insert(new_lines, string.format("%s%d.%s%s", indent, new_num, space, rest))
     else
       table.insert(new_lines, line)
     end
@@ -969,6 +985,7 @@ function M.toggle_diffview_commit()
       end
 
       vim.cmd("DiffviewOpen " .. commit)
+      vim.cmd("DiffviewToggleFiles")
     end,
   })
 end
@@ -983,6 +1000,7 @@ function M.toggle_diffview_branch()
         picker:close()
         if item and item.branch then
           vim.cmd("DiffviewOpen " .. item.branch)
+          vim.cmd("DiffviewToggleFiles")
         end
       end,
     })
@@ -993,6 +1011,7 @@ function M.toggle_diffview()
   local has_diffview, diffview_lib = pcall(require, "diffview.lib")
   if has_diffview and next(diffview_lib.views) == nil then
     vim.cmd("DiffviewOpen")
+    vim.cmd("DiffviewToggleFiles")
   else
     vim.cmd("DiffviewClose")
   end
@@ -1001,6 +1020,19 @@ end
 -- =============================================================================
 -- 5. OTHER MISCELLANEOUS SYSTEM UTILITIES
 -- =============================================================================
+
+function M.close_tab_or_buffer()
+  if #vim.api.nvim_list_tabpages() > 1 then
+    vim.cmd("tabclose")
+  else
+    local has_snacks, snacks = pcall(require, "snacks")
+    if has_snacks and snacks.bufdelete then
+      snacks.bufdelete()
+    else
+      vim.cmd("bdelete")
+    end
+  end
+end
 
 function M.toggle_codeium()
   local has_codeium, codeium_config = pcall(require, "codeium.config")

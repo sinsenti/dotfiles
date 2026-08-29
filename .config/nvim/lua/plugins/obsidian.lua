@@ -17,12 +17,12 @@ return {
 
       workspaces = {
         {
-          name = "project",
-          path = "~/git/project/notes",
-        },
-        {
           name = "obsidian",
           path = "~/git/obsidian",
+        },
+        {
+          name = "project",
+          path = "~/git/project/notes",
         },
       },
 

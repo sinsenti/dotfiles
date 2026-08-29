@@ -1,20 +1,28 @@
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
 
-ndry() {
-  local query="$1"
-  local -a selected
 
-  selected=("${(@f)$(fzf ${query:+-q "$query"} \
-                         -m \
-                         --bind 'enter:transform:[ $FZF_SELECT_COUNT -eq 0 ] && echo "select-all+accept" || echo "accept"' \
-                         --preview 'bat --color=always --style=header,grid --line-range :300 {} 2>/dev/null || head -n 100 {}' \
-                         --header 'ENTER: Open ALL matching (or selected) | TAB: Select specific file(s)')}")
+fn() {
+    local query="$*"
+    local -a selected
+    local files_cmd
 
-  # Open selected or matching files in Neovim/EDITOR
-  if (( ${#selected[@]} > 0 && ${#selected[1]} > 0 )); then
-    ${EDITOR:-nvim} "${selected[@]}"
-  fi
+    if command -v fd &>/dev/null; then
+        files_cmd='{ fd --max-depth 1 --type f --hidden --exclude .git; fd --min-depth 2 --type f --hidden --exclude .git; }'
+    else
+        files_cmd='{ find . -maxdepth 1 -type f; find . -mindepth 2 -path "*/.git*" -prune -o -type f -print; }'
+    fi
+
+    selected=("${(@f)$(eval "$files_cmd" | fzf ${query:+-q "$query"} \
+                             -m \
+                             --tiebreak=index \
+                             --bind 'enter:transform:[ $FZF_SELECT_COUNT -eq 0 ] && echo "select-all+accept" || echo "accept"' \
+                             --preview 'bat --color=always --style=header,grid --line-range :300 {} 2>/dev/null || head -n 100 {}' \
+                             --header 'ENTER: Open ALL matching (or selected) | TAB: Select specific file(s)')}")
+
+    if (( ${#selected[@]} > 0 && ${#selected[1]} > 0 )); then
+        ${EDITOR:-nvim} "${selected[@]}"
+    fi
 }
 
 f() {
@@ -49,13 +57,6 @@ fcurl() {
   fi
 }
 
-fn() {
-  local file
-  file=$(fzf --preview 'bat --color=always --style=numbers {} 2>/dev/null || cat {}')
-  if [ -n "$file" ]; then
-    nvim "$file"
-  fi
-}
 
 n() {
     # 1. Interactive session selection
