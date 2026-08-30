@@ -7,6 +7,24 @@ end
 local f = require("config.functions")
 
 -- git
+local modes = { "n", "i", "v", "t" }
+for _, mode in ipairs(modes) do
+  vim.keymap.set(mode, "<A-o>", "<Nop>", { noremap = true, silent = true })
+end
+map("n", "t", "<Nop>", { desc = "Disabled t" })
+map("n", "tk", f.close_tab_or_buffer, { desc = "Close Tab or Buffer" })
+map("n", "tt", f.open_neogit_in_current_dir, { desc = "Open neogit" })
+map("n", "td", f.toggle_diffview, { desc = "Toggle Diffview" })
+map("n", "ta", ":q<cr><cr>", a("quit"))
+map("n", "tw", ":w<cr>", a("save file"))
+map("n", "ts", f.google_search_scratchpad, { desc = "Default browser search" })
+map("n", "tn", f.tmux_next_window, { desc = "Tmux next window" })
+map("n", "tl", f.search_tmux_windows, { desc = "Search tmux windows" })
+map("n", "tc", f.tmux_create_window, { desc = "Tmux create window" })
+
+map("n", "t;", f.tmux_split_horizontal, { desc = "Tmux split horizontal" })
+map("n", "t-", f.tmux_split_horizontal, { desc = "Tmux split horizontal" })
+map("n", "t=", f.tmux_split_vertical, { desc = "Tmux split vertical" })
 
 -- map("n", "<leaderk", f.toggle_smart_terminal, a(""))
 map("n", "T", f.open_neogit_in_current_dir, { desc = "Open neogit" })
@@ -29,8 +47,8 @@ map("n", "<leader>GS", ":Neogit stash<cr>", a("Neogit stash"))
 
 -- tabs
 
+map("n", "<leader>tk", f.close_tab_or_buffer, { desc = "Close Tab or Buffer" })
 map("n", "<leader><tab><tab>", "<cmd>tabnext<cr>", { desc = "Next Tab" })
-map("n", "<leader>tk", "<cmd>tabclose<cr>", { desc = "Close Tab" })
 map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
 map("n", "<leader>tp", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 map("n", "<leader>tn", "<cmd>tabnext<cr>", { desc = "Next Tab" })
@@ -57,7 +75,7 @@ map("n", "<c-k>", ":TmuxNavigateUp<cr>", opts)
 map("n", "<Up>", ":resize -2<cr>", opts)
 map("n", "<Down>", ":resize +2<cr>", opts)
 map("n", "<Left>", ":vertical resize -2<cr>", opts)
-map("n", "<Right>", ":vertijal resize +2<cr>", opts)
+map("n", "<Right>", ":vertical resize +2<cr>", opts)
 
 -- Make 'j' and 'k' move instantly on display lines without triggering timeouts
 map({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
@@ -84,7 +102,7 @@ map("i", "<c-a>", "<Esc>mpggyG'p:delmarks p<cr>", opts)
 map("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
 -- map("t", "jk", "<C-\\><C-n>", opts)
 
-map("n", "tw", ":Twilight<cr>", opts)
+map("n", "<leader>TW", ":Twilight<cr>", opts)
 map("n", "Q", ":q<cr>", opts)
 map("n", "WW", ":w<cr>", opts)
 map("n", "WQ", ":wqa<cr>", opts)

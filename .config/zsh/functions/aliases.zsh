@@ -1,3 +1,7 @@
+alias m="bash ~/dotfiles/.config/scripts/focus-diff-monitor.sh"
+alias tc='tmux new-window -c "#{pane_current_path}"'
+alias tk="tmux kill-pane"
+alias tn="tmux next-window"
 alias paste_image='wl-paste > "image_$(date +'%Y-%m-%d_%H-%M-%S').png'
 alias jv="wl-paste | jq . | nvim -c 'set ft=json' - && rm Untitled"
 alias db="python ~/dotfiles/.config/scripts/db.py"

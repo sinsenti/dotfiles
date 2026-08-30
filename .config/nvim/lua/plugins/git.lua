@@ -64,7 +64,7 @@ return {
       end
     end, "Next Hunk")
 
-    map("n", "<leader>hn", function()
+    map("n", "th", function()
       if vim.wo.diff then
         vim.cmd.normal({ "]c", bang = true })
       else

@@ -79,6 +79,14 @@ return {
         end,
         desc = "Find Files (fff)",
       },
+      -- ─── OBSIDIAN VAULT SEARCH ───
+      {
+        "to",
+        function()
+          require("fff").find_files({ cwd = vim.fn.expand("~/git/obsidian") })
+        end,
+        desc = "Find Files (Obsidian)",
+      },
       {
         "fw",
         function()

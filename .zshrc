@@ -54,6 +54,7 @@ zinit snippet OMZP::git
 
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
+zinit ice wait"0" lucid atload"unalias tl 2>/dev/null"
 zinit ice wait"0" lucid
 zinit snippet OMZP::tmux
 

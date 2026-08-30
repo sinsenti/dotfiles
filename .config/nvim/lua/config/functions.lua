@@ -1303,4 +1303,102 @@ vim.api.nvim_create_user_command("PickFromZshHistory", function()
   })
 end, { desc = "Zsh Command History" })
 
+function M.tmux_next_window()
+  if vim.env.TMUX then
+    vim.fn.system("tmux next-window")
+  else
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+  end
+end
+
+function M.tmux_split_horizontal()
+  if vim.env.TMUX then
+    vim.fn.system('tmux split-window -h -c "#{pane_current_path}"')
+  else
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+  end
+end
+
+function M.tmux_split_vertical()
+  if vim.env.TMUX then
+    vim.fn.system('tmux split-window -v -c "#{pane_current_path}"')
+  else
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+  end
+end
+
+function M.tmux_create_window()
+  if vim.env.TMUX then
+    vim.fn.system('tmux new-window -c "#{pane_current_path}"')
+  else
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+  end
+end
+
+function M.search_tmux_windows()
+  if not vim.env.TMUX then
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+    return
+  end
+
+  local windows =
+    vim.fn.systemlist([[tmux list-windows -F "#{window_index}: #{window_name}#{?window_active, (active),}"]])
+  if vim.v.shell_error ~= 0 or #windows == 0 then
+    vim.notify("Could not fetch Tmux windows", vim.log.levels.ERROR)
+    return
+  end
+
+  -- Move the currently active window to the bottom of the list
+  local items = {}
+  local active_item = nil
+
+  for _, win in ipairs(windows) do
+    if win:match("%(active%)") then
+      active_item = win
+    else
+      table.insert(items, win)
+    end
+  end
+
+  if active_item then
+    table.insert(items, active_item)
+  end
+
+  require("fzf-lua").fzf_exec(items, {
+    prompt = "Tmux Windows> ",
+    fzf_opts = { ["--no-sort"] = "" },
+    actions = {
+      ["default"] = function(selected, opts)
+        -- 1. Switch to selected window if a match was found
+        if selected and #selected > 0 then
+          local window_idx = selected[1]:match("^(%d+):")
+          if window_idx then
+            vim.fn.system("tmux select-window -t " .. window_idx)
+            return
+          end
+        end
+
+        -- 2. Fallback: Create a new window using typed query if no results matched
+        local query = (opts and opts.last_query and opts.last_query:gsub("^%s*(.-)%s*$", "%1")) or ""
+        if query ~= "" then
+          vim.fn.system("tmux new-window -n " .. vim.fn.shellescape(query))
+          vim.notify("Created new Tmux window: " .. query, vim.log.levels.INFO)
+        else
+          vim.fn.system("tmux new-window")
+        end
+      end,
+
+      -- Optional: Press Ctrl-a to force-create a new window even if partial search matches exist
+      ["ctrl-a"] = function(_, opts)
+        local query = (opts and opts.last_query and opts.last_query:gsub("^%s*(.-)%s*$", "%1")) or ""
+        if query ~= "" then
+          vim.fn.system("tmux new-window -n " .. vim.fn.shellescape(query))
+        else
+          vim.fn.system("tmux new-window")
+        end
+      end,
+    },
+  })
+end
+
 return M

@@ -1,6 +1,24 @@
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
 
+unalias tl 2>/dev/null
+
+tl() {
+    if [[ -z "$TMUX" ]]; then
+        echo -e "\033[1;33mNot running inside a Tmux session\033[0m"
+        return 1
+    fi
+
+    local selected
+    selected=$(tmux list-windows -F '#{window_index}: #{window_name}#{?window_active, (active),}' 2>/dev/null | \
+        awk '/\(active\)$/ { active=$0; next } { print } END { if (active) print active }' | \
+        fzf --layout=reverse --no-sort --header="[ Select Tmux Window ]")
+
+    if [[ -n "$selected" ]]; then
+        local win_idx="${selected%%:*}"
+        tmux select-window -t "$win_idx"
+    fi
+}
 
 fn() {
     local query="$*"
