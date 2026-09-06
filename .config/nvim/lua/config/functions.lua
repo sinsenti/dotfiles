@@ -1311,14 +1311,29 @@ function M.tmux_next_window()
   end
 end
 
-function M.tmux_split_horizontal()
+function M.tmux_kill_pane()
   if vim.env.TMUX then
-    vim.fn.system('tmux split-window -h -c "#{pane_current_path}"')
+    vim.fn.system("tmux kill-pane")
   else
     vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
   end
 end
 
+function M.tmux_split_horizontal()
+  if not vim.env.TMUX then
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+    return
+  end
+
+  local output = vim.fn.system('tmux display-message -p "#{window_panes}"')
+  local pane_count = tonumber(vim.trim(output))
+
+  if pane_count and pane_count > 1 then
+    vim.fn.system("tmux select-pane -t :.+")
+  else
+    vim.fn.system('tmux split-window -h -c "#{pane_current_path}"')
+  end
+end
 function M.tmux_split_vertical()
   if vim.env.TMUX then
     vim.fn.system('tmux split-window -v -c "#{pane_current_path}"')
@@ -1364,6 +1379,27 @@ function M.search_tmux_windows()
     table.insert(items, active_item)
   end
 
+  -- Helper function to resolve zoxide path and open tmux window
+  local function create_window_from_query(query)
+    query = (query and query:gsub("^%s*(.-)%s*$", "%1")) or ""
+    if query == "" then
+      vim.fn.system("tmux new-window")
+      return
+    end
+
+    -- Run zoxide to find a matching path
+    local z_path = vim.fn.system({ "zoxide", "query", query }):gsub("%s+$", "")
+
+    if vim.v.shell_error == 0 and z_path ~= "" then
+      local folder_name = vim.fn.fnamemodify(z_path, ":t")
+      vim.fn.system({ "tmux", "new-window", "-c", z_path, "-n", folder_name })
+    else
+      -- Fallback to opening standard window with query as name if zoxide has no match
+      vim.fn.system({ "tmux", "new-window", "-n", query })
+      vim.notify("Created new Tmux window: " .. query, vim.log.levels.INFO)
+    end
+  end
+
   require("fzf-lua").fzf_exec(items, {
     prompt = "Tmux Windows> ",
     fzf_opts = { ["--no-sort"] = "" },
@@ -1378,27 +1414,28 @@ function M.search_tmux_windows()
           end
         end
 
-        -- 2. Fallback: Create a new window using typed query if no results matched
-        local query = (opts and opts.last_query and opts.last_query:gsub("^%s*(.-)%s*$", "%1")) or ""
-        if query ~= "" then
-          vim.fn.system("tmux new-window -n " .. vim.fn.shellescape(query))
-          vim.notify("Created new Tmux window: " .. query, vim.log.levels.INFO)
-        else
-          vim.fn.system("tmux new-window")
-        end
+        -- 2. Fallback: Query zoxide and create window
+        create_window_from_query(opts and opts.last_query)
       end,
 
-      -- Optional: Press Ctrl-a to force-create a new window even if partial search matches exist
+      -- Press Ctrl-a to force-create window via zoxide search
       ["ctrl-a"] = function(_, opts)
-        local query = (opts and opts.last_query and opts.last_query:gsub("^%s*(.-)%s*$", "%1")) or ""
-        if query ~= "" then
-          vim.fn.system("tmux new-window -n " .. vim.fn.shellescape(query))
-        else
-          vim.fn.system("tmux new-window")
-        end
+        create_window_from_query(opts and opts.last_query)
       end,
     },
   })
+end
+
+function M.open_help_splits()
+  local left_file = vim.fn.expand("~/git/project/help.md")
+  local right_file = vim.fn.expand("~/git/project/help1.md")
+
+  local target_win = vim.api.nvim_get_current_win()
+
+  vim.cmd("edit " .. vim.fn.fnameescape(left_file))
+  vim.cmd("rightbelow vsplit " .. vim.fn.fnameescape(right_file))
+
+  vim.api.nvim_set_current_win(target_win)
 end
 
 return M

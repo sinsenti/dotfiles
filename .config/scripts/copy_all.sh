@@ -1,7 +1,7 @@
 #!/bin/bash
 
 output_file="backup_code.txt"
-exclude_dirs=(".git" ".github" "infra" ".claude" "node_modules" "dist" "__pycache__" ".pytest_cache" ".idea" ".idea" ".venv")
+exclude_dirs=(".git" ".github" "infra" ".claude" "node_modules" "dist" "__pycache__" ".pytest_cache" ".idea" ".venv")
 exclude_files=("package-lock.json" "poetry.lock" ".gitignore" "uv.lock" ".env")
 auto_exclude_large=true
 auto_exclude_gitignore=true
@@ -225,8 +225,7 @@ while true; do
   fi
 done
 
->"$output_file"
-echo "Full project code:" >>"$output_file"
+echo -e "Full project code:\n\n" >"$output_file"
 
 final_dirs=("${exclude_dirs[@]}")
 final_files=("${exclude_files[@]}")
@@ -269,9 +268,30 @@ find_args+=(-print)
 echo -e "\nProcessing workspace index..."
 
 find . "${find_args[@]}" | while IFS= read -r file; do
-  echo "=== $file ===" >>"$output_file"
+  clean_path="${file#./}"
+  ext="${clean_path##*.}"
+
+  case "$ext" in
+  js) lang="javascript" ;;
+  ts) lang="typescript" ;;
+  py) lang="python" ;;
+  sh | bash) lang="bash" ;;
+  yml | yaml) lang="yaml" ;;
+  json) lang="json" ;;
+  html) lang="html" ;;
+  css) lang="css" ;;
+  sql) lang="sql" ;;
+  md) lang="markdown" ;;
+  *) lang="$ext" ;;
+  esac
+
+  echo "### \`$clean_path\`" >>"$output_file"
+  echo "" >>"$output_file"
+  echo "\`\`\`$lang" >>"$output_file"
   cat "$file" >>"$output_file"
-  echo -e "\n\n" >>"$output_file"
+  echo "" >>"$output_file"
+  echo "\`\`\`" >>"$output_file"
+  echo -e "\n" >>"$output_file"
 done
 
 if command -v wl-copy &>/dev/null; then

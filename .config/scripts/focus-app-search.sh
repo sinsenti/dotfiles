@@ -1,32 +1,27 @@
 #!/bin/bash
 
-# Ensure full PATH for GNOME background shortcuts
 export PATH="/usr/local/bin:/usr/bin:/bin:/snap/bin:$HOME/.local/bin:$PATH"
 
-# 1. Fetch window list
 WINDOW_LIST=$(
   python3 - <<'EOF'
 import json, subprocess, sys
 
-def get_dbus_json(method, arg=None):
-    cmd = [
-        "dbus-send", "--session", "--print-reply=literal",
-        "--dest=org.gnome.Shell",
-        "/org/gnome/Shell/Extensions/Windows",
-        f"org.gnome.Shell.Extensions.Windows.{method}"
-    ]
-    if arg is not None:
-        cmd.append(f"uint32:{arg}")
-    try:
-        raw = subprocess.check_output(cmd, text=True, stderr=subprocess.DEVNULL).strip()
-        if raw.startswith('string "') and raw.endswith('"'):
-            raw = raw[8:-1]
-        raw = raw.replace('\\"', '"').replace('\\\\', '\\')
-        return json.loads(raw)
-    except Exception:
-        return None
+cmd = [
+    "dbus-send", "--session", "--print-reply=literal",
+    "--dest=org.gnome.Shell",
+    "/org/gnome/Shell/Extensions/Windows",
+    "org.gnome.Shell.Extensions.Windows.List"
+]
 
-windows = get_dbus_json("List")
+try:
+    raw = subprocess.check_output(cmd, text=True, stderr=subprocess.DEVNULL).strip()
+    if raw.startswith('string "') and raw.endswith('"'):
+        raw = raw[8:-1]
+    raw = raw.replace('\\"', '"').replace('\\\\', '\\')
+    windows = json.loads(raw)
+except Exception:
+    sys.exit(0)
+
 if not windows or not isinstance(windows, list):
     sys.exit(0)
 
@@ -35,11 +30,9 @@ for w in windows:
     ws = w.get("workspace", "?")
     wm_class = w.get("wm_class", "Unknown").split('_')[0]
     title = w.get("title", "Untitled")
-    
-    details = get_dbus_json("Details", win_id)
-    mon = details.get("monitor", "?") if isinstance(details, dict) else "?"
+    mon = w.get("monitor", "?") # Extracted directly from List response
 
-    print(f"{win_id}\t[WS {ws} | Mon {mon}]  {wm_class.upper()}  —  {title}")
+    print(f"{wm_class.upper()}  —  {title}  [WS {ws} | Mon {mon}]\t{win_id}")
 EOF
 )
 
@@ -47,15 +40,19 @@ if [ -z "$WINDOW_LIST" ]; then
   exit 0
 fi
 
-# 2. Select interface depending on execution environment
 if command -v rofi &>/dev/null; then
-  # Brief delay lets GNOME release shortcut hotkeys; -normal-window forces Wayland input focus
-  SELECTED=$(echo "$WINDOW_LIST" | rofi -dmenu -i -p "Focus Window" -normal-window)
+  INDEX=$(echo "$WINDOW_LIST" | cut -f1 | rofi -dmenu -i -format i -p "Focus Window" -normal-window \
+    -theme-str 'configuration { font: "JetBrainsMono Nerd Font SemiBold 11"; } element-text { font: "JetBrainsMono Nerd Font SemiBold 11"; }')
+
+  if [ -n "$INDEX" ]; then
+    WIN_ID=$(echo "$WINDOW_LIST" | sed -n "$((INDEX + 1))p" | cut -f2)
+  fi
+
 elif [ -t 0 ] && command -v fzf &>/dev/null; then
-  # Interactive CLI shell execution
-  SELECTED=$(echo "$WINDOW_LIST" | fzf --reverse --height=40% --prompt="Focus Window > " --delimiter="\t" --with-nth=2..)
+  SELECTED=$(echo "$WINDOW_LIST" | fzf --reverse --height=40% --prompt="Focus Window > " --delimiter="\t" --with-nth=1)
+  WIN_ID=$(echo "$SELECTED" | cut -f2)
+
 else
-  # GNOME shortcut execution fallback using a floating Kitty window
   TMP_LIST=$(mktemp)
   TMP_OUT=$(mktemp)
   echo "$WINDOW_LIST" >"$TMP_LIST"
@@ -65,14 +62,11 @@ else
     -o remember_window_size=no \
     -o initial_window_width=800 \
     -o initial_window_height=400 \
-    bash -c "fzf --reverse --prompt='Focus Window > ' --delimiter='\t' --with-nth=2.. < '$TMP_LIST' > '$TMP_OUT'"
+    bash -c "fzf --reverse --prompt='Focus Window > ' --delimiter='\t' --with-nth=1 < '$TMP_LIST' | cut -f2 > '$TMP_OUT'"
 
-  SELECTED=$(cat "$TMP_OUT")
+  WIN_ID=$(cat "$TMP_OUT")
   rm -f "$TMP_LIST" "$TMP_OUT"
 fi
-
-# 3. Activate selected window
-WIN_ID=$(echo "$SELECTED" | awk -F '\t' '{print $1}')
 
 if [ -n "$WIN_ID" ]; then
   gdbus call --session \

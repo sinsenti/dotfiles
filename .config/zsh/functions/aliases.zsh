@@ -1,3 +1,7 @@
+alias code_paste="python ~/dotfiles/.config/scripts/code_paste.py"
+alias ww='w'
+alias cx="cd "$@" && l"
+alias cl="claude"
 alias m="bash ~/dotfiles/.config/scripts/focus-diff-monitor.sh"
 alias tc='tmux new-window -c "#{pane_current_path}"'
 alias tk="tmux kill-pane"
@@ -73,3 +77,11 @@ alias tree0='exa --tree --header --icons -a'
 alias ffg='find_preview'
 alias nt='nvim ~/dotfiles/.config/tmux/.tmux.conf'
 alias venv='source ~/git/project/help/.venv/bin/activate'
+
+
+## dirs
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."

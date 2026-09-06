@@ -26,6 +26,9 @@ map("n", "t;", f.tmux_split_horizontal, { desc = "Tmux split horizontal" })
 map("n", "t-", f.tmux_split_horizontal, { desc = "Tmux split horizontal" })
 map("n", "t=", f.tmux_split_vertical, { desc = "Tmux split vertical" })
 
+map("n", "<leader>0", f.open_help_splits, { desc = "Open Help Split View" })
+map("n", "TK", f.tmux_kill_pane, { desc = "Tmux kill pane" })
+
 -- map("n", "<leaderk", f.toggle_smart_terminal, a(""))
 map("n", "T", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "<leader>gr", ":Git reset --soft HEAD~1<cr>", a("Git reset --soft HEAD~1"))
@@ -109,7 +112,7 @@ map("n", "WQ", ":wqa<cr>", opts)
 map({ "n", "v" }, "E", "$", opts)
 map({ "n", "v" }, "B", "^", opts)
 map("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
-map("n", "ss", ":vsplit<cr>", opts)
+map("n", "ss", "<cmd>vsplit # | wincmd p<cr>", opts)
 map("n", "sv", ":split<cr>", opts)
 
 map("n", "<leader>T", ":TransparentToggle<cr>", a("Toggle transparetn mode"))

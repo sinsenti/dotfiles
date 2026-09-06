@@ -160,3 +160,5 @@ zle -N open_nvim_command_line
 bindkey -M vicmd 'v' open_nvim_command_line
 
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

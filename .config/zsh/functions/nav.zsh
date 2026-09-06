@@ -76,7 +76,7 @@ fcurl() {
 }
 
 
-n() {
+v() {
     # 1. Interactive session selection
     if [[ "$1" == "-s" || "$1" == "--select" ]]; then
         nvim -c 'lua vim.schedule(function() require("persistence").select() end)'
