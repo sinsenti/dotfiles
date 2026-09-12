@@ -1,0 +1,16 @@
+nerdfont: true
+
+# theme: default
+
+main_branch: dev
+agent: pi
+worktree_dir: .claude/worktrees
+
+panes:
+  - command: pi
+    focus: true
+
+status_icons:
+  working: ""
+  waiting: ""
+  done: ""

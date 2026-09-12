@@ -1311,6 +1311,13 @@ function M.tmux_next_window()
   end
 end
 
+function M.tmux_previous_window()
+  if vim.env.TMUX then
+    vim.fn.system("tmux previous-window")
+  else
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)
+  end
+end
 function M.tmux_kill_pane()
   if vim.env.TMUX then
     vim.fn.system("tmux kill-pane")
@@ -1430,12 +1437,220 @@ function M.open_help_splits()
   local left_file = vim.fn.expand("~/git/project/help.md")
   local right_file = vim.fn.expand("~/git/project/help1.md")
 
-  local target_win = vim.api.nvim_get_current_win()
+  -- Close all other splits in the current tab page
+  vim.cmd("only")
 
+  -- Open the left file in the main window
   vim.cmd("edit " .. vim.fn.fnameescape(left_file))
+  local left_win = vim.api.nvim_get_current_win()
+
+  -- Create a vertical split on the right for the second file
   vim.cmd("rightbelow vsplit " .. vim.fn.fnameescape(right_file))
 
-  vim.api.nvim_set_current_win(target_win)
+  -- Return cursor focus to the left window
+  vim.api.nvim_set_current_win(left_win)
+end
+
+function M.insert_markdown_code_block()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row = cursor[1]
+  local current_line = vim.api.nvim_get_current_line()
+  local indent = current_line:match("^(%s*)") or ""
+
+  if current_line:match("^%s*$") then
+    vim.api.nvim_buf_set_lines(bufnr, row - 1, row, false, {
+      indent .. "```",
+      indent,
+      indent .. "```",
+    })
+    vim.api.nvim_win_set_cursor(0, { row + 1, #indent })
+  else
+    vim.api.nvim_buf_set_lines(bufnr, row, row, false, {
+      indent .. "```",
+      indent,
+      indent .. "```",
+    })
+    vim.api.nvim_win_set_cursor(0, { row + 2, #indent })
+  end
+end
+
+function M.clean_chatgpt_markdown()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+  local stage1 = {}
+  local in_code_block = false
+
+  -- Pass 1: Clean non-breaking space artifacts, unescape symbols, strip header numbering, and normalize line starts
+  for _, line in ipairs(lines) do
+    -- Remove non-breaking spaces (U+00A0 / \194\160) and carriage returns
+    line = line:gsub("\u{00a0}", " "):gsub("[\194\160]", " "):gsub("\r", "")
+
+    -- Code block toggle
+    if line:match("^%s*```") then
+      in_code_block = not in_code_block
+      line = line:gsub("^%s+```", "```")
+      table.insert(stage1, line)
+    elseif in_code_block then
+      -- Leave exact code block interior lines intact
+      table.insert(stage1, line)
+    else
+      -- Unescape backslashes before markdown characters (e.g. 14\. or \# or \**)
+      line = line:gsub("(%d+)\\%s*%.", "%1.")
+      line = line:gsub("\\([#%-%*%_%>%[%]%(%)])", "%1")
+
+      -- Strip random leading spaces before headers, quotes, lists, dividers, and text
+      line = line:gsub("^%s+(#+)", "%1")
+      line = line:gsub("^%s+(>)", "%1")
+      line = line:gsub("^%s+([%-%*%+])%s+", "%1 ")
+      line = line:gsub("^%s+(%d+%.)%s+", "%1 ")
+      line = line:gsub("^%s*(%-%-%-+)", "%1")
+      line = line:gsub("^%s+([^%s])", "%1")
+
+      -- Strip numerical prefixes from headers (e.g. '# 1. Title' or '## 2\. Section' -> '# Title')
+      line = line:gsub("^(#+)%s*%d+%.%s*", "%1 ")
+
+      -- Trim trailing whitespace
+      line = line:gsub("%s+$", "")
+
+      table.insert(stage1, line)
+    end
+  end
+
+  -- Pass 2: Smart spacing, blank line collapsing, and loose-list tightening
+  local stage2 = {}
+  local in_code = false
+  local i = 1
+
+  while i <= #stage1 do
+    local line = stage1[i]
+
+    if line:match("^```") then
+      in_code = not in_code
+      table.insert(stage2, line)
+      i = i + 1
+    elseif in_code then
+      -- Remove blank lines at opening or closing boundaries of code blocks
+      local prev = stage2[#stage2]
+      local next_line = stage1[i + 1]
+      if line == "" and (prev:match("^```") or (next_line and next_line:match("^```"))) then
+        -- Skip empty boundary line inside code block
+      else
+        table.insert(stage2, line)
+      end
+      i = i + 1
+    else
+      -- Tighten loose lists (remove empty lines between consecutive list bullets)
+      local is_list_item = line:match("^%s*[%-%*%+]%s+") or line:match("^%s*%d+%.%s+")
+      local next_1 = stage1[i + 1]
+      local next_2 = stage1[i + 2]
+      local is_next_list_item = next_2 and (next_2:match("^%s*[%-%*%+]%s+") or next_2:match("^%s*%d+%.%s+"))
+
+      if is_list_item and next_1 == "" and is_next_list_item then
+        table.insert(stage2, line)
+        i = i + 2 -- Skip intermediate empty line between list items
+      else
+        -- Collapse multiple consecutive empty lines to maximum 1
+        if line == "" and #stage2 > 0 and stage2[#stage2] == "" then
+          -- Skip extra blank line
+        else
+          table.insert(stage2, line)
+        end
+        i = i + 1
+      end
+    end
+  end
+
+  -- Pass 3: Strip leading & trailing empty lines from the buffer
+  while #stage2 > 0 and stage2[1] == "" do
+    table.remove(stage2, 1)
+  end
+  while #stage2 > 0 and stage2[#stage2] == "" do
+    table.remove(stage2, #stage2)
+  end
+
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, stage2)
+  vim.notify("ChatGPT Markdown cleaned!", vim.log.levels.INFO)
+end
+
+function M.search_json_and_copy_value()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local raw_text = table.concat(lines, "\n")
+
+  if raw_text:match("^%s*$") then
+    vim.notify("Buffer is empty!", vim.log.levels.WARN)
+    return
+  end
+
+  local ok, decoded = pcall(vim.json.decode, raw_text)
+  if not ok or type(decoded) ~= "table" then
+    vim.notify("Failed to parse valid JSON from buffer", vim.log.levels.ERROR)
+    return
+  end
+
+  local entries = {}
+  local lookup = {}
+
+  local function flatten(obj, path)
+    if type(obj) == "table" then
+      local is_array = (vim.islist and vim.islist(obj)) or vim.tbl_islist(obj)
+      if is_array then
+        for i, val in ipairs(obj) do
+          local new_path = string.format("%s[%d]", path, i)
+          if type(val) == "table" then
+            flatten(val, new_path)
+          else
+            local val_str = val == nil and "null" or tostring(val)
+            local item_str = string.format("%s: %s", new_path, val_str)
+            table.insert(entries, item_str)
+            lookup[item_str] = val_str
+          end
+        end
+      else
+        for k, v in pairs(obj) do
+          local new_path = path == "" and tostring(k) or (path .. "." .. tostring(k))
+          if type(v) == "table" then
+            flatten(v, new_path)
+          else
+            local val_str = v == nil and "null" or tostring(v)
+            local item_str = string.format("%s: %s", new_path, val_str)
+            table.insert(entries, item_str)
+            lookup[item_str] = val_str
+          end
+        end
+      end
+    end
+  end
+
+  flatten(decoded, "")
+
+  if #entries == 0 then
+    vim.notify("No JSON key-value pairs found", vim.log.levels.WARN)
+    return
+  end
+
+  table.sort(entries)
+
+  require("fzf-lua").fzf_exec(entries, {
+    prompt = "JSON Keys> ",
+    actions = {
+      ["default"] = function(selected)
+        if not selected or #selected == 0 then
+          return
+        end
+        local choice = selected[1]
+        local val_to_copy = lookup[choice]
+
+        if val_to_copy then
+          vim.fn.setreg("+", val_to_copy)
+          vim.fn.setreg('"', val_to_copy)
+          vim.notify("Copied: " .. val_to_copy, vim.log.levels.INFO, { title = "JSON Copy" })
+        end
+      end,
+    },
+  })
 end
 
 return M

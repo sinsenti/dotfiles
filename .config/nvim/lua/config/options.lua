@@ -130,15 +130,6 @@ else
   vim.opt.foldexpr = "v:lua.LazyVim.treesitter.foldexpr()"
 end
 
-vim.opt.sessionoptions = {
-  "curdir",
-  "folds",
-  "globals",
-  "help",
-  "tabpages",
-  "winsize",
-  "winpos",
-  "terminal",
-}
+vim.opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0

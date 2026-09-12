@@ -1,5 +1,5 @@
 
-p() {
+py() {
     setopt local_options null_glob
 
     local runner=""

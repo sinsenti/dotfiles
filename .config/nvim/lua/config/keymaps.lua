@@ -11,15 +11,19 @@ local modes = { "n", "i", "v", "t" }
 for _, mode in ipairs(modes) do
   vim.keymap.set(mode, "<A-o>", "<Nop>", { noremap = true, silent = true })
 end
+
 map("n", "t", "<Nop>", { desc = "Disabled t" })
 map("n", "tk", f.close_tab_or_buffer, { desc = "Close Tab or Buffer" })
 map("n", "tt", f.open_neogit_in_current_dir, { desc = "Open neogit" })
 map("n", "td", f.toggle_diffview, { desc = "Toggle Diffview" })
 map("n", "ta", ":q<cr><cr>", a("quit"))
+map("n", "tq", ":q<cr><cr>", a("quit"))
 map("n", "tw", ":w<cr>", a("save file"))
 map("n", "ts", f.google_search_scratchpad, { desc = "Default browser search" })
 map("n", "tn", f.tmux_next_window, { desc = "Tmux next window" })
-map("n", "tl", f.search_tmux_windows, { desc = "Search tmux windows" })
+map("n", "TL", f.tmux_next_window, { desc = "Tmux next window" })
+map("n", "TH", f.tmux_previous_window, { desc = "Tmux previous window" })
+map("n", "t'", f.search_tmux_windows, { desc = "Search tmux windows" })
 map("n", "tc", f.tmux_create_window, { desc = "Tmux create window" })
 
 map("n", "t;", f.tmux_split_horizontal, { desc = "Tmux split horizontal" })
@@ -120,6 +124,8 @@ map("n", "<leader>df", ":DeleteFile", {})
 map("n", "<leader>ra", ":CurlOpen global<CR>", a("curl commands"))
 
 -- notes
+map("n", "<leader>mg", f.clean_chatgpt_markdown, { desc = "Clean ChatGPT Markdown Artifacts" })
+map("n", "<leader>mb", f.insert_markdown_code_block, { desc = "Insert Markdown Code Block" })
 map("n", "<leader>ms", f.google_search_scratchpad, { desc = "Default browser search" })
 map("n", "<leader>md", f.cambridge_dictionary_clean, { desc = "Search Dictionary" })
 map("n", "<leader>Me", f.browser_search_scratchpad, { desc = "Browser search" })
@@ -136,6 +142,7 @@ vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
 
 -- functions
 
+map("n", "<leader>mj", f.search_json_and_copy_value, { desc = "Json Search and copy value" })
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
 map("n", "<leader>mn", f.renumber_markdown_list, { desc = "Renumber list" })
 map("v", "<leader>mt", f.translate_visual_selection, { desc = "Translate highlighted text block" })

@@ -1,3 +1,47 @@
+dwt() {
+  # 1. Ensure inside a git repository
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo -e "\033[1;31mNot inside a git repository.\033[0m"
+    return 1
+  fi
+
+  # 2. Get main repository root path (to source .env from)
+  local main_wt
+  main_wt=$(git worktree list | head -n1 | awk '{print $1}')
+
+  # 3. Select worktree via FZF
+  local selected_wt
+  selected_wt=$(git worktree list | fzf --layout=reverse --header="[ Select Worktree for Docker ]" | awk '{print $1}')
+
+  if [[ -z "$selected_wt" ]]; then
+    echo "Cancelled."
+    return 0
+  fi
+
+  cd "$selected_wt" || return 1
+
+  # 4. Copy .env from main repository root if missing
+  if [[ ! -f ".env" && -f "$main_wt/.env" ]]; then
+    cp "$main_wt/.env" .env
+    echo -e "\033[1;32mCopied .env from $main_wt\033[0m"
+  fi
+
+  # 5. Determine Docker Compose project name
+  local folder_name
+  folder_name=$(basename "$selected_wt")
+  local proj_name="${1:-a1labs}"
+
+  echo -e "\033[1;34m[Starting Docker project: '$proj_name' in $selected_wt]\033[0m"
+  docker compose -p "$proj_name" up -d --build
+
+  # 6. Stream logs automatically (Tmux horizontal split or same shell)
+  # if [[ -n "$TMUX" ]]; then
+  #   tmux split-window -h -c "$selected_wt" "docker compose -p '$proj_name' logs -f"
+  # else
+  docker compose -p "$proj_name" logs -f
+  # fi
+}
+
 
 dexec() {
   local container

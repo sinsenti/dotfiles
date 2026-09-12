@@ -1,7 +1,9 @@
+alias p="pi"
+alias wm="workmux"
 alias code_paste="python ~/dotfiles/.config/scripts/code_paste.py"
 alias ww='w'
 alias cx="cd "$@" && l"
-alias cl="claude"
+alias cl="claude --resume"
 alias m="bash ~/dotfiles/.config/scripts/focus-diff-monitor.sh"
 alias tc='tmux new-window -c "#{pane_current_path}"'
 alias tk="tmux kill-pane"
@@ -65,7 +67,7 @@ alias copyall="bash ~/dotfiles/.config/scripts/copy_all.sh"
 alias c="clear"
 alias nz="nvim ~/.zshrc"
 alias sz="source ~/.zshrc"
-alias e="exit"
+# alias e="exit"
 alias q="exit"
 alias ff='fzf --layout=reverse --height 100% --preview "bat -n --color=always --theme=Dracula {}" | { read -r file && nvim "$file"; }'
 alias tree='exa --tree --header --icons -a --level=1 --group-directories-first'

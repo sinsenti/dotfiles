@@ -86,9 +86,11 @@ keybindings:
     - key: C
       name: code review
       command: >
-        tmux new-window -n "PR-{{.PrNumber}}" 
-        'wt switch pr:{{.PrNumber}} -x "claude --prompt `review pr for this branch`"'
-
+        workmux add --pr {{.PrNumber}} -a pi -p "review pr for this branch"
+    - key: D
+      name: diff in neovim
+      command: >
+        tmux new-window -n "Diff-{{.PrNumber}}" "wt switch pr:{{.PrNumber}} -x sh -- -c 'exec nvim -c \"doautocmd User VeryLazy\" -c \"DiffviewOpen origin/{{.BaseRefName}}...HEAD\"'"
 theme:
   colors:
     text:

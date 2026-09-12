@@ -181,6 +181,7 @@ return {
     { "<leader>fG", "<cmd>FzfLua git_files<cr>", desc = "Find Files (git-files)" },
     { "<leader>fg", "<cmd>FzfLua grep_project<CR>", desc = "Find rg" },
     { "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent" },
+    { "tr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent" },
     { "<leader>fR", LazyVim.pick("oldfiles", { cwd = vim.uv.cwd() }), desc = "Recent (cwd)" },
     -- git
     { "<leader>gC", "<cmd>FzfLua git_commits<CR>", desc = "Commits" },

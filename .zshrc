@@ -69,7 +69,9 @@ zinit light carapace-sh/carapace-bin
 # ==========================================
 # 5. Environment and Global Exports
 # ==========================================
-export TERM=xterm-256color
+# export TERM=xterm-256color
+export TERM=xterm-kitty
+
 export TERMINAL=/usr/bin/kitty
 export EDITOR="nvim"
 export VISUAL="nvim"

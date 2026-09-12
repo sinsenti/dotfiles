@@ -89,6 +89,7 @@ return {
     -- { "<leader>sR", function() Snacks.picker.resume() end, desc = "Resume" },
     -- { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
     { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
+    { "t/", function() Snacks.terminal.focus(nil, { cwd = LazyVim.root() }) end, mode = { "n", "t" }, desc = "Terminal (cwd)", },
     -- ui
     -- { "<leader>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
 
