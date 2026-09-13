@@ -1,4 +1,5 @@
 local M = {}
+local H = require("config.functions.helpers")
 
 function M.translate_visual_selection()
   -- 1. Exit Visual mode to save the CURRENT selection to '< and '> marks
@@ -77,14 +78,7 @@ function M.translation_scratchpad()
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
 
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    row = row,
-    col = col,
-    width = width,
-    height = height,
-    style = "minimal",
-    border = "rounded",
+  local win = H.open_float(buf, width, height, row, col, {
     title = " Type Text to Translate (Empty uses Clipboard) ",
     title_pos = "center",
   })
@@ -200,14 +194,7 @@ function M.google_search_scratchpad()
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
 
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    row = row,
-    col = col,
-    width = width,
-    height = height,
-    style = "minimal",
-    border = "rounded",
+  local win = H.open_float(buf, width, height, row, col, {
     title = " Google Search (<CR> to Open Browser) ",
     title_pos = "center",
   })
@@ -252,14 +239,7 @@ function M.cambridge_dictionary_clean()
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
 
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    row = row,
-    col = col,
-    width = width,
-    height = height,
-    style = "minimal",
-    border = "rounded",
+  local win = H.open_float(buf, width, height, row, col, {
     title = " Cambridge Dictionary ",
     title_pos = "center",
   })
@@ -571,14 +551,7 @@ function M.browser_search_scratchpad()
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
 
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = "editor",
-    row = row,
-    col = col,
-    width = width,
-    height = height,
-    style = "minimal",
-    border = "rounded",
+  local win = H.open_float(buf, width, height, row, col, {
     title = " Type Query to Search DuckDuckGo (Empty uses Clipboard) ",
     title_pos = "center",
   })

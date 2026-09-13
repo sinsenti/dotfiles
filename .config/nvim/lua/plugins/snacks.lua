@@ -47,7 +47,8 @@ return {
     -- { "<leader>/", LazyVim.pick("grep"), desc = "Grep (Root Dir)" },
     -- { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
     -- { "<leader><space>", LazyVim.pick("files"), desc = "Find Files (Root Dir)" },
-    { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
+    -- Disabled: config/keymaps.lua is the source of truth for <leader>n.
+    -- { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
     -- find
     -- { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
     { "<leader>fB", function() Snacks.picker.buffers({ hidden = true, nofile = true }) end, desc = "Buffers (all)" },
@@ -61,7 +62,8 @@ return {
     -- git
     { "<leader>gD", function() Snacks.picker.git_diff() end, desc = "Git Diff (hunks)" },
     -- { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Git Status" },
-    { "<leader>gS", function() Snacks.picker.git_stash() end, desc = "Git Stash" },
+    -- Disabled: config/keymaps.lua is the source of truth for <leader>gS.
+    -- { "<leader>gS", function() Snacks.picker.git_stash() end, desc = "Git Stash" },
     -- Grep
     -- { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer Lines" },
     { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep Open Buffers" },

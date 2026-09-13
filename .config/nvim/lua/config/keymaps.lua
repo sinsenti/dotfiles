@@ -138,7 +138,7 @@ map("n", "<leader>ma", f.flash_wrap_markdown_bold, a("Wrap text with '**' from c
 map("n", "<leader>mc", f.generate_markdown_map, a("Generate .md map"))
 map("n", "<leader>me", f.align_markdown_table_columns, { desc = "Align Markdown Table Columns" })
 map("n", "<leader>on", f.create_obsidian_note, { desc = "Create and save Obsidian note" })
-vim.keymap.del("n", "<leader>n") -- Unmaps '<leader>tn' in Normal mode
+vim.keymap.del("n", "<leader>n")
 
 -- functions
 
@@ -156,4 +156,4 @@ map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
 map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
 
-map("n", "<F5>", require("dap").step_into)
+map("n", "<F5>", require("dap").step_into, { desc = "DAP Step Into" })

@@ -196,7 +196,8 @@ return {
     { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace Diagnostics" },
     { "<leader>sg", LazyVim.pick("live_grep"), desc = "Grep (Root Dir)" },
     { "<leader>sG", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
-    { "<leader>sh", "<cmd>FzfLua help_tags<cr>", desc = "Help Pages" },
+    -- Disabled: config/keymaps.lua is the source of truth for <leader>sh.
+    -- { "<leader>sh", "<cmd>FzfLua help_tags<cr>", desc = "Help Pages" },
     { "<leader>sH", "<cmd>FzfLua highlights<cr>", desc = "Search Highlight Groups" },
     { "<leader>sj", "<cmd>FzfLua jumps<cr>", desc = "Jumplist" },
     { "<leader>sk", "<cmd>FzfLua keymaps<cr>", desc = "Key Maps" },
@@ -210,16 +211,6 @@ return {
     { "<leader>sw", LazyVim.pick("grep_visual"), mode = "v", desc = "Selection (Root Dir)" },
     { "<leader>sW", LazyVim.pick("grep_visual", { root = false }), mode = "v", desc = "Selection (cwd)" },
     { "<leader>uC", LazyVim.pick("colorschemes"), desc = "Colorscheme with Preview" },
-    {
-      "<leader>gS",
-      function()
-        require("fzf-lua").git_stash({
-          -- This tells the previewer to include untracked files
-          preview = "git stash show -u -p {1}",
-        })
-      end,
-      desc = "Git Stash (including untracked)",
-    },
 
     {
       "<leader>ss",
