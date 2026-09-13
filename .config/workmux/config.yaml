@@ -10,7 +10,12 @@ panes:
   - command: pi
     focus: true
 
+# Keep the dashboard open when jumping to a worktree.
+dashboard:
+  close_on_jump: false
+  preview_size: 70
+
 status_icons:
-  working: ""
-  waiting: ""
-  done: ""
+  working: "🤖"
+  waiting: "💬"
+  done: "✅"
