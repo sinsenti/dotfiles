@@ -137,6 +137,19 @@ zy() {
     fi
 }
 
+# Zoxide + Pi Launcher
+zpi() {
+    local target
+    if [ $# -eq 0 ]; then
+        target=$(zoxide query -i)
+    else
+        target=$(zoxide query "$@")
+    fi
+    if [ -n "$target" ]; then
+        cd -- "$target" && pi
+    fi
+}
+
 # Yazi CWD Wrapper
 function e() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

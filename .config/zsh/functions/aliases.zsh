@@ -10,7 +10,7 @@ alias tk="tmux kill-pane"
 alias tn="tmux next-window"
 alias paste_image='wl-paste > "image_$(date +'%Y-%m-%d_%H-%M-%S').png'
 alias jv="wl-paste | jq . | nvim -c 'set ft=json' - && rm Untitled"
-alias db="python ~/dotfiles/.config/scripts/db.py"
+alias db="python ~/git/personal/db-script/db.py"
 alias t="tuicr"
 alias uvp="uv run python"
 alias localhost="google-chrome http://localhost:5173 &>/dev/null &"
