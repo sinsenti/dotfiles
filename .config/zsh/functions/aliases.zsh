@@ -77,7 +77,7 @@ alias tree2='exa --tree --header --icons -a --level=2 --group-directories-first'
 alias tree3='exa --tree --header --icons -a --level=3 --group-directories-first'
 alias tree0='exa --tree --header --icons -a'
 alias ffg='find_preview'
-alias nt='nvim ~/dotfiles/.config/tmux/.tmux.conf'
+alias nt='nvim ~/.tmux.conf'
 alias venv='source ~/git/project/help/.venv/bin/activate'
 
 

@@ -54,6 +54,9 @@ zinit snippet OMZP::git
 
 ZSH_TMUX_AUTOSTART_ONCE=true
 ZSH_TMUX_AUTOCONNECT=true
+# Use the standard user config instead of zinit's optional fixed-term config.
+ZSH_TMUX_FIXTERM=false
+ZSH_TMUX_CONFIG="$HOME/.tmux.conf"
 zinit ice wait"0" lucid atload"unalias tl 2>/dev/null"
 zinit ice wait"0" lucid
 zinit snippet OMZP::tmux
