@@ -4,6 +4,7 @@ nerdfont: true
 
 main_branch: dev
 agent: pi
+mode: session
 worktree_dir: .claude/worktrees
 
 panes:
@@ -14,6 +15,9 @@ panes:
 dashboard:
   close_on_jump: false
   preview_size: 70
+
+# Keep status icons in the workmux dashboard, but do not inject them into tmux window names.
+status_format: false
 
 status_icons:
   working: "🤖"

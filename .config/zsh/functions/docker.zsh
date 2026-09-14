@@ -5,13 +5,26 @@ dwt() {
     return 1
   fi
 
-  # 2. Get main repository root path (to source .env from)
-  local main_wt
-  main_wt=$(git worktree list | head -n1 | awk '{print $1}')
+  # 2. Keep the main worktree as the .env source, but put the current
+  # worktree first in the selector.
+  local main_wt current_wt current_branch worktree_list current_line other_lines fzf_input
+  worktree_list=$(git worktree list) || return 1
+  main_wt=$(printf '%s\n' "$worktree_list" | head -n1 | awk '{print $1}')
+  current_wt=$(git rev-parse --show-toplevel 2>/dev/null) || return 1
+  current_branch=$(git branch --show-current 2>/dev/null)
+  [[ -z "$current_branch" ]] && current_branch="detached HEAD"
+
+  current_line=$(printf '%s\n' "$worktree_list" | awk -v path="$current_wt" '$1 == path { print; exit }')
+  other_lines=$(printf '%s\n' "$worktree_list" | awk -v path="$current_wt" '$1 != path')
+  if [[ -n "$current_line" ]]; then
+    fzf_input="$current_line"$'\n'"$other_lines"
+  else
+    fzf_input="$worktree_list"
+  fi
 
   # 3. Select worktree via FZF
   local selected_wt
-  selected_wt=$(git worktree list | fzf --layout=reverse --header="[ Select Worktree for Docker ]" | awk '{print $1}')
+  selected_wt=$(printf '%s\n' "$fzf_input" | fzf --layout=reverse --header="[ Current: $current_branch @ $current_wt | Select Worktree for Docker ]" | awk '{print $1}')
 
   if [[ -z "$selected_wt" ]]; then
     echo "Cancelled."
