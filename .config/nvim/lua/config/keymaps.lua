@@ -142,6 +142,7 @@ vim.keymap.del("n", "<leader>n")
 
 -- functions
 
+map("n", "<leader>al", f.a1aws, { desc = "A1AWS menu" })
 map("n", "<leader>mj", f.search_json_and_copy_value, { desc = "Json Search and copy value" })
 map("n", "SS", f.toggle_split_orientation, { desc = "Toggle Split Orientation Layout" })
 map("n", "<leader>mn", f.renumber_markdown_list, { desc = "Renumber list" })
