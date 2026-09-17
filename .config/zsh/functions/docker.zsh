@@ -47,12 +47,15 @@ dwt() {
   echo -e "\033[1;34m[Starting Docker project: '$proj_name' in $selected_wt]\033[0m"
   docker compose -p "$proj_name" up -d --build
 
-  # 6. Stream logs automatically (Tmux horizontal split or same shell)
-  # if [[ -n "$TMUX" ]]; then
-  #   tmux split-window -h -c "$selected_wt" "docker compose -p '$proj_name' logs -f"
-  # else
-  docker compose -p "$proj_name" logs -f
-  # fi
+  # 6. Open dashboard-api logs automatically in Neovim.
+  local log_command="docker compose -p ${(q)proj_name} logs -f --tail=200 --no-color --no-log-prefix dashboard-api | jq --unbuffered -RrC 'fromjson? // .'"
+  if (( $+commands[nvim] )); then
+    nvim -c "terminal $log_command"
+  else
+    echo -e "\033[1;33mNeovim is not available; streaming logs here instead.\033[0m"
+    docker compose -p "$proj_name" logs -f --tail=200 --no-color --no-log-prefix dashboard-api | \
+      jq --unbuffered -RrC 'fromjson? // .'
+  fi
 }
 
 

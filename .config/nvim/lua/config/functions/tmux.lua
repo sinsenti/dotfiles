@@ -1,4 +1,23 @@
 local M = {}
+local terminal = require("config.functions.terminal")
+
+function M.a1labs_workmux_dashboard()
+  local root = vim.fn.fnamemodify(vim.fn.expand(vim.env.A1LABS_ROOT or "~/git/project/a1labs"), ":p")
+  if vim.fn.isdirectory(root) == 0 then
+    vim.notify("A1Labs root not found: " .. root, vim.log.levels.ERROR, { title = "Workmux" })
+    return
+  end
+  if vim.fn.executable("workmux") == 0 then
+    vim.notify("workmux is not available on PATH", vim.log.levels.ERROR, { title = "Workmux" })
+    return
+  end
+
+  terminal.focus_terminal_command({ "workmux", "dashboard" }, {
+    cwd = root,
+    name = "workmux: dashboard",
+    win = { title = "workmux: dashboard", title_pos = "center" },
+  })
+end
 
 function M.tmux_next_window()
   if vim.env.TMUX then
@@ -129,6 +148,5 @@ function M.search_tmux_windows()
     },
   })
 end
-
 
 return M

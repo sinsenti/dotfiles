@@ -6,6 +6,8 @@ for _, module_name in ipairs({
   "git",
   "filesystem",
   "terminal",
+  "python",
+  "docker",
   "json",
   "tmux",
   "commands",

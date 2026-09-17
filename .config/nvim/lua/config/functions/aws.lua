@@ -1,4 +1,5 @@
 local M = {}
+local terminal = require("config.functions.terminal")
 
 local environments = { "dev", "prod", "all" }
 local fallback_agents = {
@@ -21,22 +22,9 @@ local function has_a1aws()
   return false
 end
 
-local function cwd()
-  if _G.LazyVim and LazyVim.root then
-    return LazyVim.root()
-  end
-
-  return (vim.uv or vim.loop).cwd()
-end
-
 local function open_terminal(command, title, auto_close)
-  if not Snacks or not Snacks.terminal then
-    notify("Snacks terminal is not available", vim.log.levels.ERROR)
-    return
-  end
-
-  Snacks.terminal.toggle(command, {
-    cwd = cwd(),
+  terminal.toggle_terminal_command(command, {
+    name = title,
     auto_close = auto_close,
     start_insert = auto_close,
     auto_insert = auto_close,

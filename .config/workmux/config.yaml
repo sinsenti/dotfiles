@@ -4,7 +4,7 @@ nerdfont: true
 
 main_branch: dev
 agent: pi
-mode: session
+mode: window
 worktree_dir: .claude/worktrees
 
 panes:
