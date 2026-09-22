@@ -168,6 +168,13 @@ function M.google_search_scratchpad()
     -- Yank selected text into temporary 'v' register without touching system clipboard
     vim.cmd('noautocmd normal! "vy')
     initial_text = vim.fn.getreg("v")
+
+    -- Visual selections are searched immediately, without opening the scratchpad.
+    local query = initial_text:gsub("[\r\n]+", " "):gsub("^%s*(.-)%s*$", "%1")
+    if query ~= "" then
+      vim.ui.open("https://www.google.com/search?q=" .. vim.uri_encode(query))
+    end
+    return
   else
     -- Fallback to system clipboard in Normal mode
     initial_text = vim.fn.getreg("+") or ""

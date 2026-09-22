@@ -81,6 +81,9 @@ rules = [
     # Folder
     { url = "*/", use = [ "edit", "open", "reveal" ] },
 
+    # HTML
+    { mime = "{text/html,application/xhtml+xml}", use = [ "open", "reveal" ] },
+
     # Text
     { mime = "text/*", use = [ "edit", "reveal" ] },
 
