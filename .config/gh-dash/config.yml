@@ -84,9 +84,9 @@ keybindings:
         cd {{.RepoPath}}; lazygit
   prs:
     - key: C
-      name: code review
+      name: review with pi
       command: >
-        workmux add --pr {{.PrNumber}} -a pi -p "review pr for this branch"
+        "$HOME/.config/scripts/gh_dash_review.sh" "{{.RepoPath}}" "{{.PrNumber}}"
     - key: D
       name: diff in neovim
       command: >
