@@ -11,7 +11,7 @@ repo_path=$1
 pr_number=$2
 [[ $pr_number =~ ^[0-9]+$ ]] || usage
 
-for cmd in git tmux pi; do
+for cmd in git gh tmux pi; do
   command -v "$cmd" >/dev/null 2>&1 || {
     echo "Required command not found: $cmd" >&2
     exit 1
@@ -23,6 +23,18 @@ repo_root=$(git -C "$repo_path" rev-parse --show-toplevel 2>/dev/null) || {
   exit 1
 }
 repo_root=$(cd "$repo_root" && pwd -P)
+pr_branch=$(cd "$repo_root" && gh pr view "$pr_number" --json headRefName --jq '.headRefName') || {
+  echo "Could not determine the PR's head branch: #$pr_number" >&2
+  exit 1
+}
+[[ -n $pr_branch ]] || {
+  echo "PR #$pr_number has no head branch name." >&2
+  exit 1
+}
+git check-ref-format --branch "$pr_branch" >/dev/null || {
+  echo "Invalid PR head branch name: $pr_branch" >&2
+  exit 1
+}
 git -C "$repo_root" remote get-url origin >/dev/null 2>&1 || {
   echo "The checkout has no 'origin' remote: $repo_root" >&2
   exit 1
@@ -35,14 +47,26 @@ untracked_file="$tmp_dir/untracked.list"
 git -C "$repo_root" diff --binary --no-ext-diff -- > "$patch_file"
 git -C "$repo_root" ls-files --others --exclude-standard -z > "$untracked_file"
 
-stamp="$(date -u +%Y%m%d-%H%M%S)-$$"
-branch="review-pr-${pr_number}-${stamp}"
-worktree="$repo_root/.claude/worktrees/$branch"
+branch=$pr_branch
+# Replace branch separators with hyphens to match existing worktree directory names.
+worktree_name=${branch//\//-}
+worktree="$repo_root/.claude/worktrees/$worktree_name"
 
-# Fetch the PR's head without checking it out or changing the root worktree.
+# Fetch the PR head without checking it out or changing the root worktree.
 git -C "$repo_root" fetch --no-tags origin "refs/pull/${pr_number}/head"
+pr_commit=$(git -C "$repo_root" rev-parse --verify 'FETCH_HEAD^{commit}')
 mkdir -p -- "$repo_root/.claude/worktrees"
-git -C "$repo_root" worktree add -b "$branch" "$worktree" FETCH_HEAD
+if git -C "$repo_root" show-ref --verify --quiet "refs/heads/$branch"; then
+  local_commit=$(git -C "$repo_root" rev-parse --verify "refs/heads/$branch^{commit}")
+  if [[ $local_commit != "$pr_commit" ]]; then
+    echo "Local branch '$branch' exists but is not at the current PR head." >&2
+    echo "Not moving the existing branch; update or remove it first." >&2
+    exit 1
+  fi
+  git -C "$repo_root" worktree add "$worktree" "$branch"
+else
+  git -C "$repo_root" worktree add -b "$branch" "$worktree" "$pr_commit"
+fi
 
 # Apply only unstaged tracked edits; copy untracked (non-ignored) files as-is.
 if [[ -s $patch_file ]]; then
@@ -58,7 +82,7 @@ while IFS= read -r -d '' relative_path; do
   cp -a -- "$repo_root/$relative_path" "$destination"
 done < "$untracked_file"
 
-echo "Review branch: $branch"
+echo "PR branch: $branch"
 echo "Worktree: $worktree"
 tmux new-window -c "$worktree" -n "R-PR-${pr_number}" \
   "exec pi 'Review this branch. You can use parallel agents and subagents if it makes sense.'"
