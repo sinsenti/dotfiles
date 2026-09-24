@@ -1,5 +1,92 @@
 local M = {}
 
+local function get_markdown_headings(bufnr)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local headings = {}
+  local fence_char, fence_length
+
+  for row, line in ipairs(lines) do
+    if fence_char then
+      local indent, marker, trailing
+      if fence_char == "`" then
+        indent, marker, trailing = line:match("^([ ]*)(`+)(.*)$")
+      else
+        indent, marker, trailing = line:match("^([ ]*)(~+)(.*)$")
+      end
+
+      if indent and #indent <= 3 and #marker >= fence_length and trailing:match("^%s*$") then
+        fence_char, fence_length = nil, nil
+      end
+    else
+      local indent, marker = line:match("^([ ]*)(`+)")
+      if not marker then
+        indent, marker = line:match("^([ ]*)(~+)")
+      end
+
+      if indent and #indent <= 3 and #marker >= 3 then
+        fence_char, fence_length = marker:sub(1, 1), #marker
+      else
+        local heading_indent, hashes, text = line:match("^([ \t]*)(#+)%s+(.+)$")
+        if heading_indent and #heading_indent <= 3 and #hashes <= 6 and text:match("%S") then
+          table.insert(headings, { row = row, level = #hashes, text = vim.trim(line) })
+        end
+      end
+    end
+  end
+
+  return headings
+end
+
+function M.pick_markdown_heading()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local winid = vim.api.nvim_get_current_win()
+  local headings = get_markdown_headings(bufnr)
+  if #headings == 0 then
+    vim.notify("No Markdown headings found", vim.log.levels.INFO)
+    return
+  end
+
+  local entries, row_by_entry = {}, {}
+  for _, heading in ipairs(headings) do
+    local entry = string.format("%s%s  (line %d)", string.rep("  ", heading.level - 1), heading.text, heading.row)
+    entries[#entries + 1] = entry
+    row_by_entry[entry] = heading.row
+  end
+
+  local function jump_to_entry(entry)
+    local row = row_by_entry[entry]
+    if not row or not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_win_is_valid(winid) then
+      return
+    end
+
+    vim.api.nvim_set_current_win(winid)
+    if vim.api.nvim_win_get_buf(winid) ~= bufnr then
+      vim.api.nvim_win_set_buf(winid, bufnr)
+    end
+    vim.api.nvim_win_set_cursor(winid, { row, 0 })
+    vim.cmd("normal! zz")
+  end
+
+  local ok, fzf = pcall(require, "fzf-lua")
+  if ok then
+    fzf.fzf_exec(entries, {
+      prompt = "Markdown headings> ",
+      fzf_opts = { ["--no-sort"] = "" },
+      winopts = { title = " Markdown Headings ", title_pos = "center" },
+      actions = {
+        ["default"] = function(selected)
+          if selected and selected[1] then
+            jump_to_entry(selected[1])
+          end
+        end,
+      },
+    })
+    return
+  end
+
+  vim.ui.select(entries, { prompt = "Markdown headings" }, jump_to_entry)
+end
+
 function M.flash_wrap_markdown_bold()
   local start_win = vim.api.nvim_get_current_win()
   local start_buf = vim.api.nvim_get_current_buf()
