@@ -126,7 +126,7 @@ map("n", "WQ", ":wqa<cr>", opts)
 map({ "n", "v" }, "E", "$", opts)
 map({ "n", "v" }, "B", "^", opts)
 map("n", "<Esc>", ":noh<cr>:NoiceDismiss<cr>", opts)
-map("n", "ss", "<cmd>vsplit # | wincmd p<cr>", opts)
+map("n", "ss", f.split_alternate_or_project_help, { desc = "Split alternate buffer or project help" })
 map("n", "sv", ":split<cr>", opts)
 
 map("n", "<leader>T", ":TransparentToggle<cr>", a("Toggle transparetn mode"))

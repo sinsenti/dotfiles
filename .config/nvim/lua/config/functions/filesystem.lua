@@ -114,6 +114,19 @@ function M.generate_markdown_map()
 end
 
 
+function M.split_alternate_or_project_help()
+  local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+  if #buffers > 1 then
+    vim.cmd("vsplit # | wincmd p")
+    return
+  end
+
+  local help_file = vim.fn.expand("~/git/project/help.md")
+  local current_win = vim.api.nvim_get_current_win()
+  vim.cmd("leftabove vsplit " .. vim.fn.fnameescape(help_file))
+  vim.api.nvim_set_current_win(current_win)
+end
+
 function M.open_help_splits()
   local left_file = vim.fn.expand("~/git/project/help.md")
   local right_file = vim.fn.expand("~/git/project/help1.md")
