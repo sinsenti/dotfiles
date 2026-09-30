@@ -46,6 +46,7 @@ Current terminal mappings are defined in `lua/config/keymaps.lua`:
 
 - `t/`: toggle the fullscreen Snacks terminal. A count selects a terminal slot, e.g. `2t/`.
 - `t.`: open the terminal picker.
+- `tp`: pick a Zoxide directory and run `pi -r` in a new tmux window named after that directory (Normal mode).
 - `t?`: no mapping is currently defined; do not assume the older `t?` picker mapping still exists.
 - `t[` / `t]`: previous/next terminal.
 - `tK`: close the current terminal.

@@ -150,6 +150,15 @@ zpi() {
     fi
 }
 
+# Zoxide Interactive Jump + Pi Session Resume
+unalias zp 2>/dev/null
+zp() {
+    local target
+    target=$(zoxide query -i "$@") || return
+    [[ -n "$target" ]] || return 1
+    cd -- "$target" && pi -r
+}
+
 # Yazi CWD Wrapper
 function e() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

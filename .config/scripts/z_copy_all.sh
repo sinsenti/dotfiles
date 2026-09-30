@@ -15,7 +15,7 @@ if [ -z "$search_term" ]; then
   echo -e " Current location: \e[1;33m$PWD\e[0m"
   echo " Options:"
   echo "   • Press [Enter] to use current directory"
-  echo "   • Type 'i' for interactive zoxide picker (requires fzf)"
+  echo "   • Type 'i' or 'z' for interactive zoxide picker (requires fzf)"
   echo "   • Type a keyword to search zoxide"
   echo
   read -p "Select choice or term: " search_term
@@ -24,7 +24,7 @@ fi
 # Resolve target directory based on input
 if [ -z "$search_term" ]; then
   TARGET_DIR="$PWD"
-elif [ "$search_term" = "i" ]; then
+elif [ "$search_term" = "i" ] || [ "$search_term" = "z" ]; then
   TARGET_DIR=$(zoxide query -i 2>/dev/null)
   if [ -z "$TARGET_DIR" ]; then
     echo -e "\e[1;31mNo directory selected.\e[0m"

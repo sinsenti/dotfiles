@@ -73,6 +73,61 @@ function M.tmux_create_window()
   end
 end
 
+function M.pick_pi_project()
+  if not vim.env.TMUX then
+    vim.notify("Not running inside a Tmux session", vim.log.levels.WARN, { title = "Pi" })
+    return
+  end
+  for _, executable in ipairs({ "tmux", "zoxide", "pi" }) do
+    if vim.fn.executable(executable) == 0 then
+      vim.notify(executable .. " is not available on PATH", vim.log.levels.ERROR, { title = "Pi" })
+      return
+    end
+  end
+
+  local directories = vim.fn.systemlist({ "zoxide", "query", "-l" })
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Could not fetch Zoxide directories", vim.log.levels.ERROR, { title = "Pi" })
+    return
+  end
+  if #directories == 0 then
+    vim.notify("No Zoxide directories found", vim.log.levels.INFO, { title = "Pi" })
+    return
+  end
+
+  local function resume(cwd)
+    if not cwd or cwd == "" then
+      return
+    end
+    if vim.fn.isdirectory(cwd) == 0 then
+      vim.notify("Directory not found: " .. cwd, vim.log.levels.ERROR, { title = "Pi" })
+      return
+    end
+
+    local name = vim.fn.fnamemodify(cwd, ":t")
+    vim.fn.system({ "tmux", "new-window", "-c", cwd, "-n", name, "pi -r" })
+    if vim.v.shell_error ~= 0 then
+      vim.notify("Could not create Pi Tmux window", vim.log.levels.ERROR, { title = "Pi" })
+    end
+  end
+
+  local ok, fzf = pcall(require, "fzf-lua")
+  if ok then
+    fzf.fzf_exec(directories, {
+      prompt = "Pi project> ",
+      fzf_opts = { ["--no-sort"] = "" },
+      actions = {
+        ["default"] = function(selected)
+          resume(selected and selected[1])
+        end,
+      },
+    })
+    return
+  end
+
+  vim.ui.select(directories, { prompt = "Select Pi project" }, resume)
+end
+
 function M.search_tmux_windows()
   if not vim.env.TMUX then
     vim.notify("Not running inside a Tmux session", vim.log.levels.WARN)

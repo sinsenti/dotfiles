@@ -16,6 +16,7 @@ map("n", "t", "<Nop>", { desc = "Disabled t" })
 -- Terminal shortcuts: use a count before t/ to open a separate terminal instance.
 map({ "n", "t" }, "t/", f.toggle_terminal, { desc = "Toggle fullscreen terminal" })
 map({ "n", "t" }, "t.", f.pick_terminal, { desc = "Pick terminal" })
+map("n", "tp", f.pick_pi_project, { desc = "Resume Pi in new Tmux project window" })
 map({ "n", "t" }, "t[", f.previous_terminal, { desc = "Previous terminal" })
 map({ "n", "t" }, "t]", f.next_terminal, { desc = "Next terminal" })
 map({ "n", "t" }, "tK", f.close_terminal, { desc = "Close terminal" })
