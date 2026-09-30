@@ -84,7 +84,7 @@ keybindings:
         cd {{.RepoPath}}; lazygit
   prs:
     - key: C
-      name: review with pi
+      name: review with pi (request me if needed)
       command: >
         "$HOME/.config/scripts/gh_dash_review.sh" "{{.RepoPath}}" "{{.PrNumber}}"
     - key: D

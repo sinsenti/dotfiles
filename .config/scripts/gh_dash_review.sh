@@ -23,6 +23,36 @@ repo_root=$(git -C "$repo_path" rev-parse --show-toplevel 2>/dev/null) || {
   exit 1
 }
 repo_root=$(cd "$repo_root" && pwd -P)
+
+request_self_review_if_needed() {
+  local github_user pr_state pr_author requested_reviewers
+
+  github_user=$(gh api user --jq .login 2>/dev/null) || {
+    echo "Could not identify the authenticated GitHub user; continuing with pi." >&2
+    return 0
+  }
+  pr_state=$(cd "$repo_root" && gh pr view "$pr_number" --json author,reviewRequests \
+    --jq '[.author.login, ([.reviewRequests[] | .login // empty] | join(","))] | @tsv') || {
+    echo "Could not check the PR's reviewers; continuing with pi." >&2
+    return 0
+  }
+  IFS=$'\t' read -r pr_author requested_reviewers <<< "$pr_state"
+
+  if [[ $pr_author == "$github_user" ]]; then
+    echo "You authored PR #$pr_number; GitHub won't let you request yourself as reviewer. Continuing with pi."
+    return 0
+  fi
+  if [[ ",$requested_reviewers," == *,"$github_user",* ]]; then
+    echo "You are already requested to review PR #$pr_number."
+    return 0
+  fi
+  if ! (cd "$repo_root" && gh pr edit "$pr_number" --add-reviewer "$github_user"); then
+    echo "Could not request you as a reviewer; continuing with pi." >&2
+  fi
+}
+
+request_self_review_if_needed
+
 pr_branch=$(cd "$repo_root" && gh pr view "$pr_number" --json headRefName --jq '.headRefName') || {
   echo "Could not determine the PR's head branch: #$pr_number" >&2
   exit 1
