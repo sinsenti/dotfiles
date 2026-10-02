@@ -14,18 +14,23 @@ This is a personal Linux workstation configuration, not a single application. Pr
 
 ## Deployment and environment
 
-`README.md` documents cloning into `~/dotfiles`, then running GNU Stow from the repository:
+`README.md` documents cloning into `~/dotfiles`, then running GNU Stow from the repository. The repository mirrors paths beneath `$HOME`: `.config/foo/bar` maps to `~/.config/foo/bar`, so adding app configs under `.config/` needs no separate Stow setup.
+
+Do not deploy automatically. Preview with the same `AGENTS.md` ignore used by the README:
 
 ```sh
-stow .       # link into the parent directory (normally $HOME)
-stow -D .    # unlink; changes the live setup
+stow -n -v --ignore='^AGENTS\.md$' .
+stow --ignore='^AGENTS\.md$' .       # deploy only after reviewing the preview
+stow -D --ignore='^AGENTS\.md$' .    # unlink; changes the live setup
 ```
 
-Do not run these automatically. Preview with `stow -n -v .` first. For another checkout location, select the intended target explicitly with `-t "$HOME"`. Never use `--adopt` casually: it can move existing home files into the repository.
+For another checkout location, select the intended target explicitly with `-t "$HOME"`. Never use `--adopt` casually: it can move existing home files into the repository. Resolve conflicts by inspecting the exact target and symlink before changing anything.
+
+Current workstation note: the preview reports conflicts at `~/.config/tuicr`, `~/.config/xdg-desktop-portal/gnome-portals.conf`, `~/.config/xdg-desktop-portal-termfilechooser/config`, and `~/.config/systemd/user/xdg-desktop-portal-termfilechooser.service`. These are existing absolute symlinks into this checkout (with real parent directories for the latter three), which Stow does not recognize as links it manages. A full Stow run aborts until they are reconciled; do not remove parent directories or use `--adopt` as a shortcut.
 
 There is no repository `.stow-local-ignore`. Adding a root `AGENTS.md` may cause Stow to link it into `$HOME`, unintentionally applying repository instructions more broadly. To keep this guide local, include `--ignore='^AGENTS\.md$'` in both preview and deployment commands, or agree on a persistent ignore rule before deployment.
 
-The README uses `pacman`, but the scripts include GNOME/Wayland, X11/XWayland, and Hyprland integrations. Do not infer the current distribution or compositor from the README alone. Several paths still use `/home/sinsenti`; many aliases assume `~/dotfiles` and personal `~/git/...` directories. Kitty is referenced extensively but its configuration is not tracked here; neither is a Hyprland configuration.
+The README uses `pacman`, but the scripts include GNOME/Wayland, X11/XWayland, and Hyprland integrations. Do not infer the current distribution or compositor from the README alone. Several paths still use `/home/sinsenti`; many aliases assume `~/dotfiles` and personal `~/git/...` directories. Kitty's configuration is tracked under `.config/kitty/`; neither a Hyprland configuration nor generated/runtime state is maintained here.
 
 ## Repository map
 
@@ -44,6 +49,12 @@ The README uses `pacman`, but the scripts include GNOME/Wayland, X11/XWayland, a
 | `.config/tmux/tmux.conf` | Terminal multiplexer bindings, appearance, TPM plugins |
 | `.config/workmux/config.yaml` | Worktree/agent defaults and pane layout |
 | `.config/gh-dash/config.yml` | GitHub dashboard, PR-review and diff shortcuts |
+| `.config/atuin/config.toml` | Atuin history and UI settings |
+| `.config/btop/btop.conf` | btop resource-monitor settings |
+| `.config/kitty/kitty.conf` | Kitty terminal settings; `index.html` is an ignored saved webpage, not config |
+| `.config/voxtype/` | Voxtype settings and the `smart_output.py` helper |
+| `.config/worktrunk/config.toml` | Worktrunk worktree and agent defaults |
+| `.config/zathura/zathurarc` | Zathura document-viewer settings |
 | `.config/yazi/{yazi,keymap,theme,package}.toml` | File-manager behavior, keys, theme and dependency metadata |
 | `.taskrc` | Taskwarrior settings, personal data path, urgency weights |
 | `.config/procps/toprc` | Saved `top` preferences; not application code |

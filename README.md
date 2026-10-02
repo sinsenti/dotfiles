@@ -10,23 +10,37 @@ pacman -S stow tmux git bash
 
 ## Installation
 
-First, check out the dotfiles repo in your $HOME directory using git
+Clone the repository into your home directory, then enter it:
 
-```
-git clone https://github.com/sinsenti/dotfiles.git
-```
-```
-cd dotfiles
+```sh
+git clone https://github.com/sinsenti/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ```
 
-then use GNU stow to create symlinks
+The repository mirrors paths under `$HOME`: for example,
+`.config/kitty/kitty.conf` becomes `~/.config/kitty/kitty.conf`. No separate
+Stow configuration is needed when adding files under `.config/`.
+
+Preview the links first and resolve any conflicts with existing files or links:
+
+```sh
+stow -n -v --ignore='^AGENTS\.md$' .
 ```
+
+If the preview is clear, create the links:
+
+```sh
 stow --ignore='^AGENTS\.md$' .
 ```
-to undo:
-```
+
+To unlink them:
+
+```sh
 stow -D --ignore='^AGENTS\.md$' .
 ```
+
+Review new application configs before committing them; keep caches, runtime
+state, and unrelated downloaded files out of the repository.
 
 ## Tmux
 

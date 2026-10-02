@@ -1,0 +1,4 @@
+set selection-clipboard clipboard
+set window-width 1920
+set window-height 1000
+set adjust-open "best-fit"

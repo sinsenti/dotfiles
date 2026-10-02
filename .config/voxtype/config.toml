@@ -1,0 +1,59 @@
+engine = "parakeet"
+state_file = "auto"
+
+[hotkey]
+key = "EVTEST_24"
+modifiers = ["LEFTALT"]
+mode = "toggle"
+
+[audio]
+device = "default"
+sample_rate = 16000
+max_duration_secs = 120
+pause_media = true
+duck_media = false
+duck_media_volume_percent = 50
+
+
+[whisper]
+backend = "local"
+model = "large-v3-turbo"
+language = "en"
+translate = false
+initial_prompt = "Mostly technical discussion about programming"
+
+eager_processing = false
+eager_chunk_secs = 5.0
+eager_overlap_secs = 0.5
+
+
+[output]
+mode = "clipboard"
+driver_order = ["ydotool", "clipboard"]
+fallback_to_clipboard = true
+type_delay_ms = 0
+auto_submit = true
+
+
+[output.post_process]
+command = "python3 -c \"import sys; print(sys.stdin.read().lower().rstrip('.'), end='')\""
+trim = true
+
+[output.notification]
+on_recording_start = false
+on_recording_stop = false
+on_transcription = false
+
+
+[text]
+smart_auto_submit = false
+#
+filter_filler_words = true
+filler_words = ["uh", "um", "er", "ah", "eh", "hmm", "hm", "mm", "mhm"]
+
+[osd]
+enabled = true
+frontend = "gtk4"
+
+[parakeet]
+model = "parakeet-tdt-0.6b-v3-int8"
