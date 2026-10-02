@@ -2,6 +2,6 @@
 cmd=/home/user/.local/share/xdg-desktop-portal-termfilechooser/yazi-wrapper.sh
 default_dir=$HOME
 env=TERMCMD='/usr/bin/kitty --title "Yazi file chooser"'
-env=PATH=/usr/local/bin:/usr/bin:/bin
+env=PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
 open_mode=suggested
 save_mode=suggested

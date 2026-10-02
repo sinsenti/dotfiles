@@ -15,10 +15,10 @@ return {
         enabled = false,
       },
       pipe_table = {
-        enabled = true,
+        enabled = false,
         preset = "trimmed",
         -- Turn on / off top & bottom lines.
-        border_enabled = true,
+        border_enabled = false,
         -- cell = "raw",
 
         -- preset =

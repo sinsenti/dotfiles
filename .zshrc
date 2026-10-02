@@ -85,6 +85,7 @@ export GEMINI_STORAGE_BACKEND=plaintext
 export TODO_DIR="$HOME/Documents"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
+export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
 
 # Path Expansions
 export BUN_INSTALL="$HOME/.bun"
