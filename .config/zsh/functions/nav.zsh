@@ -1,3 +1,9 @@
+# App and navigation launcher functions
+unalias b 2>/dev/null
+b() {
+    tmux_zoom_run btop "$@"
+}
+
 # Smart Neovim Launcher (Session, Directory, Git, or File)
 unalias n 2>/dev/null
 
@@ -39,7 +45,7 @@ fn() {
                              --header 'ENTER: Open ALL matching (or selected) | TAB: Select specific file(s)')}")
 
     if (( ${#selected[@]} > 0 && ${#selected[1]} > 0 )); then
-        ${EDITOR:-nvim} "${selected[@]}"
+        tmux_zoom_run ${EDITOR:-nvim} "${selected[@]}"
     fi
 }
 
@@ -83,36 +89,36 @@ v() {
 
     # 1. Interactive session selection
     if [[ "$1" == "-s" || "$1" == "--select" ]]; then
-        nvim -c 'lua vim.schedule(function() require("persistence").select() end)'
+        tmux_zoom_run nvim -c 'lua vim.schedule(function() require("persistence").select() end)'
         return
     fi
 
     # 2. Git mode
     if [[ "$1" == "-g" || "$1" == "--git" ]]; then
         local git_session_cmd="lua vim.schedule(function() require('persistence').load(); vim.schedule(function() $close_tmp_buffer_lua; require('neogit').open({ kind = 'replace' }) end) end)"
-        nvim -c "$git_session_cmd"
+        tmux_zoom_run nvim -c "$git_session_cmd"
         return
     fi
 
     # 3. Clean start in current directory (bypasses session restore)
     if [[ "$1" == "." || "$1" == "./" ]]; then
-        nvim
+        tmux_zoom_run nvim
         return
     fi
 
     # 4. Jump to directory and load its saved session
     if [[ -d "$1" ]]; then
         cd "$1" || return
-        nvim -c "$restore_session_cmd"
+        tmux_zoom_run nvim -c "$restore_session_cmd"
         return
     fi
 
     # 5. No arguments: Restore session in current directory
     if [ $# -eq 0 ]; then
-        nvim -c "$restore_session_cmd"
+        tmux_zoom_run nvim -c "$restore_session_cmd"
     else
         # 6. Specific file(s) passed (e.g. `n main.py`)
-        nvim "$@"
+        tmux_zoom_run nvim "$@"
     fi
 }
 
@@ -130,7 +136,7 @@ zn() {
 }
 
 # Zoxide + Yazi Launcher
-zy() {
+ze() {
     local target
     if [ $# -eq 0 ]; then
         target=$(zoxide query -i)
@@ -138,7 +144,7 @@ zy() {
         target=$(zoxide query "$@")
     fi
     if [ -n "$target" ]; then
-        y "$target"
+        e "$target"
     fi
 }
 
@@ -167,7 +173,7 @@ zp() {
 # Yazi CWD Wrapper
 function e() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-    yazi "$@" --cwd-file="$tmp"
+    tmux_zoom_run yazi "$@" --cwd-file="$tmp"
     if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
         builtin cd -- "$cwd"
     fi
@@ -188,6 +194,6 @@ find_preview() {
           --preview 'echo "\033[1;35mFile: $(echo {} | cut -d: -f1)\033[0m" && bat --style=numbers --color=always --theme=Dracula --line-range :500 $(echo {} | cut -d: -f1) --highlight-line $(echo {} | cut -d: -f2)' \
           --preview-window=right:60%:wrap \
     | while IFS=: read -r file line _; do
-        nvim +"$line" "$file"
+        tmux_zoom_run nvim +"$line" "$file"
       done
 }

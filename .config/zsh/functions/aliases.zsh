@@ -10,7 +10,37 @@ alias tk="tmux kill-pane"
 alias tn="tmux next-window"
 alias jv="wl-paste | jq . | nvim -c 'set ft=json' - && rm Untitled"
 alias db="python ~/git/personal/db-script/db.py"
-alias t="tuicr"
+# Run a command in a zoomed tmux pane when the current window has splits,
+# then restore the window's original zoom state even if the command is interrupted.
+tmux_zoom_run() {
+    (( $# )) || return 2
+
+    local pane_id="$TMUX_PANE"
+    local pane_info pane_count=0 zoomed_flag=0
+    local zoomed_by_wrapper=0
+
+    if [[ -n "$TMUX" && -n "$pane_id" ]] && \
+        pane_info=$(tmux display-message -p -t "$pane_id" '#{window_panes} #{window_zoomed_flag}' 2>/dev/null); then
+        read -r pane_count zoomed_flag <<< "$pane_info"
+
+        if (( pane_count > 1 )) && [[ "$zoomed_flag" != 1 ]] && tmux resize-pane -Z -t "$pane_id"; then
+            zoomed_by_wrapper=1
+        fi
+    fi
+
+    {
+        command "$@"
+    } always {
+        if (( zoomed_by_wrapper )); then
+            tmux resize-pane -Z -t "$pane_id" 2>/dev/null
+        fi
+    }
+}
+
+unalias t 2>/dev/null
+t() {
+    tmux_zoom_run tuicr "$@"
+}
 alias uvp="uv run python"
 alias localhost="google-chrome http://localhost:5173 &>/dev/null &"
 alias .env='$EDITOR .env'
@@ -35,7 +65,6 @@ alias vpnstat='sudo systemctl status wg-quick@wginno'
 alias d="docker ps"
 alias gds='git diff --staged -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'
 alias dc="docker compose"
-alias b="btop"
 alias gcm="git commit --message"
 alias g="git status"
 alias gdv='git diff -w "$@" | nvim -R -c "set ft=diff" -c "nmap q :q<CR>" -'

@@ -2,3 +2,7 @@ set selection-clipboard clipboard
 set window-width 1920
 set window-height 1000
 set adjust-open "best-fit"
+
+# Make d/u scroll by half a page, like Ctrl+d/Ctrl+u.
+map d scroll half-down
+map u scroll half-up
