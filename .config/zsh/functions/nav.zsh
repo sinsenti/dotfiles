@@ -77,6 +77,10 @@ fcurl() {
 
 
 v() {
+    # After restoring a session, close its sole listed buffer if it points into /tmp.
+    local close_tmp_buffer_lua="local buffers=vim.fn.getbufinfo({buflisted=1}); if #buffers == 1 and buffers[1].name ~= '' then local name=vim.fn.fnamemodify(buffers[1].name, ':p'); if name == '/tmp' or name:match('^/tmp/') then vim.cmd('bdelete') end end"
+    local restore_session_cmd="lua vim.schedule(function() require('persistence').load(); vim.schedule(function() $close_tmp_buffer_lua end) end)"
+
     # 1. Interactive session selection
     if [[ "$1" == "-s" || "$1" == "--select" ]]; then
         nvim -c 'lua vim.schedule(function() require("persistence").select() end)'
@@ -85,7 +89,8 @@ v() {
 
     # 2. Git mode
     if [[ "$1" == "-g" || "$1" == "--git" ]]; then
-        nvim -c 'lua vim.schedule(function() require("persistence").load(); require("neogit").open({ kind = "replace" }) end)'
+        local git_session_cmd="lua vim.schedule(function() require('persistence').load(); vim.schedule(function() $close_tmp_buffer_lua; require('neogit').open({ kind = 'replace' }) end) end)"
+        nvim -c "$git_session_cmd"
         return
     fi
 
@@ -98,13 +103,13 @@ v() {
     # 4. Jump to directory and load its saved session
     if [[ -d "$1" ]]; then
         cd "$1" || return
-        nvim -c 'lua vim.schedule(function() require("persistence").load() end)'
+        nvim -c "$restore_session_cmd"
         return
     fi
 
     # 5. No arguments: Restore session in current directory
     if [ $# -eq 0 ]; then
-        nvim -c 'lua vim.schedule(function() require("persistence").load() end)'
+        nvim -c "$restore_session_cmd"
     else
         # 6. Specific file(s) passed (e.g. `n main.py`)
         nvim "$@"
