@@ -167,5 +167,3 @@ map("n", "<leader>cp", f.copy_clean_filepath, { desc = "Copy escaped forward-sla
 map("n", "<leader>Fa", f.toggle_codeium, { desc = "Toggle Codeium completion" })
 map("n", "<leader>fo", ":FzfBigOpen<cr>", a("Find Big File (Raw Mode)"))
 map("n", "<leader>sh", ":PickFromZshHistory<cr>", a("Pick from Zsh history"))
-
-map("n", "<F5>", require("dap").step_into, { desc = "DAP Step Into" })

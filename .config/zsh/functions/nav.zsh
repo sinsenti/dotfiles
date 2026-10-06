@@ -173,7 +173,7 @@ zp() {
 # Yazi CWD Wrapper
 function e() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-    tmux_zoom_run yazi "$@" --cwd-file="$tmp"
+    yazi "$@" --cwd-file="$tmp"
     if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
         builtin cd -- "$cwd"
     fi
