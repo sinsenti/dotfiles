@@ -2,13 +2,48 @@
 
 This directory contains the dotfiles for my system
 
-## Requirements
+## Ubuntu dependencies
 
-```
-pacman -S stow tmux git bash
+For an Ubuntu workstation, review the installer plan first, then run the installer:
+
+```sh
+bash install-ubuntu.sh --dry-run
+bash install-ubuntu.sh
 ```
 
-## Installation
+The default profile installs the shell/editor/terminal foundation, common CLI and
+language tools, and optional desktop/PDF/OCR/media dependencies. Use
+`--minimal` to skip desktop/media and Java/Go APT packages; the core CLI setup
+still installs the runtimes needed by configured tools. The script
+uses Ubuntu APT packages where appropriate and upstream installation methods
+for tools such as Pi, Neovim, Atuin, uv, Workmux, and Worktrunk. It does not
+install dependencies into the system Python with `pip`.
+
+Optional host-level features require explicit flags:
+
+```sh
+bash install-ubuntu.sh --with-docker  # official Docker APT repo; may start daemon
+bash install-ubuntu.sh --with-wifi    # NetworkManager/nmcli helpers
+bash install-ubuntu.sh --with-voxtype # Ubuntu 24.04+; app only, no speech model
+```
+
+The installer does not stow these files, change the login shell, explicitly
+manage systemd services, add the user to the root-equivalent `docker` group,
+download large Voxtype models, or install private/project-specific commands.
+APT package hooks may start services (especially with `--with-docker`). It runs
+trusted upstream installers for some user-local tools; inspect the script and
+its source URLs before running it. On first use, Zsh, Neovim, and tmux may
+bootstrap their plugins and Neovim language tools.
+
+Some integrations are environment-specific and need separate setup: the custom
+GNOME Window Calls extension, Hyprland commands, ydotool service/permissions,
+the XDG terminal-file-chooser helper, `a1aws`, `tuicr`, browser tools, and the
+personal project directories referenced by the configs. Review hard-coded
+`/home/...` paths before using this setup under a different account. Optional
+PDF, Wi-Fi, OCR, Docker, GUI, and language tools are not needed for the basic
+shell/editor.
+
+## Dotfile installation
 
 Clone the repository into your home directory, then enter it:
 
