@@ -1,0 +1,8 @@
+# Lightweight Yazi profile for portal file selection. Keep the full previews in
+# the regular Yazi profile; the picker usually needs names and directories only.
+[mgr]
+title_format = "Yazi: {cwd}"
+
+[plugin]
+preloaders = []
+previewers = []

@@ -1,7 +1,9 @@
 [filechooser]
-cmd=/home/user/.local/share/xdg-desktop-portal-termfilechooser/yazi-wrapper.sh
+cmd=$HOME/.config/xdg-desktop-portal-termfilechooser/yazi-wrapper.sh
 default_dir=$HOME
-env=TERMCMD='/usr/bin/kitty --title "Yazi file chooser"'
 env=PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+env=YAZI_CHOOSER_MODE=reuse
+env=YAZI_CHOOSER_WIDTH=1200
+env=YAZI_CHOOSER_HEIGHT=800
 open_mode=suggested
 save_mode=suggested
