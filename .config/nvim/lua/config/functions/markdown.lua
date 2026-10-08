@@ -40,10 +40,19 @@ end
 function M.pick_markdown_heading()
   local bufnr = vim.api.nvim_get_current_buf()
   local winid = vim.api.nvim_get_current_win()
+  local cursor_row = vim.api.nvim_win_get_cursor(winid)[1]
   local headings = get_markdown_headings(bufnr)
   if #headings == 0 then
     vim.notify("No Markdown headings found", vim.log.levels.INFO)
     return
+  end
+
+  local current_heading_index
+  for index, heading in ipairs(headings) do
+    if heading.row > cursor_row then
+      break
+    end
+    current_heading_index = index
   end
 
   local entries, row_by_entry = {}, {}
@@ -72,6 +81,8 @@ function M.pick_markdown_heading()
     fzf.fzf_exec(entries, {
       prompt = "Markdown headings> ",
       fzf_opts = { ["--no-sort"] = "" },
+      locate = current_heading_index ~= nil,
+      __locate_pos = current_heading_index,
       winopts = { title = " Markdown Headings ", title_pos = "center" },
       actions = {
         ["default"] = function(selected)
