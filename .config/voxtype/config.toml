@@ -28,11 +28,15 @@ eager_overlap_secs = 0.5
 
 
 [output]
-mode = "clipboard"
+mode = "paste"
+# driver_order applies to type mode; paste selects its own keystroke backend.
 driver_order = ["ydotool", "clipboard"]
 fallback_to_clipboard = true
 type_delay_ms = 0
-auto_submit = true
+auto_submit = false
+# Let Alt from the toggle hotkey be released before sending Ctrl+V.
+wait_for_modifier_release = true
+modifier_release_timeout_ms = 2000
 
 
 [output.post_process]
@@ -52,7 +56,9 @@ filter_filler_words = true
 filler_words = ["uh", "um", "er", "ah", "eh", "hmm", "hm", "mm", "mhm"]
 
 [osd]
-enabled = true
+# The GTK overlay requires libgtk4-layer-shell, absent on this workstation.
+# Keep dictation running without the overlay's repeated startup errors.
+enabled = false
 frontend = "gtk4"
 
 [parakeet]

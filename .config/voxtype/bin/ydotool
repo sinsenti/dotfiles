@@ -1,0 +1,26 @@
+#!/bin/sh
+# Voxtype uses ydotool 1.x keycodes; Ubuntu's 0.1.8 needs symbolic chords.
+# This directory belongs only on the Voxtype service's PATH.
+# Both generations lack a reliable --version flag. Read the package metadata
+# without invoking a keyboard command or probing the daemon.
+version=$(dpkg-query -W -f='${Version}' ydotool 2>/dev/null) || version=unknown
+case "$version" in
+  0.1.*|*:0.1.*) ;;
+  *) exec /usr/bin/ydotool "$@" ;;
+esac
+
+case "$*" in
+  'key 29:1 47:1 47:0 29:0')
+    exec /usr/bin/ydotool key ctrl+v ;;
+  'key 29:1 42:1 47:1 47:0 42:0 29:0')
+    exec /usr/bin/ydotool key ctrl+shift+v ;;
+  'key 42:1 110:1 110:0 42:0')
+    exec /usr/bin/ydotool key shift+insert ;;
+  'key 28:1 28:0')
+    exec /usr/bin/ydotool key enter ;;
+  key\ *:*)
+    echo 'Voxtype: unsupported numeric key sequence for legacy ydotool' >&2
+    exit 1 ;;
+  *)
+    exec /usr/bin/ydotool "$@" ;;
+esac
