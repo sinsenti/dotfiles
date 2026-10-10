@@ -85,6 +85,7 @@ class StopListener:
                     self.stopping = False
                 elif self.previous != "recording":
                     self.marker.unlink(missing_ok=True)
+                    (self.directory / "submit-request.json").unlink(missing_ok=True)
                     self.stopping = False
                     self.retry_at = 0
                 self.previous = state

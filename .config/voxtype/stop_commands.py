@@ -7,12 +7,14 @@ import re
 import time
 
 
-PHRASES = ("stop recording", "end dictation", "finish recording", "конец записи")
+STOP_PHRASES = ("stop recording", "end dictation", "finish recording", "конец записи")
+SUBMIT_PHRASES = ("submit text", "send message", "отправить текст")
+PHRASES = (*STOP_PHRASES, *SUBMIT_PHRASES)
 MODELS = ("vosk-model-small-en-us-0.15", "vosk-model-small-ru-0.22")
 # Competing phrases keep similar technical dictation out of the commands.
 GRAMMARS = (
-    (*PHRASES[:3], "finish coding", "stop coding", "start recording", "send dictation", "[unk]"),
-    (*PHRASES[3:], "конец задачи", "конец запаса", "[unk]"),
+    (*STOP_PHRASES[:3], *SUBMIT_PHRASES[:2], "finish coding", "stop coding", "start recording", "send dictation", "[unk]"),
+    (STOP_PHRASES[3], SUBMIT_PHRASES[2], "конец задачи", "конец запаса", "открыть текст", "[unk]"),
 )
 SUFFIX = re.compile(
     r"(?<!\w)(?:" + "|".join(re.escape(p).replace(r"\ ", r"\s+") for p in PHRASES)
@@ -40,15 +42,21 @@ def recognized_command(result):
     return None
 
 
-def remove_stop_command(text, directory=None, now=None):
-    """Only strip commands when the listener actually stopped this recording."""
+def consume_spoken_command(text, directory=None, now=None):
+    """Return cleaned text and the command that actually stopped recording."""
     marker = (directory or runtime_directory()) / "spoken-stop.json"
     try:
         event = json.loads(marker.read_text())
         marker.unlink()
         age = (time.time() if now is None else now) - event["time"]
         if event["phrase"] in PHRASES and 0 <= age <= 180:
-            return SUFFIX.sub("", text).rstrip(" \t\r\n,;:")
+            match = SUFFIX.search(text)
+            if match and " ".join(re.findall(r"\w+", match.group().casefold())) == event["phrase"]:
+                return text[:match.start()].rstrip(" \t\r\n,;:"), event["phrase"]
     except (OSError, ValueError, KeyError, TypeError):
         pass
-    return text
+    return text, None
+
+
+def remove_stop_command(text, directory=None, now=None):
+    return consume_spoken_command(text, directory, now)[0]

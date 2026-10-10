@@ -3,16 +3,19 @@
 # This directory belongs only on the Voxtype service's PATH.
 # Voxtype has already copied the transcription before invoking these shortcuts.
 # Kitty needs Ctrl+Shift+V. Other terminals retain manual paste for now.
+paste=0
 case "$*" in
   'key 29:1 47:1 47:0 29:0'|\
   'key 29:1 42:1 47:1 47:0 42:0 29:0'|\
   'key 42:1 110:1 110:0 42:0'|\
   'key ctrl+v'|'key ctrl+shift+v'|'key shift+insert')
+    paste=1
     target=$(/usr/bin/python3 "$(dirname "$0")/../paste_guard.py")
     case "$target" in
       kitty) set -- key 29:1 42:1 47:1 47:0 42:0 29:0 ;;
       gui) ;; # Keep the configured paste shortcut.
       *)
+        /usr/bin/python3 "$(dirname "$0")/../paste_delivery.py" --discard
         echo 'Voxtype: automatic paste skipped; transcription remains in clipboard' >&2
         exit 0 ;;
     esac ;;
@@ -22,22 +25,22 @@ esac
 # without invoking a keyboard command or probing the daemon.
 version=$(dpkg-query -W -f='${Version}' ydotool 2>/dev/null) || version=unknown
 case "$version" in
-  0.1.*|*:0.1.*) ;;
-  *) exec /usr/bin/ydotool "$@" ;;
+  0.1.*|*:0.1.*)
+    case "$*" in
+      'key 29:1 47:1 47:0 29:0')
+        set -- key ctrl+v ;;
+      'key 29:1 42:1 47:1 47:0 42:0 29:0')
+        set -- key ctrl+shift+v ;;
+      'key 42:1 110:1 110:0 42:0')
+        set -- key shift+insert ;;
+      'key 28:1 28:0')
+        set -- key enter ;;
+      key\ *:*)
+        echo 'Voxtype: unsupported numeric key sequence for legacy ydotool' >&2
+        exit 1 ;;
+    esac ;;
 esac
-
-case "$*" in
-  'key 29:1 47:1 47:0 29:0')
-    exec /usr/bin/ydotool key ctrl+v ;;
-  'key 29:1 42:1 47:1 47:0 42:0 29:0')
-    exec /usr/bin/ydotool key ctrl+shift+v ;;
-  'key 42:1 110:1 110:0 42:0')
-    exec /usr/bin/ydotool key shift+insert ;;
-  'key 28:1 28:0')
-    exec /usr/bin/ydotool key enter ;;
-  key\ *:*)
-    echo 'Voxtype: unsupported numeric key sequence for legacy ydotool' >&2
-    exit 1 ;;
-  *)
-    exec /usr/bin/ydotool "$@" ;;
-esac
+if [ "$paste" = 1 ]; then
+  exec /usr/bin/python3 "$(dirname "$0")/../paste_delivery.py" "$@"
+fi
+exec /usr/bin/ydotool "$@"

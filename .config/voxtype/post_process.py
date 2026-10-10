@@ -4,9 +4,11 @@
 import re
 import subprocess
 import sys
+import json
+import time
 from urllib.parse import urlencode
 
-from stop_commands import remove_stop_command
+from stop_commands import SUBMIT_PHRASES, consume_spoken_command, runtime_directory
 
 
 SEARCH_PREFIX = re.compile(r"^(translate|переведи)[,:.!?]?\s+(.+)$", re.IGNORECASE | re.DOTALL)
@@ -39,11 +41,18 @@ def open_search(url):
 
 
 def process(text):
-    text = remove_stop_command(text)
+    request = runtime_directory() / "submit-request.json"
+    request.unlink(missing_ok=True)
+    text, phrase = consume_spoken_command(text)
     url = search_url(text)
     if url and open_search(url):
         return ""  # Browser commands must not also be pasted into its new window.
-    return text.strip().lower().rstrip(".")
+    text = text.strip().lower().rstrip(".")
+    # Empty dictation must not submit pre-existing input. Browser searches own
+    # their output and must not inject Enter into the newly opened browser.
+    if text and phrase in SUBMIT_PHRASES:
+        request.write_text(json.dumps({"action": "submit", "time": time.time()}))
+    return text
 
 
 if __name__ == "__main__":

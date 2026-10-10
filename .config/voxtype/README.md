@@ -11,6 +11,20 @@ Say the command as a separate utterance. A single word such as `finish` does
 not stop recording. The listener waits for the end of the utterance; it does
 not act on partial recognition. The hotkey continues to work normally.
 
+To stop, paste, and press Enter, use a separate utterance instead:
+
+- `submit text`
+- `send message`
+- `отправить текст`
+
+These phrases are removed from the final text. After a successful paste the
+helper waits 250 ms and presses Enter if the same window is still focused.
+Empty recordings, failed/skipped pastes, and browser translation searches do
+not submit. Ordinary stop phrases still paste without Enter. `enter` and
+`submit` alone are not commands. In Kitty, Enter executes the pasted command;
+in other apps it performs that app's normal Enter action (some apps insert a
+newline or require a different shortcut to send).
+
 The helper uses local Vosk English and Russian models and the default
 PulseAudio/PipeWire microphone. It opens its audio stream only while Voxtype
 is recording, saves no audio or transcripts, and makes no recognition network
@@ -34,4 +48,5 @@ Offline regression checks (no microphone or desktop interaction):
 
 ```sh
 python3 ~/.config/voxtype/test_stop_commands.py
+python3 ~/.config/voxtype/test_submit.py
 ```

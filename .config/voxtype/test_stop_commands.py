@@ -44,10 +44,12 @@ class SpokenStopTests(unittest.TestCase):
             self.assertEqual(remove_stop_command("message", directory), "message")
 
     def test_stop_command_does_not_reach_browser_search(self):
-        with patch("post_process.remove_stop_command", return_value="translate hello"):
-            with patch("post_process.open_search", return_value=True) as browser:
-                self.assertEqual(post_process.process("translate hello stop recording"), "")
-                self.assertNotIn("stop", browser.call_args.args[0])
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch("post_process.runtime_directory", return_value=Path(temporary)):
+                with patch("post_process.consume_spoken_command", return_value=("translate hello", PHRASES[0])):
+                    with patch("post_process.open_search", return_value=True) as browser:
+                        self.assertEqual(post_process.process("translate hello stop recording"), "")
+                        self.assertNotIn("stop", browser.call_args.args[0])
 
     def test_stop_only_signals_recording_and_cleans_failed_marker(self):
         with tempfile.TemporaryDirectory() as temporary:
