@@ -1,6 +1,23 @@
 #!/bin/sh
 # Voxtype uses ydotool 1.x keycodes; Ubuntu's 0.1.8 needs symbolic chords.
 # This directory belongs only on the Voxtype service's PATH.
+# Voxtype has already copied the transcription before invoking these shortcuts.
+# Kitty needs Ctrl+Shift+V. Other terminals retain manual paste for now.
+case "$*" in
+  'key 29:1 47:1 47:0 29:0'|\
+  'key 29:1 42:1 47:1 47:0 42:0 29:0'|\
+  'key 42:1 110:1 110:0 42:0'|\
+  'key ctrl+v'|'key ctrl+shift+v'|'key shift+insert')
+    target=$(/usr/bin/python3 "$(dirname "$0")/../paste_guard.py")
+    case "$target" in
+      kitty) set -- key 29:1 42:1 47:1 47:0 42:0 29:0 ;;
+      gui) ;; # Keep the configured paste shortcut.
+      *)
+        echo 'Voxtype: automatic paste skipped; transcription remains in clipboard' >&2
+        exit 0 ;;
+    esac ;;
+esac
+
 # Both generations lack a reliable --version flag. Read the package metadata
 # without invoking a keyboard command or probing the daemon.
 version=$(dpkg-query -W -f='${Version}' ydotool 2>/dev/null) || version=unknown

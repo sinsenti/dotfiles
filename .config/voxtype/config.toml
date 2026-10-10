@@ -40,8 +40,11 @@ modifier_release_timeout_ms = 2000
 
 
 [output.post_process]
-command = "python3 -c \"import sys; print(sys.stdin.read().lower().rstrip('.'), end='')\""
+command = 'python3 "$HOME/.config/voxtype/post_process.py"'
 trim = true
+# Translation searches intentionally return no text to paste.
+fallback_on_empty = false
+timeout_ms = 5000
 
 [output.notification]
 on_recording_start = false
@@ -56,8 +59,8 @@ filter_filler_words = true
 filler_words = ["uh", "um", "er", "ah", "eh", "hmm", "hm", "mm", "mhm"]
 
 [osd]
-# The GTK overlay requires libgtk4-layer-shell, absent on this workstation.
-# Keep dictation running without the overlay's repeated startup errors.
+# GNOME does not support the layer-shell protocol used by the waveform OSD.
+# status_window.py provides a focus-free GTK/XWayland window instead.
 enabled = false
 frontend = "gtk4"
 
